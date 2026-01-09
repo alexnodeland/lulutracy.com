@@ -15,6 +15,7 @@ skills: lighthouse-fix
 ## Pre-Deployment Checklist
 
 ### 1. Build Verification
+
 ```bash
 # Run full CI locally
 make ci
@@ -25,10 +26,12 @@ make ci
 ### 2. Path Prefix Check
 
 This site uses path prefix for GitHub Pages:
+
 - **Site URL**: https://alexnodeland.github.io/lulutracy.com
 - **Path Prefix**: `/lulutracy.com`
 
 Verify in `gatsby-config.js`:
+
 ```javascript
 pathPrefix: `/lulutracy.com`,
 ```
@@ -36,6 +39,7 @@ pathPrefix: `/lulutracy.com`,
 ### 3. Asset Paths
 
 All internal links must use Gatsby helpers:
+
 ```tsx
 // Correct - uses path prefix
 import { Link } from 'gatsby'
@@ -48,6 +52,7 @@ import { Link } from 'gatsby'
 ### 4. Image Paths
 
 Images must use Gatsby Image or proper imports:
+
 ```tsx
 // Correct
 import { StaticImage } from 'gatsby-plugin-image'
@@ -60,6 +65,7 @@ import { StaticImage } from 'gatsby-plugin-image'
 ## Verification Steps
 
 ### Run Production Build
+
 ```bash
 make build
 make serve
@@ -67,6 +73,7 @@ make serve
 ```
 
 ### Check Build Output
+
 ```bash
 # Verify files exist
 ls -la public/
@@ -80,6 +87,7 @@ ls public/static/
 ```
 
 ### Test All Routes
+
 - [ ] Homepage: `/lulutracy.com/`
 - [ ] About: `/lulutracy.com/about`
 - [ ] Individual paintings: `/lulutracy.com/painting/{id}`
@@ -88,6 +96,7 @@ ls public/static/
 ## CI/CD Workflow
 
 ### Workflow Files
+
 ```
 .github/workflows/
 ├── ci.yml      # PR checks (lint, test, build, Lighthouse)
@@ -95,11 +104,13 @@ ls public/static/
 ```
 
 ### Deployment Trigger
+
 - Push to `main` branch triggers `deploy.yml`
 - Builds site and deploys to `gh-pages` branch
 - GitHub Pages serves from `gh-pages`
 
 ### Check Workflow Status
+
 ```bash
 # View recent workflow runs
 gh run list --limit 5
@@ -132,6 +143,7 @@ gh api repos/:owner/:repo/pages
 
 **Cause**: Environment differences
 **Fix**:
+
 ```bash
 # Match CI environment
 rm -rf node_modules
@@ -147,6 +159,7 @@ make build
 ## Environment Variables
 
 Check `.env.example` for required variables:
+
 ```bash
 # Build settings
 GATSBY_CPU_COUNT=4
@@ -170,6 +183,7 @@ npx lighthouse https://alexnodeland.github.io/lulutracy.com --view
 ## Output Format
 
 Provide deployment status as:
+
 1. **Build Status**: Pass/Fail with details
 2. **Issues Found**: Any problems discovered
 3. **Verification Results**: Checklist completion

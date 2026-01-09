@@ -40,18 +40,18 @@ Add to `content/paintings/index.yaml`:
 
 ### Required Fields
 
-| Field | Format | Example |
-|-------|--------|---------|
-| `id` | kebab-case, unique | `autumn-leaves` |
-| `title` | Title case | `Autumn Leaves` |
-| `description` | Plain text | `A vibrant fall scene...` |
-| `dimensions` | `W" x H"` format | `16" x 20"` |
-| `canvasSize` | `WxH` (no spaces) | `16x20` |
-| `medium` | Art medium description | `Watercolor on paper` |
-| `year` | String (quoted) | `'2024'` |
-| `image` | Relative path | `./images/file.jpg` |
-| `alt` | Accessibility text | `Colorful maple leaves...` |
-| `order` | Integer | `5` |
+| Field         | Format                 | Example                    |
+| ------------- | ---------------------- | -------------------------- |
+| `id`          | kebab-case, unique     | `autumn-leaves`            |
+| `title`       | Title case             | `Autumn Leaves`            |
+| `description` | Plain text             | `A vibrant fall scene...`  |
+| `dimensions`  | `W" x H"` format       | `16" x 20"`                |
+| `canvasSize`  | `WxH` (no spaces)      | `16x20`                    |
+| `medium`      | Art medium description | `Watercolor on paper`      |
+| `year`        | String (quoted)        | `'2024'`                   |
+| `image`       | Relative path          | `./images/file.jpg`        |
+| `alt`         | Accessibility text     | `Colorful maple leaves...` |
+| `order`       | Integer                | `5`                        |
 
 ### Step 4: Validate
 

@@ -24,12 +24,14 @@ skills: lighthouse-fix
 ## Key Areas
 
 ### Image Accessibility (Critical for Art Portfolio)
+
 - Every painting MUST have descriptive alt text
 - Alt text should describe the artwork meaningfully
 - Decorative images use `alt=""`
 - Check `content/paintings/index.yaml` for alt field quality
 
 ### Keyboard Navigation
+
 - All interactive elements focusable via Tab
 - Focus order is logical
 - Focus indicators visible
@@ -37,6 +39,7 @@ skills: lighthouse-fix
 - Mobile menu accessible via keyboard
 
 ### Screen Reader Compatibility
+
 - Semantic HTML (`<nav>`, `<main>`, `<article>`, `<button>`)
 - Headings in logical order (h1 → h2 → h3)
 - Links have descriptive text (not "click here")
@@ -44,12 +47,14 @@ skills: lighthouse-fix
 - Dynamic content announced
 
 ### Color & Contrast
+
 - Text contrast ratio: 4.5:1 minimum (normal text)
 - Large text contrast: 3:1 minimum
 - Don't rely on color alone for information
 - Check `src/styles/global.css` for color values
 
 ### ARIA Usage
+
 - Use native HTML elements first
 - ARIA only when necessary
 - `aria-label` for icon buttons
@@ -91,6 +96,7 @@ make build && npx lighthouse http://localhost:9000 --view
 ## Output Format
 
 Provide findings as:
+
 1. **Critical**: Must fix (WCAG A violations)
 2. **Serious**: Should fix (WCAG AA violations)
 3. **Moderate**: Improvements (WCAG AAA or best practices)

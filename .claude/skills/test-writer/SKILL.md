@@ -11,12 +11,12 @@ Create tests that meet project coverage requirements and follow established patt
 
 Tests must meet these thresholds (enforced in CI):
 
-| Metric | Threshold |
-|--------|-----------|
-| Lines | 90% |
-| Statements | 90% |
-| Branches | 90% |
-| Functions | 75% |
+| Metric     | Threshold |
+| ---------- | --------- |
+| Lines      | 90%       |
+| Statements | 90%       |
+| Branches   | 90%       |
+| Functions  | 75%       |
 
 ## Test File Location
 
@@ -79,6 +79,7 @@ describe('ComponentName', () => {
 ### Gatsby Mock (`__mocks__/gatsby.js`)
 
 Provides mocks for:
+
 - `Link` - Renders as `<a>` tag
 - `graphql` - Returns template literal
 - `useStaticQuery` - Returns mock data (customize per test)
@@ -86,6 +87,7 @@ Provides mocks for:
 ### Gatsby Plugin Image Mock (`__mocks__/gatsby-plugin-image.js`)
 
 Provides mocks for:
+
 - `GatsbyImage` - Renders placeholder div
 - `StaticImage` - Renders placeholder div
 - `getImage` - Returns mock image data
@@ -129,7 +131,9 @@ it('renders painting image', () => {
     alt: 'A test painting',
     // ... other fields
   }
-  const mockImage = { /* mock gatsby image data */ }
+  const mockImage = {
+    /* mock gatsby image data */
+  }
 
   render(<GalleryImage painting={mockPainting} image={mockImage} />)
   expect(screen.getByAltText('A test painting')).toBeInTheDocument()
@@ -174,21 +178,21 @@ describe('IndexPage', () => {
 
 ### Query Methods
 
-| Method | Use When |
-|--------|----------|
-| `getBy*` | Element should exist (throws if not) |
-| `queryBy*` | Element might not exist (returns null) |
-| `findBy*` | Element appears async (returns Promise) |
+| Method     | Use When                                |
+| ---------- | --------------------------------------- |
+| `getBy*`   | Element should exist (throws if not)    |
+| `queryBy*` | Element might not exist (returns null)  |
+| `findBy*`  | Element appears async (returns Promise) |
 
 ### Common Queries
 
 ```tsx
-screen.getByText('Hello')           // Exact text match
-screen.getByText(/hello/i)          // Regex (case insensitive)
-screen.getByRole('button')          // By ARIA role
-screen.getByRole('link', { name: 'About' })  // Role + accessible name
-screen.getByTestId('custom-id')     // By data-testid attribute
-screen.getByAltText('Image desc')   // By alt attribute
+screen.getByText('Hello') // Exact text match
+screen.getByText(/hello/i) // Regex (case insensitive)
+screen.getByRole('button') // By ARIA role
+screen.getByRole('link', { name: 'About' }) // Role + accessible name
+screen.getByTestId('custom-id') // By data-testid attribute
+screen.getByAltText('Image desc') // By alt attribute
 ```
 
 ## Running Tests

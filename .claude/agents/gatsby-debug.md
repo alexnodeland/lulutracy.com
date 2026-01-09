@@ -26,6 +26,7 @@ skills: graphql-query
 ### Build Failures
 
 **"Cannot query field X on type Y"**
+
 ```bash
 # GraphQL schema out of sync
 make clean && make dev
@@ -33,6 +34,7 @@ make clean && make dev
 ```
 
 **"ENOENT: no such file or directory"**
+
 ```bash
 # Missing file reference
 # Check content/paintings/index.yaml image paths
@@ -40,6 +42,7 @@ make clean && make dev
 ```
 
 **"sharp" errors**
+
 ```bash
 npm rebuild sharp
 # Or reinstall
@@ -49,6 +52,7 @@ rm -rf node_modules && npm install
 ### Development Server Issues
 
 **Hot reload not working**
+
 ```bash
 # Clear Gatsby cache
 make clean
@@ -56,6 +60,7 @@ make dev
 ```
 
 **Port already in use**
+
 ```bash
 # Kill process on port 8000
 lsof -ti:8000 | xargs kill -9
@@ -63,6 +68,7 @@ make dev
 ```
 
 **Memory issues**
+
 ```bash
 # Increase Node memory
 NODE_OPTIONS="--max-old-space-size=4096" npm run develop
@@ -71,12 +77,14 @@ NODE_OPTIONS="--max-old-space-size=4096" npm run develop
 ### GraphQL Issues
 
 **Query returns null**
-1. Check GraphQL playground: http://localhost:8000/___graphql
+
+1. Check GraphQL playground: http://localhost:8000/\_\_\_graphql
 2. Verify source files exist and have correct format
 3. Check `gatsby-config.js` source-filesystem paths
 4. Run `make clean && make dev` to rebuild schema
 
 **Schema not updating**
+
 ```bash
 # Force schema rebuild
 rm -rf .cache
@@ -86,12 +94,14 @@ make dev
 ### Image Processing
 
 **Images not showing**
+
 1. Verify image in `content/paintings/images/`
 2. Check file extension (jpg, png, webp supported)
 3. Verify path in `index.yaml` matches actual filename
 4. Check for Sharp errors in build output
 
 **Slow image processing**
+
 ```bash
 # Check image sizes - source should be < 2MB
 ls -lh content/paintings/images/
@@ -103,12 +113,14 @@ GATSBY_CPU_COUNT=4 npm run build
 ### Plugin Conflicts
 
 **Manifest plugin errors**
+
 ```bash
 # Check gatsby-config.js manifest options
 # Verify icon file exists: src/images/icon.png
 ```
 
 **Transformer errors**
+
 ```bash
 # Check source file format matches transformer
 # YAML files need gatsby-transformer-yaml
@@ -159,6 +171,7 @@ src/templates/      # Dynamic templates
 ## Output Format
 
 Provide diagnosis as:
+
 1. **Issue Identified**: What's wrong
 2. **Root Cause**: Why it's happening
 3. **Solution**: Step-by-step fix

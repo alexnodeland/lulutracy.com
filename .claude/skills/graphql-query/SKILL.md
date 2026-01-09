@@ -21,13 +21,13 @@ Use this to explore the schema and test queries.
 
 This site has these data sources configured in `gatsby-config.js`:
 
-| Source | Content | GraphQL Type |
-|--------|---------|--------------|
-| `content/paintings/index.yaml` | Painting metadata | `allPaintingsYaml` |
-| `content/paintings/images/` | Painting images | `allFile` (filtered) |
-| `content/about.md` | About page | `markdownRemark` |
-| `content/site.yaml` | Site config | `siteYaml` |
-| `src/images/` | Static images | `allFile` |
+| Source                         | Content           | GraphQL Type         |
+| ------------------------------ | ----------------- | -------------------- |
+| `content/paintings/index.yaml` | Painting metadata | `allPaintingsYaml`   |
+| `content/paintings/images/`    | Painting images   | `allFile` (filtered) |
+| `content/about.md`             | About page        | `markdownRemark`     |
+| `content/site.yaml`            | Site config       | `siteYaml`           |
+| `src/images/`                  | Static images     | `allFile`            |
 
 ## Common Queries
 
@@ -225,11 +225,11 @@ childImageSharp {
 
 ### Layout Options
 
-| Layout | Use Case |
-|--------|----------|
+| Layout        | Use Case                             |
+| ------------- | ------------------------------------ |
 | `CONSTRAINED` | Most images - scales down but not up |
-| `FIXED` | Icons, thumbnails with exact size |
-| `FULL_WIDTH` | Hero images spanning container |
+| `FIXED`       | Icons, thumbnails with exact size    |
+| `FULL_WIDTH`  | Hero images spanning container       |
 
 ## Debugging Queries
 

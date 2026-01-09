@@ -24,6 +24,7 @@ skills: test-writer, component-generator
 ## Checklist
 
 ### Code Conventions
+
 - TypeScript strict compliance (no untyped `any`)
 - Prettier formatting (no semicolons, single quotes)
 - Props interfaces for components
@@ -31,22 +32,26 @@ skills: test-writer, component-generator
 - Unused variables prefixed with `_`
 
 ### Testing
+
 - New functionality has tests
 - Coverage thresholds maintained (90% lines/statements/branches, 75% functions)
 - Tests in `__tests__/` directories
 
 ### Accessibility
+
 - Images have alt text
 - Semantic HTML used
 - Keyboard navigation works
 - ARIA attributes correct
 
 ### Security
+
 - No hardcoded secrets
 - External links have `rel="noopener noreferrer"`
 - No `dangerouslySetInnerHTML` without justification
 
 ### Commits
+
 - Conventional format: `type(scope): subject`
 - Subject lowercase, no period, under 72 chars
 
@@ -62,6 +67,7 @@ make typecheck     # TypeScript errors
 ## Output Format
 
 Provide a structured review:
+
 1. **Summary**: Overall assessment (approve/changes requested)
 2. **Issues Found**: Categorized by severity (high/medium/low)
 3. **Suggestions**: Optional improvements

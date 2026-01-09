@@ -11,12 +11,12 @@ Guide fixes for Lighthouse audit issues in this Gatsby portfolio site.
 
 This project enforces these Lighthouse thresholds in CI:
 
-| Category | Target |
-|----------|--------|
-| Performance | 90+ |
-| Accessibility | 90+ |
-| Best Practices | 90+ |
-| SEO | 90+ |
+| Category       | Target |
+| -------------- | ------ |
+| Performance    | 90+    |
+| Accessibility  | 90+    |
+| Best Practices | 90+    |
+| SEO            | 90+    |
 
 ## Common Performance Issues
 
@@ -55,6 +55,7 @@ return <GatsbyImage image={image} alt="description" loading="eager" />
 **Problem**: CSS or fonts blocking initial render.
 
 **Solution**:
+
 - CSS Modules are automatically code-split
 - For fonts, use `font-display: swap` in CSS
 - Critical CSS is inlined by Gatsby
@@ -90,7 +91,7 @@ For paintings, alt text comes from `content/paintings/index.yaml`.
 
 /* Example fix */
 .text {
-  color: #333;  /* Darker than #666 for better contrast */
+  color: #333; /* Darker than #666 for better contrast */
   background: #fff;
 }
 ```
@@ -119,6 +120,7 @@ For paintings, alt text comes from `content/paintings/index.yaml`.
 **Problem**: Interactive elements not keyboard accessible.
 
 **Solution**:
+
 - Use semantic HTML (`<button>`, `<a>`, not `<div onClick>`)
 - Ensure focus states are visible in CSS
 - Test with Tab key navigation

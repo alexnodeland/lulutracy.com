@@ -44,6 +44,7 @@ make test-coverage
 **When**: JSX block is reusable or file is too long
 
 **Process**:
+
 1. Identify extractable JSX
 2. Create new component file
 3. Create CSS Module file
@@ -54,6 +55,7 @@ make test-coverage
 8. Verify all tests pass
 
 **File structure**:
+
 ```
 src/components/
 ├── NewComponent.tsx
@@ -67,6 +69,7 @@ src/components/
 **When**: Stateful logic is reused or component is complex
 
 **Process**:
+
 1. Identify extractable state/effects
 2. Create hook in `src/hooks/`
 3. Move logic to hook
@@ -75,6 +78,7 @@ src/components/
 6. Add tests if complex
 
 **Example**:
+
 ```tsx
 // src/hooks/useToggle.ts
 export const useToggle = (initial = false) => {
@@ -89,6 +93,7 @@ export const useToggle = (initial = false) => {
 **When**: Same interface defined multiple times
 
 **Process**:
+
 1. Find duplicate interfaces with Grep
 2. Choose canonical location (`src/types/index.ts`)
 3. Export from types file
@@ -100,6 +105,7 @@ export const useToggle = (initial = false) => {
 **When**: Logic repeated across files
 
 **Process**:
+
 1. Create function in `src/utils/`
 2. Add TypeScript types
 3. Move logic
@@ -111,6 +117,7 @@ export const useToggle = (initial = false) => {
 **When**: Styles are duplicated or inconsistent
 
 **Process**:
+
 1. Identify shared styles
 2. Move to `src/styles/global.css` if truly global
 3. Or create shared CSS Module
@@ -166,6 +173,7 @@ make ci
 ## Red Flags
 
 Stop and reconsider if:
+
 - Coverage drops below thresholds
 - Tests start failing unexpectedly
 - Type errors multiply
@@ -186,6 +194,7 @@ git stash show -p
 ## Output Format
 
 Provide refactoring plan as:
+
 1. **Goal**: What improvement we're making
 2. **Scope**: Files affected
 3. **Steps**: Ordered list of changes

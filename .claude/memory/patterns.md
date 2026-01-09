@@ -5,6 +5,7 @@ This file documents recurring patterns and conventions discovered in the Lulu Tr
 ## Component Patterns
 
 ### Standard Component Structure
+
 ```tsx
 import React from 'react'
 import * as styles from './ComponentName.module.css'
@@ -15,30 +16,30 @@ interface ComponentNameProps {
 }
 
 const ComponentName = ({ requiredProp, optionalProp }: ComponentNameProps) => {
-  return (
-    <div className={styles.container}>
-      {/* content */}
-    </div>
-  )
+  return <div className={styles.container}>{/* content */}</div>
 }
 
 export default ComponentName
 ```
 
 ### CSS Module Import
+
 Always use `* as styles` syntax:
+
 ```tsx
 import * as styles from './Component.module.css'
 // NOT: import styles from './Component.module.css'
 ```
 
 ### Props Interface Location
+
 - Simple props: Define above component in same file
 - Shared props: Export from `src/types/index.ts`
 
 ## Testing Patterns
 
 ### Component Test Structure
+
 ```tsx
 import React from 'react'
 import { render, screen } from '@testing-library/react'
@@ -53,11 +54,18 @@ describe('Component', () => {
 ```
 
 ### Mocking GraphQL Data
+
 ```tsx
 const mockData = {
   allPaintingsYaml: {
-    nodes: [{ paintings: [/* mock paintings */] }]
-  }
+    nodes: [
+      {
+        paintings: [
+          /* mock paintings */
+        ],
+      },
+    ],
+  },
 }
 render(<PageComponent data={mockData} />)
 ```
@@ -65,6 +73,7 @@ render(<PageComponent data={mockData} />)
 ## Content Patterns
 
 ### Painting Entry Format
+
 ```yaml
 - id: kebab-case-unique-id
   title: Title Case Title
@@ -79,6 +88,7 @@ render(<PageComponent data={mockData} />)
 ```
 
 ### Image File Naming
+
 - Use kebab-case: `autumn-leaves.jpg`
 - Match painting id when possible
 - Supported formats: jpg, png, webp
@@ -86,15 +96,18 @@ render(<PageComponent data={mockData} />)
 ## Git Patterns
 
 ### Branch Naming
+
 - Features: `feature/description`
 - Fixes: `fix/description`
 - Claude branches: `claude/description-XXXXX`
 
 ### Commit Messages
+
 Format: `type(scope): subject`
+
 - Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, deps
 - Subject: lowercase, no period, imperative mood
 
 ---
 
-*Add new patterns as they are discovered.*
+_Add new patterns as they are discovered._

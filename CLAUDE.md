@@ -282,47 +282,49 @@ This project includes comprehensive Claude Code automation:
 
 Located in `.claude/skills/`:
 
-| Skill | Purpose |
-|-------|---------|
-| `gatsby-content` | Add paintings, edit about page, site config |
-| `component-generator` | Scaffold React components with CSS Modules |
-| `test-writer` | Write Jest tests with project patterns |
-| `lighthouse-fix` | Fix performance and accessibility issues |
-| `graphql-query` | Write and debug Gatsby GraphQL queries |
+| Skill                 | Purpose                                     |
+| --------------------- | ------------------------------------------- |
+| `gatsby-content`      | Add paintings, edit about page, site config |
+| `component-generator` | Scaffold React components with CSS Modules  |
+| `test-writer`         | Write Jest tests with project patterns      |
+| `lighthouse-fix`      | Fix performance and accessibility issues    |
+| `graphql-query`       | Write and debug Gatsby GraphQL queries      |
 
 ### Agents (Independent Workers)
 
 Located in `.claude/agents/`:
 
-| Agent | Purpose | Invoke with |
-|-------|---------|-------------|
-| `pr-reviewer` | Code review and quality checks | `@pr-reviewer` |
-| `accessibility-audit` | Deep a11y analysis | `@accessibility-audit` |
-| `gatsby-debug` | Troubleshoot Gatsby issues | `@gatsby-debug` |
-| `deploy-check` | Pre-deployment verification | `@deploy-check` |
-| `refactor-guide` | Safe refactoring guidance | `@refactor-guide` |
+| Agent                 | Purpose                        | Invoke with            |
+| --------------------- | ------------------------------ | ---------------------- |
+| `pr-reviewer`         | Code review and quality checks | `@pr-reviewer`         |
+| `accessibility-audit` | Deep a11y analysis             | `@accessibility-audit` |
+| `gatsby-debug`        | Troubleshoot Gatsby issues     | `@gatsby-debug`        |
+| `deploy-check`        | Pre-deployment verification    | `@deploy-check`        |
+| `refactor-guide`      | Safe refactoring guidance      | `@refactor-guide`      |
 
 ### Hooks (Automated Actions)
 
 Configured in `.claude/settings.json`:
 
-| Hook | Event | Action |
-|------|-------|--------|
-| `session-start.sh` | SessionStart | Load git status, environment info, TODOs |
-| `stop-validate.sh` | Stop | Run typecheck, lint, format checks |
-| `post-write-format.sh` | PostToolUse (Write/Edit) | Auto-format changed files |
-| `pre-bash-safety.sh` | PreToolUse (Bash) | Block dangerous commands |
-| `post-bash-build.sh` | PostToolUse (Bash) | Verify build after changes |
+| Hook                   | Event                    | Action                                   |
+| ---------------------- | ------------------------ | ---------------------------------------- |
+| `session-start.sh`     | SessionStart             | Load git status, environment info, TODOs |
+| `stop-validate.sh`     | Stop                     | Run typecheck, lint, format checks       |
+| `post-write-format.sh` | PostToolUse (Write/Edit) | Auto-format changed files                |
+| `pre-bash-safety.sh`   | PreToolUse (Bash)        | Block dangerous commands                 |
+| `post-bash-build.sh`   | PostToolUse (Bash)       | Verify build after changes               |
 
 ### Permissions
 
 Configured in `.claude/settings.json` to restrict Claude's access:
 
 **Allowed**:
+
 - Read/Write/Edit in `src/`, `content/`, `.claude/`
 - Common bash commands (`npm`, `make`, `git`, `node`)
 
 **Denied**:
+
 - Modifying `node_modules/`, `.git/`, `package-lock.json`
 - Destructive commands (`rm -rf /`, `sudo`, `npm publish`)
 - Force pushing to main branch
@@ -331,11 +333,11 @@ Configured in `.claude/settings.json` to restrict Claude's access:
 
 Located in `.claude/memory/`:
 
-| File | Purpose |
-|------|---------|
-| `decisions.md` | Architecture and design decisions |
-| `known-issues.md` | Known problems and workarounds |
-| `patterns.md` | Codebase patterns to follow |
+| File              | Purpose                           |
+| ----------------- | --------------------------------- |
+| `decisions.md`    | Architecture and design decisions |
+| `known-issues.md` | Known problems and workarounds    |
+| `patterns.md`     | Codebase patterns to follow       |
 
 Claude should reference these files for consistency and to avoid repeating past mistakes.
 
@@ -343,11 +345,11 @@ Claude should reference these files for consistency and to avoid repeating past 
 
 Configured in `.mcp.json` (disabled by default, enable as needed):
 
-| Server | Purpose |
-|--------|---------|
-| `filesystem` | Enhanced file operations |
-| `github` | GitHub PR/issue integration (requires GITHUB_TOKEN) |
-| `fetch` | Web fetching capabilities |
+| Server       | Purpose                                             |
+| ------------ | --------------------------------------------------- |
+| `filesystem` | Enhanced file operations                            |
+| `github`     | GitHub PR/issue integration (requires GITHUB_TOKEN) |
+| `fetch`      | Web fetching capabilities                           |
 
 ## Environment Requirements
 
