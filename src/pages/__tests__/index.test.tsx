@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import IndexPage from '../index'
+import IndexPage, { Head } from '../index'
 import type { Painting } from '../../types'
 
 const mockPaintings: Painting[] = [
@@ -120,5 +120,41 @@ describe('IndexPage', () => {
     }
     renderIndexPage(emptyData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+})
+
+describe('Head', () => {
+  it('renders meta tags with painting image', () => {
+    const { container } = render(<Head data={mockData} {...({} as any)} />)
+    expect(container.querySelector('title')).toHaveTextContent(
+      'Lulu Tracy | Art Portfolio'
+    )
+    expect(
+      container.querySelector('meta[property="og:title"]')
+    ).toHaveAttribute('content', 'Lulu Tracy | Art Portfolio')
+    expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
+      'content',
+      'website'
+    )
+    expect(
+      container.querySelector('script[type="application/ld+json"]')
+    ).toBeInTheDocument()
+  })
+
+  it('renders with fallback image when no paintings exist', () => {
+    const emptyData = {
+      allPaintingsYaml: {
+        nodes: [{ paintings: [] }],
+      },
+      allFile: {
+        nodes: [],
+      },
+    }
+    const { container } = render(
+      <Head data={emptyData as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
   })
 })

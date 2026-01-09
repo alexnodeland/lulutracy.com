@@ -240,4 +240,54 @@ describe('Head component', () => {
       'This is a test painting description.'
     )
   })
+
+  it('renders Open Graph meta tags', () => {
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:title"]')
+    ).toHaveAttribute('content', 'Test Painting Title | Lulu Tracy')
+    expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
+      'content',
+      'article'
+    )
+    expect(container.querySelector('meta[property="og:url"]')).toHaveAttribute(
+      'content',
+      expect.stringContaining('/painting/test-painting')
+    )
+  })
+
+  it('renders JSON-LD structured data', () => {
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    const jsonLd = container.querySelector('script[type="application/ld+json"]')
+    expect(jsonLd).toBeInTheDocument()
+    const data = JSON.parse(jsonLd?.textContent || '{}')
+    expect(data['@type']).toBe('VisualArtwork')
+    expect(data.name).toBe('Test Painting Title')
+    expect(data.artMedium).toBe('Acrylic on canvas')
+  })
+
+  it('uses fallback image when no image data', () => {
+    const { container } = render(
+      <Head
+        data={mockDataWithoutImage as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
 })

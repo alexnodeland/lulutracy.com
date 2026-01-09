@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AboutPage from '../about'
+import AboutPage, { Head } from '../about'
 
 const mockData = {
   markdownRemark: {
@@ -48,5 +48,25 @@ describe('AboutPage', () => {
     const images = screen.getAllByRole('img', { name: /lulu tracy/i })
     // Should have at least one image (logo in header and about photo)
     expect(images.length).toBeGreaterThanOrEqual(1)
+  })
+})
+
+describe('Head', () => {
+  it('renders meta tags', () => {
+    const { container } = render(<Head {...({} as any)} />)
+    expect(container.querySelector('title')).toHaveTextContent(
+      'About | Lulu Tracy'
+    )
+    expect(
+      container.querySelector('meta[property="og:title"]')
+    ).toHaveAttribute('content', 'About | Lulu Tracy')
+    expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
+      'content',
+      'website'
+    )
+    expect(container.querySelector('meta[property="og:url"]')).toHaveAttribute(
+      'content',
+      expect.stringContaining('/about')
+    )
   })
 })
