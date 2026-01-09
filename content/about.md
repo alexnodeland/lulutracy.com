@@ -1,6 +1,6 @@
 ---
 title: About
-artistName: ";-)"
+artistName: ';-)'
 photo: about.jpeg
 ---
 

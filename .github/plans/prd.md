@@ -41,27 +41,27 @@ Recreate the existing Lulu Tracy art portfolio website, preserving the original 
 
 #### Header
 
-|Requirement|Description                                      |
+|Requirement|Description |
 |————|-————————————————|
-|Position   |Fixed top bar, appears on all pages              |
-|Logo       |Positioned top-left; links to homepage           |
-|Navigation |Hamburger menu icon positioned top-right         |
-|Behavior   |Clicking logo navigates to homepage from any page|
+|Position |Fixed top bar, appears on all pages |
+|Logo |Positioned top-left; links to homepage |
+|Navigation |Hamburger menu icon positioned top-right |
+|Behavior |Clicking logo navigates to homepage from any page|
 
 #### Navigation Menu
 
-|Requirement|Description                                |
+|Requirement|Description |
 |————|-——————————————|
-|Trigger    |Hamburger icon click                       |
-|Contents   |Links to Homepage and About page           |
-|Style      |Overlay or slide-out panel (match original)|
+|Trigger |Hamburger icon click |
+|Contents |Links to Homepage and About page |
+|Style |Overlay or slide-out panel (match original)|
 
 #### Footer
 
-|Requirement|Description                          |
+|Requirement|Description |
 |————|-————————————|
-|Position   |Bottom of page, appears on all pages |
-|Content    |To be determined from original assets|
+|Position |Bottom of page, appears on all pages |
+|Content |To be determined from original assets|
 
 ——
 
@@ -69,13 +69,13 @@ Recreate the existing Lulu Tracy art portfolio website, preserving the original 
 
 #### Gallery Display
 
-|Requirement   |Description                                 |
+|Requirement |Description |
 |—————|———————————————|
-|Layout        |Single-column vertical scroll               |
-|Content       |Images only—no titles, descriptions, or text|
-|Image Behavior|Clickable; navigates to detail view         |
-|Spacing       |Consistent vertical rhythm between images   |
-|Responsive    |Images scale appropriately across devices   |
+|Layout |Single-column vertical scroll |
+|Content |Images only—no titles, descriptions, or text|
+|Image Behavior|Clickable; navigates to detail view |
+|Spacing |Consistent vertical rhythm between images |
+|Responsive |Images scale appropriately across devices |
 
 ——
 
@@ -83,36 +83,36 @@ Recreate the existing Lulu Tracy art portfolio website, preserving the original 
 
 #### Image Display
 
-|Requirement  |Description                         |
+|Requirement |Description |
 |-————|————————————|
-|Primary Image|Large, high-resolution display      |
-|Magnifier    |Hover-activated zoom functionality  |
-|Zoom Level   |TBD based on original implementation|
+|Primary Image|Large, high-resolution display |
+|Magnifier |Hover-activated zoom functionality |
+|Zoom Level |TBD based on original implementation|
 
 #### Metadata Panel
 
-|Field      |Description                           |
+|Field |Description |
 |————|—————————————|
-|Title      |Painting name                         |
-|Description|Artist’s description or context       |
+|Title |Painting name |
+|Description|Artist’s description or context |
 |Dimensions |Physical size (e.g., “24 × 36 inches”)|
-|Medium     |Materials used (e.g., “Oil on canvas”)|
+|Medium |Materials used (e.g., “Oil on canvas”)|
 
 #### Navigation
 
-|Requirement|Description                                       |
+|Requirement|Description |
 |————|—————————————————|
-|Back       |Return to gallery (via header logo or back button)|
+|Back |Return to gallery (via header logo or back button)|
 
 ——
 
 ### About Page
 
-|Requirement|Description                                |
+|Requirement|Description |
 |————|-——————————————|
-|Photo      |Artist photograph                          |
-|Biography  |Paragraph text about the artist            |
-|Layout     |Photo and text arrangement (match original)|
+|Photo |Artist photograph |
+|Biography |Paragraph text about the artist |
+|Layout |Photo and text arrangement (match original)|
 
 ——
 
@@ -185,4 +185,3 @@ Recreate the existing Lulu Tracy art portfolio website, preserving the original 
 
 - Original website screenshots (provided by client)
 - Asset images (provided by client)
- 

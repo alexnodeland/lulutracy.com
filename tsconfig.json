@@ -15,6 +15,7 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "@/*": ["src/*"],
@@ -23,6 +24,12 @@
       "@/types/*": ["src/types/*"]
     }
   },
-  "include": ["src/**/*", "gatsby-node.js", "gatsby-config.js"],
+  "include": [
+    "src/**/*",
+    "gatsby-node.js",
+    "gatsby-config.js",
+    "jest.setup.js",
+    "__mocks__/**/*"
+  ],
   "exclude": ["node_modules", "public", ".cache"]
 }

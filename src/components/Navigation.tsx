@@ -44,11 +44,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
       >
         <ul className={styles.navList}>
           <li>
-            <Link
-              to="/about"
-              className={styles.navLink}
-              onClick={onClose}
-            >
+            <Link to="/about" className={styles.navLink} onClick={onClose}>
               about
             </Link>
           </li>

@@ -37,7 +37,10 @@ const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
             className={styles.biography}
             dangerouslySetInnerHTML={{ __html: html }}
           />
-          <a href="mailto:contact@lulutracy.com" className={styles.contactButton}>
+          <a
+            href="mailto:contact@lulutracy.com"
+            className={styles.contactButton}
+          >
             Contact
           </a>
         </div>

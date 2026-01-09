@@ -8,14 +8,13 @@ Rebuild an existing art portfolio website for artist Lulu Tracy. The client has 
 
 ## Tech Stack Recommendations
 
-|Layer         |Suggested Options                                        |
+|Layer |Suggested Options |
 |—————|———————————————————|
-|Framework     |Next.js, Astro, or SvelteKit                             |
-|Styling       |Tailwind CSS or CSS Modules                              |
-|Image Handling|Next/Image, sharp, or similar optimization               |
-|Magnifier     |react-image-magnify, drift-zoom, or custom implementation|
-|Deployment    |Vercel, Netlify, or similar static hosting               |
-
+|Framework |Next.js, Astro, or SvelteKit |
+|Styling |Tailwind CSS or CSS Modules |
+|Image Handling|Next/Image, sharp, or similar optimization |
+|Magnifier |react-image-magnify, drift-zoom, or custom implementation|
+|Deployment |Vercel, Netlify, or similar static hosting |
 
 > **Note:** Final tech decisions should align with client preferences and maintainability requirements.
 
@@ -181,18 +180,18 @@ Rebuild an existing art portfolio website for artist Lulu Tracy. The client has 
 
 ```typescript
 interface Painting {
-  id: string;
-  title: string;
-  description: string;
-  dimensions: string;
-  medium: string;
+  id: string
+  title: string
+  description: string
+  dimensions: string
+  medium: string
   image: {
-    thumbnail: string;   // For gallery (optimized)
-    full: string;        // For detail view
-    highRes: string;     // For magnifier
-  };
-  alt: string;
-  order: number;         // Display order in gallery
+    thumbnail: string // For gallery (optimized)
+    full: string // For detail view
+    highRes: string // For magnifier
+  }
+  alt: string
+  order: number // Display order in gallery
 }
 ```
 
@@ -227,11 +226,11 @@ onMouseMove(e) {
 
 ### Responsive Breakpoints
 
-|Breakpoint         |Consideration                    |
+|Breakpoint |Consideration |
 |-——————|———————————|
-|Mobile (<768px)    |Full-width images, stacked layout|
-|Tablet (768-1024px)|Padded images, adjusted spacing  |
-|Desktop (>1024px)  |Match original desktop layout    |
+|Mobile (<768px) |Full-width images, stacked layout|
+|Tablet (768-1024px)|Padded images, adjusted spacing |
+|Desktop (>1024px) |Match original desktop layout |
 
 ### Navigation State Management
 
@@ -302,4 +301,3 @@ onMouseMove(e) {
 - [ ] Complete painting metadata (spreadsheet or document)
 - [ ] Any custom fonts used
 - [ ] Footer content/links
- 

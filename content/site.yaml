@@ -6,7 +6,7 @@ site:
   description: Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics
   author: Lulu Tracy
   url: https://alexnodeland.github.io/lulutracy.com
-  copyright: "Copyright {year} lulutracy. All rights reserved."
+  copyright: 'Copyright {year} lulutracy. All rights reserved.'
 
 navigation:
   - label: about

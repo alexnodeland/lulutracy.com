@@ -1,0 +1,7 @@
+node_modules/
+public/
+.cache/
+coverage/
+package-lock.json
+*.min.js
+*.min.css

@@ -6,10 +6,10 @@ paintings:
   - id: symbiosis
     title: Symbiosis
     description: An exploration of organic forms and vibrant colors representing the interconnectedness of nature.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2020"
+    year: '2020'
     image: IMG_3423.jpeg
     alt: Abstract painting with blue, red, yellow and purple organic forms
     order: 1
@@ -17,10 +17,10 @@ paintings:
   - id: forest-canopy
     title: Forest Canopy
     description: A lush view of tree branches and green foliage capturing the essence of nature's beauty.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2021"
+    year: '2021'
     image: IMG_3424.jpeg
     alt: Painting of dense green forest canopy with intertwining branches
     order: 2
@@ -28,10 +28,10 @@ paintings:
   - id: clover-field
     title: Clover Field
     description: A detailed study of clovers, capturing the delicate beauty of these common yet overlooked plants.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2021"
+    year: '2021'
     image: IMG_3425.jpeg
     alt: Painting of green clovers densely packed together
     order: 3
@@ -39,10 +39,10 @@ paintings:
   - id: mimosa-flowers
     title: Mimosa Flowers
     description: Pink mimosa flowers among green ferns, representing the gentle beauty of nature.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2021"
+    year: '2021'
     image: IMG_3426.jpeg
     alt: Painting of pink mimosa flowers with green fern leaves
     order: 4
@@ -50,10 +50,10 @@ paintings:
   - id: tropical-scene
     title: Tropical Scene
     description: A vibrant tropical landscape with rich greens and natural elements.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2022"
+    year: '2022'
     image: IMG_3427.jpeg
     alt: Tropical landscape painting with lush vegetation
     order: 5
@@ -61,10 +61,10 @@ paintings:
   - id: koi-pond
     title: Koi Pond
     description: Colorful koi fish swimming in a tranquil pond, representing harmony and beauty.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Watercolor on paper
-    year: "2022"
+    year: '2022'
     image: IMG_3428.jpeg
     alt: Painting of colorful koi fish in water
     order: 6
@@ -72,10 +72,10 @@ paintings:
   - id: ripe-bananas
     title: Ripe Bananas
     description: A study of ripe bananas, capturing the beauty in everyday objects.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Watercolor on paper
-    year: "2023"
+    year: '2023'
     image: IMG_3429.jpeg
     alt: Watercolor painting of ripe yellow bananas with brown spots
     order: 7
@@ -83,10 +83,10 @@ paintings:
   - id: nature-study-1
     title: Nature Study I
     description: An intimate study of natural forms and textures.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2023"
+    year: '2023'
     image: IMG_3430.jpeg
     alt: Nature study painting with organic forms
     order: 8
@@ -94,10 +94,10 @@ paintings:
   - id: nature-study-2
     title: Nature Study II
     description: Continued exploration of natural beauty and organic patterns.
-    dimensions: "45.5 x 35.5cm"
-    canvasSize: "45.5 x 35.5 cm"
+    dimensions: '45.5 x 35.5cm'
+    canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
-    year: "2024"
+    year: '2024'
     image: IMG_3431.jpeg
     alt: Nature study painting exploring organic patterns
     order: 9

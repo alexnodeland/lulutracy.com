@@ -63,4 +63,3 @@ export interface AboutMarkdownNode {
   }
   html: string
 }
-

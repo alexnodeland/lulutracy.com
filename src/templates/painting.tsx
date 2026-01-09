@@ -19,10 +19,9 @@ interface PaintingPageData {
   } | null
 }
 
-const PaintingTemplate: React.FC<PageProps<PaintingPageData, PaintingPageContext>> = ({
-  data,
-  pageContext,
-}) => {
+const PaintingTemplate: React.FC<
+  PageProps<PaintingPageData, PaintingPageContext>
+> = ({ data, pageContext }) => {
   const { painting } = pageContext
   const imageData = data.file?.childImageSharp
     ? getImage(data.file.childImageSharp.gatsbyImageData)
@@ -61,7 +60,9 @@ const PaintingTemplate: React.FC<PageProps<PaintingPageData, PaintingPageContext
 
 export default PaintingTemplate
 
-export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({ pageContext }) => {
+export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
+  pageContext,
+}) => {
   const { painting } = pageContext
   return (
     <>

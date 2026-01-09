@@ -9,7 +9,7 @@ const NotFoundPage: React.FC = () => {
       <div className={styles.container}>
         <h1 className={styles.title}>Page Not Found</h1>
         <p className={styles.message}>
-          The page you're looking for doesn't exist.
+          The page you&apos;re looking for doesn&apos;t exist.
         </p>
         <Link to="/" className={styles.link}>
           Return to Gallery

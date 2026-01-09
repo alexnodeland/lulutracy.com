@@ -8,7 +8,9 @@
   z-index: var(--z-overlay);
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-base), visibility var(--transition-base);
+  transition:
+    opacity var(--transition-base),
+    visibility var(--transition-base);
 }
 
 .overlayOpen {
@@ -26,7 +28,10 @@
   transform: translateY(-10px);
   opacity: 0;
   visibility: hidden;
-  transition: transform var(--transition-base), opacity var(--transition-base), visibility var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    opacity var(--transition-base),
+    visibility var(--transition-base);
   border-bottom: 1px solid var(--color-border);
 }
 
