@@ -98,8 +98,12 @@ const PaintingTemplate: React.FC<
           <span className={styles.category}>PAINTING</span>
           <h1 className={styles.title}>{painting.title}</h1>
           <p className={styles.info}>
-            Size: {painting.dimensions} | Canvas Size: {painting.canvasSize} |{' '}
-            Medium: {painting.medium}
+            Size: {painting.dimensions} |{' '}
+            {painting.substrate.charAt(0).toUpperCase() +
+              painting.substrate.slice(1)}{' '}
+            Size: {painting.substrateSize} | Medium:{' '}
+            {painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)}{' '}
+            on {painting.substrate}
           </p>
           <p className={styles.year}>{painting.year}</p>
         </div>
@@ -131,7 +135,7 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     description: painting.description,
     image: ogImage,
     dateCreated: painting.year,
-    artMedium: painting.medium,
+    artMedium: `${painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)} on ${painting.substrate}`,
     width: painting.dimensions,
     creator: {
       '@type': 'Person',

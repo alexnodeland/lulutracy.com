@@ -135,7 +135,8 @@ export const query = graphql`
           title
           description
           dimensions
-          canvasSize
+          substrate
+          substrateSize
           medium
           year
           image

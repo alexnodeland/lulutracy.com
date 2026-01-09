@@ -4,7 +4,8 @@ export interface Painting {
   title: string
   description: string
   dimensions: string
-  canvasSize: string
+  substrate: string
+  substrateSize: string
   medium: string
   year: string
   image: string

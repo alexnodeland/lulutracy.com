@@ -14,7 +14,8 @@ exports.createPages = async ({ graphql, actions }) => {
             title
             description
             dimensions
-            canvasSize
+            substrate
+            substrateSize
             medium
             year
             image
