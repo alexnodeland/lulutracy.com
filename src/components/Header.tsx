@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({
             className={styles.logoImage}
             placeholder="none"
             layout="fixed"
-            height={40}
+            height={50}
             loading="eager"
           />
         </Link>

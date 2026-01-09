@@ -42,7 +42,7 @@
   /* Layout */
   --max-width-content: 800px;
   --max-width-gallery: 900px;
-  --header-height: 70px;
+  --header-height: 120px;
 
   /* Breakpoints (for reference - use in media queries as raw values) */
   --breakpoint-desktop: 768px;
