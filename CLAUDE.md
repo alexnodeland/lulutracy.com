@@ -273,3 +273,78 @@ Pages for individual paintings are created in `gatsby-node.js` using the paintin
 - `src/pages/` - Page layouts
 - `src/styles/global.css` - Global styling
 - `content/about.md` - About page content
+
+## Claude Code Automation
+
+This project includes comprehensive Claude Code automation:
+
+### Skills (Knowledge Templates)
+
+Located in `.claude/skills/`:
+
+| Skill | Purpose |
+|-------|---------|
+| `gatsby-content` | Add paintings, edit about page, site config |
+| `component-generator` | Scaffold React components with CSS Modules |
+| `test-writer` | Write Jest tests with project patterns |
+| `lighthouse-fix` | Fix performance and accessibility issues |
+| `graphql-query` | Write and debug Gatsby GraphQL queries |
+
+### Agents (Independent Workers)
+
+Located in `.claude/agents/`:
+
+| Agent | Purpose | Invoke with |
+|-------|---------|-------------|
+| `pr-reviewer` | Code review and quality checks | `@pr-reviewer` |
+| `accessibility-audit` | Deep a11y analysis | `@accessibility-audit` |
+| `gatsby-debug` | Troubleshoot Gatsby issues | `@gatsby-debug` |
+| `deploy-check` | Pre-deployment verification | `@deploy-check` |
+| `refactor-guide` | Safe refactoring guidance | `@refactor-guide` |
+
+### Hooks (Automated Actions)
+
+Configured in `.claude/settings.json`:
+
+| Hook | Event | Action |
+|------|-------|--------|
+| `session-start.sh` | SessionStart | Load git status, environment info, TODOs |
+| `stop-validate.sh` | Stop | Run typecheck, lint, format checks |
+| `post-write-format.sh` | PostToolUse (Write/Edit) | Auto-format changed files |
+| `pre-bash-safety.sh` | PreToolUse (Bash) | Block dangerous commands |
+| `post-bash-build.sh` | PostToolUse (Bash) | Verify build after changes |
+
+## Environment Requirements
+
+### Local Development
+
+- Node.js 18+ required
+- Run `npm install` before development
+- All make commands work after dependency installation
+
+### Restricted Environments (Claude Code Web)
+
+Some environments have network restrictions that prevent `sharp` from installing:
+
+```
+sharp: Installation error: tunneling socket could not be established
+```
+
+**Workarounds**:
+
+- TypeScript checking works: `make typecheck`
+- Linting works: `make lint`
+- Format checking works: `make format-check`
+- **Build fails**: Requires `sharp` - use CI/CD for build verification
+- **Tests may fail**: Some tests depend on image processing
+
+**Hooks handle this gracefully** - they skip operations when dependencies aren't available.
+
+### Full Validation
+
+For complete validation including build, use CI/CD pipeline or a local environment with full network access:
+
+```bash
+npm ci          # Clean install
+make ci         # Full CI pipeline
+```
