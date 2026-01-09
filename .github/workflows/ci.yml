@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Cache node_modules directly - much faster than npm cache alone
       # npm ci with warm cache: ~25s, cached node_modules restore: ~5s
@@ -109,7 +109,7 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
