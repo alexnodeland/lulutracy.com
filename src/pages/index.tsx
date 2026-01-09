@@ -90,7 +90,7 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
 
   return (
     <>
-      <title>Lulu Tracy | Art Portfolio</title>
+      <title>lulutracy | art & design</title>
       <meta name="description" content={description} />
 
       {/* Open Graph meta tags */}

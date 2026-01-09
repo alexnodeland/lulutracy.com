@@ -59,7 +59,7 @@ export const Head: HeadFC = () => {
 
   return (
     <>
-      <title>About | Lulu Tracy</title>
+      <title>about | lulutracy</title>
       <meta name="description" content={description} />
 
       {/* Open Graph meta tags */}

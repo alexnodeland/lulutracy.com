@@ -132,7 +132,7 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 
   return (
     <>
-      <title>{painting.title} | Lulu Tracy</title>
+      <title>{painting.title} | lulutracy</title>
       <meta name="description" content={painting.description} />
 
       {/* Open Graph meta tags */}
