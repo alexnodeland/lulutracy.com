@@ -46,6 +46,11 @@ const PaintingTemplate: React.FC<
   const displayUrl = displayImageData ? getSrc(displayImageData) : undefined
   const zoomUrl = zoomImageData ? getSrc(zoomImageData) : displayUrl
 
+  // Detect image orientation from gatsbyImageData
+  const imgWidth = displayImageData?.width || 0
+  const imgHeight = displayImageData?.height || 0
+  const isPortrait = imgHeight > imgWidth
+
   // Check if we have valid URLs for the magnifier (and no previous error)
   const canUseMagnifier = displayUrl && zoomUrl && !magnifierError
 
@@ -62,7 +67,7 @@ const PaintingTemplate: React.FC<
               src={displayUrl}
               zoomSrc={zoomUrl}
               alt={painting.alt}
-              className={styles.magnifierContainer}
+              className={`${styles.magnifierContainer} ${isPortrait ? styles.portrait : styles.landscape}`}
               zoomFactor={2.5}
               enableTouch={true}
               onError={handleMagnifierError}
@@ -71,7 +76,7 @@ const PaintingTemplate: React.FC<
             <GatsbyImage
               image={imageData}
               alt={painting.alt}
-              className={styles.image}
+              className={`${styles.image} ${isPortrait ? styles.portrait : styles.landscape}`}
             />
           ) : (
             <div className={styles.placeholder}>

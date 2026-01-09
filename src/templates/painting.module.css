@@ -6,24 +6,25 @@
 
 .imageContainer {
   margin-bottom: var(--spacing-xl);
+  display: flex;
+  justify-content: center;
 }
 
-.image {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
+.image,
 .magnifierContainer {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+}
+
+.portrait {
+  max-width: 600px;
+}
+
+.landscape {
+  max-width: 800px;
 }
 
 .placeholder {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
   aspect-ratio: 4 / 3;
   background-color: var(--color-border);
   display: flex;
