@@ -10,7 +10,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2020'
-    image: IMG_3423.jpeg
+    image: symbiosis.jpeg
     alt: Abstract painting with blue, red, yellow and purple organic forms
     order: 1
 
@@ -21,7 +21,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2021'
-    image: IMG_3424.jpeg
+    image: forest-canopy.jpeg
     alt: Painting of dense green forest canopy with intertwining branches
     order: 2
 
@@ -32,7 +32,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2021'
-    image: IMG_3425.jpeg
+    image: clover-field.jpeg
     alt: Painting of green clovers densely packed together
     order: 3
 
@@ -43,7 +43,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2021'
-    image: IMG_3426.jpeg
+    image: mimosa-flowers.jpeg
     alt: Painting of pink mimosa flowers with green fern leaves
     order: 4
 
@@ -54,7 +54,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2022'
-    image: IMG_3427.jpeg
+    image: tropical-scene.jpeg
     alt: Tropical landscape painting with lush vegetation
     order: 5
 
@@ -65,7 +65,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Watercolor on paper
     year: '2022'
-    image: IMG_3428.jpeg
+    image: koi-pond.jpeg
     alt: Painting of colorful koi fish in water
     order: 6
 
@@ -76,7 +76,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Watercolor on paper
     year: '2023'
-    image: IMG_3429.jpeg
+    image: ripe-bananas.jpeg
     alt: Watercolor painting of ripe yellow bananas with brown spots
     order: 7
 
@@ -87,7 +87,7 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2023'
-    image: IMG_3430.jpeg
+    image: nature-study-1.jpeg
     alt: Nature study painting with organic forms
     order: 8
 
@@ -98,6 +98,6 @@ paintings:
     canvasSize: '45.5 x 35.5 cm'
     medium: Acrylic on canvas
     year: '2024'
-    image: IMG_3431.jpeg
+    image: nature-study-2.jpeg
     alt: Nature study painting exploring organic patterns
     order: 9

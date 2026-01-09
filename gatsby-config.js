@@ -10,6 +10,7 @@ module.exports = {
   },
   pathPrefix: `/lulutracy.com`,
   plugins: [
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
