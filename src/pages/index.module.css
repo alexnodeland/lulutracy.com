@@ -1,7 +1,7 @@
 .gallery {
   max-width: var(--max-width-gallery);
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-lg);

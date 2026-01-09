@@ -1,7 +1,7 @@
 .about {
   max-width: var(--max-width-content);
   margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-lg);
+  padding: var(--spacing-2xl) var(--spacing-xl);
 }
 
 .photoContainer {
