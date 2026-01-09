@@ -16,6 +16,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
             placeholder="none"
             layout="fixed"
             height={40}
+            loading="eager"
           />
         </Link>
         <button

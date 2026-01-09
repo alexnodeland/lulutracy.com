@@ -73,7 +73,11 @@ jobs:
           files: ./coverage/lcov.info
           fail_ci_if_error: false
 
-      # Cache Gatsby build artifacts for faster incremental builds
+      # Cache Gatsby build artifacts - exact match only (no restore-keys fallback)
+      # This ensures fresh builds when any source changes, while still benefiting
+      # from cache hits on rebuild/retry scenarios
+      # Note: restore-keys intentionally omitted - Gatsby's cache invalidation
+      # doesn't track GraphQL query changes, causing stale image issues
       - name: Cache Gatsby
         uses: actions/cache@v4
         with:
@@ -81,18 +85,13 @@ jobs:
             .cache
             public
           key: gatsby-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('gatsby-config.js', 'gatsby-node.js') }}-${{ hashFiles('content/**') }}-${{ hashFiles('src/**') }}
-          restore-keys: |
-            gatsby-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('gatsby-config.js', 'gatsby-node.js') }}-${{ hashFiles('content/**') }}-
-            gatsby-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('gatsby-config.js', 'gatsby-node.js') }}-
-            gatsby-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
-            gatsby-${{ runner.os }}-
+          # No restore-keys - exact match only for correctness
 
       - name: Build
         run: npm run build
         env:
           GATSBY_CPU_COUNT: 4
           NODE_OPTIONS: '--max-old-space-size=4096'
-          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: 'true'
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v6

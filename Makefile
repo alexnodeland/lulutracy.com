@@ -2,7 +2,7 @@
 # Provides common commands for development, testing, and CI
 
 .PHONY: help install dev build build-prod serve serve-prod clean test test-watch test-coverage \
-        lint lint-fix format format-check typecheck validate ci ci-fast \
+        lint lint-fix format format-check typecheck validate ci ci-fast lighthouse \
         prepare hooks-install
 
 # Default target
@@ -139,6 +139,14 @@ ci-fast: ## Run fast CI checks (no build) - good for pre-push
 	npm run format:check && \
 	npm run test -- --ci && \
 	echo "$(GREEN)✓ All fast checks passed$(RESET)"
+
+lighthouse: ## Run Lighthouse CI audit (requires build first)
+	@if [ ! -d "public" ]; then \
+		echo "$(RED)No build found. Run 'make build' first.$(RESET)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Running Lighthouse CI audit...$(RESET)"
+	npx lhci autorun --config=lighthouserc.js
 
 #------------------------------------------------------------------------------
 # Utilities
