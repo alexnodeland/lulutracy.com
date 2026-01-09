@@ -6,11 +6,13 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/plans/**'
+      - '.claude/**'
       - 'LICENSE'
   pull_request:
     paths-ignore:
       - '**.md'
       - '.github/plans/**'
+      - '.claude/**'
       - 'LICENSE'
   workflow_dispatch:
 

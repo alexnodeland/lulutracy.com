@@ -1,0 +1,113 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Write(src/**)",
+      "Write(content/**)",
+      "Write(.claude/**)",
+      "Edit(src/**)",
+      "Edit(content/**)",
+      "Edit(.claude/**)",
+      "Bash(npm run *)",
+      "Bash(npm test *)",
+      "Bash(npm install)",
+      "Bash(npm ci)",
+      "Bash(npx *)",
+      "Bash(make *)",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(node *)"
+    ],
+    "deny": [
+      "Write(node_modules/**)",
+      "Write(.git/**)",
+      "Write(package-lock.json)",
+      "Edit(node_modules/**)",
+      "Edit(.git/**)",
+      "Bash(rm -rf /)*",
+      "Bash(rm -rf ~)*",
+      "Bash(sudo *)",
+      "Bash(chmod -R 777 *)",
+      "Bash(npm publish)*",
+      "Bash(git push --force origin main)*",
+      "Bash(git push -f origin main)*"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/stop-validate.sh",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-bash-safety.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-write-format.sh",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-write-format.sh",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-bash-build.sh",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
+  }
+}
