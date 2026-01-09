@@ -9,7 +9,7 @@
 }
 
 .imageWrapper {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 9 / 8;
   overflow: hidden;
   background-color: var(--color-border);
 }
