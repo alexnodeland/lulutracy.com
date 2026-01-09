@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/session-start.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh",
             "timeout": 30
           }
         ]
@@ -59,7 +59,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/stop-validate.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop-validate.sh",
             "timeout": 120
           }
         ]
@@ -71,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-bash-safety.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-bash-safety.sh",
             "timeout": 5
           }
         ]
@@ -83,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-write-format.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-write-format.sh",
             "timeout": 30
           }
         ]
@@ -93,7 +93,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-write-format.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-write-format.sh",
             "timeout": 30
           }
         ]
@@ -103,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-bash-build.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-bash-build.sh",
             "timeout": 180
           }
         ]
