@@ -1,25 +1,17 @@
 import React from 'react'
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import GlassMagnifier from '../GlassMagnifier'
-import Drift from 'drift-zoom'
 
-// Store onShow and onHide callbacks to call them in tests
-let capturedOnShow: (() => void) | null = null
-let capturedOnHide: (() => void) | null = null
+// Mock drift-zoom before importing anything that uses it
+jest.mock('drift-zoom')
+
+// Get the mocked module
+const MockedDrift = jest.requireMock('drift-zoom').default as jest.Mock
+
 let mockDestroyFn: jest.Mock = jest.fn()
 
 // Default mock implementation
-const createMockDrift = (
-  _el: unknown,
-  options?: { onShow?: () => void; onHide?: () => void }
-) => {
-  capturedOnShow = options?.onShow || null
-  capturedOnHide = options?.onHide || null
+const createMockDrift = () => {
   return {
     disable: jest.fn(),
     enable: jest.fn(),
@@ -27,16 +19,6 @@ const createMockDrift = (
     destroy: mockDestroyFn,
   }
 }
-
-// Mock drift-zoom
-jest.mock('drift-zoom', () => {
-  return {
-    __esModule: true,
-    default: jest.fn(),
-  }
-})
-
-const MockedDrift = jest.mocked(Drift)
 
 // Mock window.matchMedia
 const mockMatchMedia = (matches: boolean) => {
@@ -58,10 +40,8 @@ const mockMatchMedia = (matches: boolean) => {
 describe('GlassMagnifier', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    capturedOnShow = null
-    capturedOnHide = null
     mockDestroyFn = jest.fn()
-    MockedDrift.mockImplementation(createMockDrift as unknown as typeof Drift)
+    MockedDrift.mockImplementation(createMockDrift)
     mockMatchMedia(false) // Default to desktop
   })
 
@@ -349,7 +329,9 @@ describe('GlassMagnifier', () => {
 
     it('has aria-hidden on zoom indicator', () => {
       render(<GlassMagnifier {...defaultProps} />)
-      const indicator = screen.getByTestId('glass-magnifier').querySelector('div > svg')?.parentElement
+      const indicator = screen
+        .getByTestId('glass-magnifier')
+        .querySelector('div > svg')?.parentElement
       expect(indicator).toHaveAttribute('aria-hidden', 'true')
     })
 

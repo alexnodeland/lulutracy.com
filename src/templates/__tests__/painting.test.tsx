@@ -4,17 +4,7 @@ import PaintingTemplate, { Head } from '../painting'
 import type { Painting } from '../../types'
 
 // Mock drift-zoom
-jest.mock('drift-zoom', () => {
-  return {
-    __esModule: true,
-    default: jest.fn().mockImplementation(() => ({
-      disable: jest.fn(),
-      enable: jest.fn(),
-      setZoomImageURL: jest.fn(),
-      destroy: jest.fn(),
-    })),
-  }
-})
+jest.mock('drift-zoom')
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

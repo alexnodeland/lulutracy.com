@@ -102,23 +102,22 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
   }, [isLoaded, isMobile, initDrift])
 
   // Handle keyboard activation for accessibility
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault()
-        setShowHint((prev) => !prev)
-      }
-    },
-    []
-  )
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      setShowHint((prev) => !prev)
+    }
+  }, [])
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Intentional keyboard interaction for a11y
     <div
       ref={containerRef}
       className={`${styles.container} ${className}`.trim()}
       data-testid="glass-magnifier"
       role="group"
       aria-label={`Zoomable image: ${alt}. ${isMobile ? 'Tap and hold' : 'Hover'} to zoom.`}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Needed for keyboard focus
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
