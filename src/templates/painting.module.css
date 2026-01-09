@@ -14,6 +14,12 @@
   margin: 0 auto;
 }
 
+.magnifierContainer {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 .placeholder {
   width: 100%;
   max-width: 500px;

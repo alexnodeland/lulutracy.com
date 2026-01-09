@@ -3,6 +3,34 @@ import { render, screen } from '@testing-library/react'
 import PaintingTemplate from '../painting'
 import type { Painting } from '../../types'
 
+// Mock drift-zoom
+jest.mock('drift-zoom', () => {
+  return {
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+      disable: jest.fn(),
+      enable: jest.fn(),
+      setZoomImageURL: jest.fn(),
+      destroy: jest.fn(),
+    })),
+  }
+})
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+})
+
 const mockPainting: Painting = {
   id: 'test-painting',
   title: 'Test Painting Title',
@@ -27,13 +55,29 @@ const mockDataWithImage = {
     childImageSharp: {
       gatsbyImageData: {
         layout: 'constrained' as const,
-        width: 1200,
-        height: 900,
+        width: 800,
+        height: 600,
         images: {
           fallback: {
             src: '/test.jpg',
-            srcSet: '/test.jpg 1200w',
-            sizes: '(min-width: 1200px) 1200px, 100vw',
+            srcSet: '/test.jpg 800w',
+            sizes: '(min-width: 800px) 800px, 100vw',
+          },
+        },
+      },
+    },
+  },
+  zoomFile: {
+    childImageSharp: {
+      gatsbyImageData: {
+        layout: 'constrained' as const,
+        width: 2400,
+        height: 1800,
+        images: {
+          fallback: {
+            src: '/test-zoom.jpg',
+            srcSet: '/test-zoom.jpg 2400w',
+            sizes: '(min-width: 2400px) 2400px, 100vw',
           },
         },
       },
@@ -43,6 +87,27 @@ const mockDataWithImage = {
 
 const mockDataWithoutImage = {
   file: null,
+  zoomFile: null,
+}
+
+const mockDataWithImageButNoZoom = {
+  file: {
+    childImageSharp: {
+      gatsbyImageData: {
+        layout: 'constrained' as const,
+        width: 800,
+        height: 600,
+        images: {
+          fallback: {
+            src: '/test.jpg',
+            srcSet: '/test.jpg 800w',
+            sizes: '(min-width: 800px) 800px, 100vw',
+          },
+        },
+      },
+    },
+  },
+  zoomFile: null,
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
@@ -89,14 +154,29 @@ describe('PaintingTemplate', () => {
     expect(screen.getByText(/image not available/i)).toBeInTheDocument()
   })
 
-  it('renders the painting image when available', () => {
+  it('renders the GlassMagnifier when image is available', () => {
     renderPaintingTemplate()
-    const images = screen.getAllByRole('img')
-    // Should have multiple images (logo + painting)
-    expect(images.length).toBeGreaterThanOrEqual(2)
-    // Check that painting image with specific alt text exists
+    expect(screen.getByTestId('glass-magnifier')).toBeInTheDocument()
+  })
+
+  it('renders the painting image with correct alt text', () => {
+    renderPaintingTemplate()
     expect(
       screen.getByRole('img', { name: /test painting alt text/i })
     ).toBeInTheDocument()
+  })
+
+  it('renders with zoom image when available', () => {
+    renderPaintingTemplate()
+    const img = screen.getByRole('img', { name: /test painting alt text/i })
+    expect(img).toHaveAttribute('data-zoom', '/test-zoom.jpg')
+  })
+
+  it('falls back to display image when zoom image is not available', () => {
+    renderPaintingTemplate(mockDataWithImageButNoZoom as any)
+    const img = screen.getByRole('img', { name: /test painting alt text/i })
+    // Should use the same image for both src and data-zoom
+    expect(img).toHaveAttribute('src', '/test.jpg')
+    expect(img).toHaveAttribute('data-zoom', '/test.jpg')
   })
 })
