@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image'
 import type { Painting } from '../types'
-import styles from './GalleryImage.module.css'
+import * as styles from './GalleryImage.module.css'
 
 interface GalleryImageProps {
   painting: Painting

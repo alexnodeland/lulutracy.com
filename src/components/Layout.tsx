@@ -4,7 +4,7 @@ import Navigation from './Navigation'
 import Footer from './Footer'
 import type { LayoutProps } from '../types'
 import '../styles/global.css'
-import styles from './Layout.module.css'
+import * as styles from './Layout.module.css'
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

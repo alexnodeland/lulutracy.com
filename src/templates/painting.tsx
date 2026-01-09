@@ -3,7 +3,7 @@ import { graphql, PageProps, HeadFC } from 'gatsby'
 import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
 import type { Painting } from '../types'
-import styles from './painting.module.css'
+import * as styles from './painting.module.css'
 
 interface PaintingPageContext {
   id: string

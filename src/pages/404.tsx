@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, HeadFC } from 'gatsby'
 import Layout from '../components/Layout'
-import styles from './404.module.css'
+import * as styles from './404.module.css'
 
 const NotFoundPage: React.FC = () => {
   return (

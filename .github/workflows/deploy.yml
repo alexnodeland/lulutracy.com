@@ -116,6 +116,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Rebuild sharp for linux
+        run: npm rebuild sharp
+
       - name: Build with Gatsby
         run: npm run build
         env:

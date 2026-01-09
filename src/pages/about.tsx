@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql, PageProps, HeadFC } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
-import styles from './about.module.css'
+import * as styles from './about.module.css'
 
 interface AboutPageData {
   markdownRemark: {

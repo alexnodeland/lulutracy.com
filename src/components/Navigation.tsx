@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'gatsby'
 import type { NavigationProps } from '../types'
-import styles from './Navigation.module.css'
+import * as styles from './Navigation.module.css'
 
 const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
   // Handle escape key

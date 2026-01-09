@@ -4,7 +4,7 @@ import { IGatsbyImageData } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
 import GalleryImage from '../components/GalleryImage'
 import type { Painting } from '../types'
-import styles from './index.module.css'
+import * as styles from './index.module.css'
 
 interface IndexPageData {
   allPaintingsYaml: {

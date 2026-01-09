@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
 import type { HeaderProps } from '../types'
-import styles from './Header.module.css'
+import * as styles from './Header.module.css'
 
 const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   return (
