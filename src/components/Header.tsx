@@ -18,10 +18,15 @@ const Header: React.FC<HeaderProps> = ({
             className={styles.logoImage}
             placeholder="none"
             layout="fixed"
-            height={40}
+            height={50}
             loading="eager"
           />
         </Link>
+        <nav className={styles.desktopNav} aria-label="Main navigation">
+          <Link to="/about" className={styles.desktopNavLink}>
+            about
+          </Link>
+        </nav>
         <button
           className={styles.menuButton}
           onClick={onMenuToggle}

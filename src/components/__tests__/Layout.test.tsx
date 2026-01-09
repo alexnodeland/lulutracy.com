@@ -52,7 +52,8 @@ describe('Layout', () => {
     })
     fireEvent.click(menuButton)
 
-    // Navigation should be visible
-    expect(screen.getByRole('navigation')).toBeInTheDocument()
+    // Both navigations should be visible (desktop nav in header + mobile nav panel)
+    const navElements = screen.getAllByRole('navigation')
+    expect(navElements.length).toBe(2)
   })
 })

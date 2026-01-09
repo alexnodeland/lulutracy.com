@@ -18,17 +18,20 @@ const GalleryImage: React.FC<GalleryImageProps> = ({ painting, image }) => {
       className={styles.galleryItem}
       aria-label={`View ${painting.title}`}
     >
-      {imageData ? (
-        <GatsbyImage
-          image={imageData}
-          alt={painting.alt}
-          className={styles.image}
-        />
-      ) : (
-        <div className={styles.placeholder}>
-          <span>{painting.title}</span>
-        </div>
-      )}
+      <div className={styles.imageWrapper}>
+        {imageData ? (
+          <GatsbyImage
+            image={imageData}
+            alt={painting.alt}
+            className={styles.image}
+            loading="lazy"
+          />
+        ) : (
+          <div className={styles.placeholder}>
+            <span>{painting.title}</span>
+          </div>
+        )}
+      </div>
     </Link>
   )
 }

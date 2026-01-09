@@ -4,12 +4,26 @@ import { IGatsbyImageData } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
 import GalleryImage from '../components/GalleryImage'
 import type { Painting } from '../types'
+import { generateSlug, generateImageFilename } from '../utils/slug'
 import * as styles from './index.module.css'
+
+// Raw painting data from YAML (without derived fields)
+interface RawPainting {
+  title: string
+  description: string
+  dimensions: string
+  substrate: string
+  substrateSize: string
+  medium: string
+  year: string
+  alt: string
+  order: number
+}
 
 interface IndexPageData {
   allPaintingsYaml: {
     nodes: Array<{
-      paintings: Painting[]
+      paintings: RawPainting[]
     }>
   }
   allFile: {
@@ -20,12 +34,29 @@ interface IndexPageData {
       }
     }>
   }
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+        tagline: string
+        description: string
+        url: string
+      }
+    }>
+  }
 }
 
 const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
   const paintingsData = data.allPaintingsYaml.nodes[0]
-  const paintings = paintingsData?.paintings || []
+  const rawPaintings = paintingsData?.paintings || []
   const imageNodes = data.allFile.nodes
+
+  // Enrich paintings with derived id and image fields
+  const paintings: Painting[] = rawPaintings.map((raw) => ({
+    ...raw,
+    id: generateSlug(raw.title),
+    image: generateImageFilename(raw.title),
+  }))
 
   // Sort paintings by order
   const sortedPaintings = [...paintings].sort((a, b) => a.order - b.order)
@@ -61,45 +92,43 @@ const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
 
 export default IndexPage
 
-const SITE_URL = 'https://alexnodeland.github.io/lulutracy.com'
-
 export const Head: HeadFC<IndexPageData> = ({ data }) => {
-  const description =
-    'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics'
+  const { site } = data.allSiteYaml.nodes[0]
+  const siteUrl = site.url
 
   // Get first painting image for OG image
   const paintingsData = data.allPaintingsYaml.nodes[0]
-  const paintings = paintingsData?.paintings || []
-  const sortedPaintings = [...paintings].sort((a, b) => a.order - b.order)
+  const rawPaintings = paintingsData?.paintings || []
+  const sortedPaintings = [...rawPaintings].sort((a, b) => a.order - b.order)
   const firstPainting = sortedPaintings[0]
   const imageNodes = data.allFile.nodes
-  const imageName = firstPainting?.image.replace(/\.[^/.]+$/, '')
+  const imageName = firstPainting ? generateSlug(firstPainting.title) : ''
   const imageNode = imageNodes.find((node) => node.name === imageName)
   const ogImage = imageNode?.childImageSharp?.gatsbyImageData?.images?.fallback
     ?.src
-    ? `${SITE_URL}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
-    : `${SITE_URL}/icon.png`
+    ? `${siteUrl}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
+    : `${siteUrl}/icon.png`
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Lulu Tracy Art Portfolio',
-    description,
-    url: SITE_URL,
+    name: `${site.name} | ${site.tagline}`,
+    description: site.description,
+    url: siteUrl,
   }
 
   return (
     <>
-      <title>Lulu Tracy | Art Portfolio</title>
-      <meta name="description" content={description} />
+      <title>{`${site.name} | ${site.tagline}`}</title>
+      <meta name="description" content={site.description} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content="Lulu Tracy | Art Portfolio" />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={SITE_URL} />
+      <meta property="og:title" content={`${site.name} | ${site.tagline}`} />
+      <meta property="og:description" content={site.description} />
+      <meta property="og:url" content={siteUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Lulu Tracy" />
+      <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
 
       {/* JSON-LD structured data */}
@@ -110,17 +139,26 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
 
 export const query = graphql`
   query IndexPage {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+          tagline
+          description
+          url
+        }
+      }
+    }
     allPaintingsYaml {
       nodes {
         paintings {
-          id
           title
           description
           dimensions
-          canvasSize
+          substrate
+          substrateSize
           medium
           year
-          image
           alt
           order
         }
@@ -131,10 +169,12 @@ export const query = graphql`
         name
         childImageSharp {
           gatsbyImageData(
-            width: 400
+            width: 450
+            aspectRatio: 1
             placeholder: DOMINANT_COLOR
             formats: [AUTO, WEBP, AVIF]
             quality: 85
+            breakpoints: [200, 300, 400, 450]
           )
         }
       }

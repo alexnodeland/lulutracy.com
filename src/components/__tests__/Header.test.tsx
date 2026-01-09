@@ -50,4 +50,12 @@ describe('Header', () => {
       screen.getByRole('button', { name: /toggle navigation menu/i })
     ).toBeInTheDocument()
   })
+
+  it('renders desktop navigation with about link', () => {
+    render(<Header onMenuToggle={mockOnMenuToggle} />)
+    const nav = screen.getByRole('navigation', { name: /main navigation/i })
+    expect(nav).toBeInTheDocument()
+    const aboutLink = screen.getByRole('link', { name: /about/i })
+    expect(aboutLink).toHaveAttribute('href', '/about')
+  })
 })

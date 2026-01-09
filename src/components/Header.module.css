@@ -11,10 +11,10 @@
 .container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  max-width: var(--max-width-content);
+  align-items: flex-start;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-md);
   height: 100%;
 }
 
@@ -28,8 +28,23 @@
 }
 
 .logoImage {
-  height: 40px;
+  height: 50px;
   width: auto;
+}
+
+/* Desktop navigation - hidden on mobile */
+.desktopNav {
+  display: none;
+}
+
+.desktopNavLink {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  transition: color var(--transition-fast);
+}
+
+.desktopNavLink:hover {
+  color: var(--color-text-light);
 }
 
 .menuButton {
@@ -75,4 +90,15 @@
 
 .hamburgerOpen .hamburgerLine:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Desktop: show nav link, hide hamburger */
+@media (min-width: 768px) {
+  .desktopNav {
+    display: flex;
+  }
+
+  .menuButton {
+    display: none;
+  }
 }

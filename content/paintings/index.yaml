@@ -1,103 +1,96 @@
 # Paintings Data
 # Add new paintings by adding entries to this file
 # Images should be placed in /content/paintings/images/
+# Note: substrate and medium values should be lowercase
+# Note: id and image filename are derived from title automatically
 
 paintings:
-  - id: symbiosis
-    title: Symbiosis
+  - title: Symbiosis
     description: An exploration of organic forms and vibrant colors representing the interconnectedness of nature.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
+    dimensions: '45.5 x 35.5 cm'
+    substrate: canvas
+    substrateSize: '45.5 x 35.5 cm'
+    medium: acrylic
     year: '2020'
-    image: symbiosis.jpeg
-    alt: Abstract painting with blue, red, yellow and purple organic forms
+    alt: Abstract painting of hands with blue, red, yellow and purple flowing forms
     order: 1
 
-  - id: forest-canopy
-    title: Forest Canopy
+  - title: Night Hours
     description: A lush view of tree branches and green foliage capturing the essence of nature's beauty.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
+    dimensions: '38.2 x 48.4 cm'
+    substrate: canvas
+    substrateSize: '40.6 x 50.8 cm'
+    medium: acrylic
     year: '2021'
-    image: forest-canopy.jpeg
     alt: Painting of dense green forest canopy with intertwining branches
     order: 2
 
-  - id: clover-field
-    title: Clover Field
+  - title: Get Lucky
     description: A detailed study of clovers, capturing the delicate beauty of these common yet overlooked plants.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
+    dimensions: '20.8 x 28.3 cm'
+    substrate: paper
+    substrateSize: '20.8 x 28.3 cm'
+    medium: acrylic
     year: '2021'
-    image: clover-field.jpeg
     alt: Painting of green clovers densely packed together
     order: 3
 
-  - id: mimosa-flowers
-    title: Mimosa Flowers
+  - title: Touch Me Not
     description: Pink mimosa flowers among green ferns, representing the gentle beauty of nature.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
+    dimensions: '22.9 x 30.5cm'
+    substrate: canvas
+    substrateSize: '22.9 x 30.5cm'
+    medium: acrylic
     year: '2021'
-    image: mimosa-flowers.jpeg
     alt: Painting of pink mimosa flowers with green fern leaves
     order: 4
 
-  - id: tropical-scene
-    title: Tropical Scene
+  - title: Looking Up
     description: A vibrant tropical landscape with rich greens and natural elements.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
-    year: '2022'
-    image: tropical-scene.jpeg
-    alt: Tropical landscape painting with lush vegetation
+    dimensions: '30.5 x 22.9cm'
+    substrate: paper
+    substrateSize: '30.5 x 22.9cm'
+    medium: acrylic
+    year: '2021'
+    alt: Tropical tree canopy painting with lush vegetation
     order: 5
 
-  - id: koi-pond
-    title: Koi Pond
-    description: Colorful koi fish swimming in a tranquil pond, representing harmony and beauty.
+  - title: Thinking Space
+    description: Colorful abstract fluid forms.
     dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Watercolor on paper
-    year: '2022'
-    image: koi-pond.jpeg
-    alt: Painting of colorful koi fish in water
+    substrate: paper
+    substrateSize: '45.5 x 35.5 cm'
+    medium: watercolor
+    year: '2020'
+    alt: Painting of colorful abstract fluid
     order: 6
 
-  - id: ripe-bananas
-    title: Ripe Bananas
-    description: A study of ripe bananas, capturing the beauty in everyday objects.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Watercolor on paper
-    year: '2023'
-    image: ripe-bananas.jpeg
-    alt: Watercolor painting of ripe yellow bananas with brown spots
+  - title: Tropical Forest Study
+    description: An intimate study of natural forms and textures.
+    dimensions: '30.5 x 22.9cm'
+    substrate: canvas
+    substrateSize: '30.5 x 22.9cm'
+    medium: acrylic
+    year: '2021'
+    alt: Nature study painting with organic forms
     order: 7
 
-  - id: nature-study-1
-    title: Nature Study I
-    description: An intimate study of natural forms and textures.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
-    year: '2023'
-    image: nature-study-1.jpeg
-    alt: Nature study painting with organic forms
+  - title: Flourish
+    description: Continued exploration of natural beauty and organic patterns.
+    dimensions: '38.0 x 48.8cm'
+    substrate: paper
+    substrateSize: '40.6 x 50.8 cm'
+    medium: watercolor
+    year: '2020'
+    alt: Nature study painting exploring organic patterns
     order: 8
 
-  - id: nature-study-2
-    title: Nature Study II
-    description: Continued exploration of natural beauty and organic patterns.
-    dimensions: '45.5 x 35.5cm'
-    canvasSize: '45.5 x 35.5 cm'
-    medium: Acrylic on canvas
-    year: '2024'
-    image: nature-study-2.jpeg
-    alt: Nature study painting exploring organic patterns
+  - title: Pretty Ripe
+    description: A study of ripe bananas, capturing the beauty in everyday objects.
+    dimensions: '30.5 x 22.9cm'
+    substrate: paper
+    substrateSize: '30.5 x 22.9cm'
+    medium: watercolor
+    year: '2021'
+    alt: Watercolor painting of ripe yellow bananas with brown spots
     order: 9

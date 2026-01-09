@@ -1,15 +1,23 @@
 .gallery {
   max-width: var(--max-width-gallery);
   margin: 0 auto;
-  padding: var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--spacing-lg);
 }
 
-@media (max-width: 768px) {
+/* Mobile: smaller padding and gap */
+@media (max-width: 767px) {
   .gallery {
     padding: var(--spacing-md);
     gap: var(--spacing-md);
+  }
+}
+
+/* Desktop: two columns */
+@media (min-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

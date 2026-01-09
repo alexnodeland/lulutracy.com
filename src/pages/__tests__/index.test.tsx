@@ -9,8 +9,9 @@ const mockPaintings: Painting[] = [
     title: 'Test Painting 1',
     description: 'Description 1',
     dimensions: '24 x 36',
-    canvasSize: '24 x 36',
-    medium: 'Oil',
+    substrate: 'canvas',
+    substrateSize: '24 x 36',
+    medium: 'oil',
     year: '2023',
     image: 'test1.jpg',
     alt: 'Alt text 1',
@@ -21,14 +22,29 @@ const mockPaintings: Painting[] = [
     title: 'Test Painting 2',
     description: 'Description 2',
     dimensions: '30 x 40',
-    canvasSize: '30 x 40',
-    medium: 'Acrylic',
+    substrate: 'paper',
+    substrateSize: '30 x 40',
+    medium: 'acrylic',
     year: '2024',
     image: 'test2.jpg',
     alt: 'Alt text 2',
     order: 2,
   },
 ]
+
+const mockAllSiteYaml = {
+  nodes: [
+    {
+      site: {
+        name: 'lulutracy',
+        tagline: 'art & design',
+        description:
+          'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
+        url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+    },
+  ],
+}
 
 const mockData = {
   allPaintingsYaml: {
@@ -76,6 +92,7 @@ const mockData = {
       },
     ],
   },
+  allSiteYaml: mockAllSiteYaml,
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
@@ -105,8 +122,8 @@ describe('IndexPage', () => {
     const galleryLinks = links.filter((link) =>
       link.getAttribute('aria-label')?.includes('View')
     )
-    expect(galleryLinks[0]).toHaveAttribute('href', '/painting/painting-1')
-    expect(galleryLinks[1]).toHaveAttribute('href', '/painting/painting-2')
+    expect(galleryLinks[0]).toHaveAttribute('href', '/painting/test-painting-1')
+    expect(galleryLinks[1]).toHaveAttribute('href', '/painting/test-painting-2')
   })
 
   it('handles empty paintings gracefully', () => {
@@ -117,8 +134,23 @@ describe('IndexPage', () => {
       allFile: {
         nodes: [],
       },
+      allSiteYaml: mockAllSiteYaml,
     }
     renderIndexPage(emptyData as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('handles undefined paintings gracefully', () => {
+    const undefinedData = {
+      allPaintingsYaml: {
+        nodes: [{}],
+      },
+      allFile: {
+        nodes: [],
+      },
+      allSiteYaml: mockAllSiteYaml,
+    }
+    renderIndexPage(undefinedData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
@@ -127,11 +159,11 @@ describe('Head', () => {
   it('renders meta tags with painting image', () => {
     const { container } = render(<Head data={mockData} {...({} as any)} />)
     expect(container.querySelector('title')).toHaveTextContent(
-      'Lulu Tracy | Art Portfolio'
+      'lulutracy | art & design'
     )
     expect(
       container.querySelector('meta[property="og:title"]')
-    ).toHaveAttribute('content', 'Lulu Tracy | Art Portfolio')
+    ).toHaveAttribute('content', 'lulutracy | art & design')
     expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
       'content',
       'website'
@@ -149,9 +181,28 @@ describe('Head', () => {
       allFile: {
         nodes: [],
       },
+      allSiteYaml: mockAllSiteYaml,
     }
     const { container } = render(
       <Head data={emptyData as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with fallback image when paintings is undefined', () => {
+    const undefinedData = {
+      allPaintingsYaml: {
+        nodes: [{}],
+      },
+      allFile: {
+        nodes: [],
+      },
+      allSiteYaml: mockAllSiteYaml,
+    }
+    const { container } = render(
+      <Head data={undefinedData as any} {...({} as any)} />
     )
     expect(
       container.querySelector('meta[property="og:image"]')

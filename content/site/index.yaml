@@ -2,6 +2,8 @@
 # Edit this file to update site-wide settings
 
 site:
+  name: lulutracy
+  tagline: art & design
   title: Lulu Tracy
   description: Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics
   author: Lulu Tracy

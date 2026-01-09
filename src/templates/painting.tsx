@@ -28,6 +28,15 @@ interface PaintingPageData {
       gatsbyImageData: IGatsbyImageData
     }
   } | null
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+        title: string
+        url: string
+      }
+    }>
+  }
 }
 
 const PaintingTemplate: React.FC<
@@ -46,6 +55,11 @@ const PaintingTemplate: React.FC<
   const displayUrl = displayImageData ? getSrc(displayImageData) : undefined
   const zoomUrl = zoomImageData ? getSrc(zoomImageData) : displayUrl
 
+  // Detect image orientation from gatsbyImageData
+  const imgWidth = displayImageData?.width || 0
+  const imgHeight = displayImageData?.height || 0
+  const isPortrait = imgHeight > imgWidth
+
   // Check if we have valid URLs for the magnifier (and no previous error)
   const canUseMagnifier = displayUrl && zoomUrl && !magnifierError
 
@@ -62,7 +76,7 @@ const PaintingTemplate: React.FC<
               src={displayUrl}
               zoomSrc={zoomUrl}
               alt={painting.alt}
-              className={styles.magnifierContainer}
+              className={`${styles.magnifierContainer} ${isPortrait ? styles.portrait : styles.landscape}`}
               zoomFactor={2.5}
               enableTouch={true}
               onError={handleMagnifierError}
@@ -71,7 +85,7 @@ const PaintingTemplate: React.FC<
             <GatsbyImage
               image={imageData}
               alt={painting.alt}
-              className={styles.image}
+              className={`${styles.image} ${isPortrait ? styles.portrait : styles.landscape}`}
             />
           ) : (
             <div className={styles.placeholder}>
@@ -84,8 +98,12 @@ const PaintingTemplate: React.FC<
           <span className={styles.category}>PAINTING</span>
           <h1 className={styles.title}>{painting.title}</h1>
           <p className={styles.info}>
-            Size: {painting.dimensions} | Canvas Size: {painting.canvasSize} |{' '}
-            Medium: {painting.medium}
+            Artwork Size: {painting.dimensions} |{' '}
+            {painting.substrate.charAt(0).toUpperCase() +
+              painting.substrate.slice(1)}{' '}
+            Size: {painting.substrateSize} | Medium:{' '}
+            {painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)}{' '}
+            on {painting.substrate}
           </p>
           <p className={styles.year}>{painting.year}</p>
         </div>
@@ -96,19 +114,19 @@ const PaintingTemplate: React.FC<
 
 export default PaintingTemplate
 
-const SITE_URL = 'https://alexnodeland.github.io/lulutracy.com'
-
 export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
   pageContext,
   data,
 }) => {
   const { painting } = pageContext
+  const { site } = data.allSiteYaml.nodes[0]
+  const siteUrl = site.url
 
   // Get image URL for OG image
   const imageData = data.file?.childImageSharp?.gatsbyImageData
   const ogImage = imageData?.images?.fallback?.src
-    ? `${SITE_URL}${imageData.images.fallback.src}`
-    : `${SITE_URL}/icon.png`
+    ? `${siteUrl}${imageData.images.fallback.src}`
+    : `${siteUrl}/icon.png`
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -117,26 +135,26 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     description: painting.description,
     image: ogImage,
     dateCreated: painting.year,
-    artMedium: painting.medium,
+    artMedium: `${painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)} on ${painting.substrate}`,
     width: painting.dimensions,
     creator: {
       '@type': 'Person',
-      name: 'Lulu Tracy',
+      name: site.title,
     },
   }
 
   return (
     <>
-      <title>{painting.title} | Lulu Tracy</title>
+      <title>{`${painting.title} | ${site.name}`}</title>
       <meta name="description" content={painting.description} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content={`${painting.title} | Lulu Tracy`} />
+      <meta property="og:title" content={`${painting.title} | ${site.name}`} />
       <meta property="og:description" content={painting.description} />
-      <meta property="og:url" content={`${SITE_URL}/painting/${painting.id}`} />
+      <meta property="og:url" content={`${siteUrl}/painting/${painting.id}`} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="article" />
-      <meta property="og:site_name" content="Lulu Tracy" />
+      <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
 
       {/* JSON-LD structured data */}
@@ -147,6 +165,15 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 
 export const query = graphql`
   query PaintingPage($imageName: String!) {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+          title
+          url
+        }
+      }
+    }
     file(
       sourceInstanceName: { eq: "paintingImages" }
       name: { eq: $imageName }

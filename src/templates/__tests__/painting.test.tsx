@@ -26,8 +26,9 @@ const mockPainting: Painting = {
   title: 'Test Painting Title',
   description: 'This is a test painting description.',
   dimensions: '45.5 x 35.5cm',
-  canvasSize: '45.5 x 35.5 cm',
-  medium: 'Acrylic on canvas',
+  substrate: 'canvas',
+  substrateSize: '45.5 x 35.5 cm',
+  medium: 'acrylic',
   year: '2023',
   image: 'test.jpeg',
   alt: 'Test painting alt text',
@@ -38,6 +39,18 @@ const mockPageContext = {
   id: 'test-painting',
   painting: mockPainting,
   imageName: 'test',
+}
+
+const mockAllSiteYaml = {
+  nodes: [
+    {
+      site: {
+        name: 'lulutracy',
+        title: 'Lulu Tracy',
+        url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+    },
+  ],
 }
 
 const mockDataWithImage = {
@@ -73,11 +86,13 @@ const mockDataWithImage = {
       },
     },
   },
+  allSiteYaml: mockAllSiteYaml,
 }
 
 const mockDataWithoutImage = {
   file: null,
   zoomFile: null,
+  allSiteYaml: mockAllSiteYaml,
 }
 
 const mockDataWithImageButNoZoom = {
@@ -224,7 +239,7 @@ describe('Head component', () => {
       />
     )
     const title = document.querySelector('title')
-    expect(title?.textContent).toBe('Test Painting Title | Lulu Tracy')
+    expect(title?.textContent).toBe('Test Painting Title | lulutracy')
   })
 
   it('renders meta description with painting description', () => {
@@ -251,7 +266,7 @@ describe('Head component', () => {
     )
     expect(
       container.querySelector('meta[property="og:title"]')
-    ).toHaveAttribute('content', 'Test Painting Title | Lulu Tracy')
+    ).toHaveAttribute('content', 'Test Painting Title | lulutracy')
     expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
       'content',
       'article'
