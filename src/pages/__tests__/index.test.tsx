@@ -122,8 +122,8 @@ describe('IndexPage', () => {
     const galleryLinks = links.filter((link) =>
       link.getAttribute('aria-label')?.includes('View')
     )
-    expect(galleryLinks[0]).toHaveAttribute('href', '/painting/painting-1')
-    expect(galleryLinks[1]).toHaveAttribute('href', '/painting/painting-2')
+    expect(galleryLinks[0]).toHaveAttribute('href', '/painting/test-painting-1')
+    expect(galleryLinks[1]).toHaveAttribute('href', '/painting/test-painting-2')
   })
 
   it('handles empty paintings gracefully', () => {

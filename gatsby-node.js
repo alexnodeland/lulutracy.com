@@ -1,4 +1,5 @@
 const path = require('path')
+const { generateSlug, generateImageFilename } = require('./src/utils/slug')
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
@@ -10,7 +11,6 @@ exports.createPages = async ({ graphql, actions }) => {
       allPaintingsYaml {
         nodes {
           paintings {
-            id
             title
             description
             dimensions
@@ -18,7 +18,6 @@ exports.createPages = async ({ graphql, actions }) => {
             substrateSize
             medium
             year
-            image
             alt
             order
           }
@@ -36,15 +35,24 @@ exports.createPages = async ({ graphql, actions }) => {
   const paintingsData = result.data.allPaintingsYaml.nodes[0]
   if (paintingsData && paintingsData.paintings) {
     paintingsData.paintings.forEach((painting) => {
-      // Extract filename without extension for GraphQL query
-      const imageName = painting.image.replace(/\.[^/.]+$/, '')
+      // Derive id and image filename from title
+      const id = generateSlug(painting.title)
+      const image = generateImageFilename(painting.title)
+      const imageName = image.replace(/\.[^/.]+$/, '')
+
+      // Create enriched painting object with derived fields
+      const enrichedPainting = {
+        ...painting,
+        id,
+        image,
+      }
 
       createPage({
-        path: `/painting/${painting.id}`,
+        path: `/painting/${id}`,
         component: paintingTemplate,
         context: {
-          id: painting.id,
-          painting: painting,
+          id: id,
+          painting: enrichedPainting,
           imageName: imageName,
         },
       })

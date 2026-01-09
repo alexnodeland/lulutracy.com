@@ -4,12 +4,26 @@ import { IGatsbyImageData } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
 import GalleryImage from '../components/GalleryImage'
 import type { Painting } from '../types'
+import { generateSlug, generateImageFilename } from '../utils/slug'
 import * as styles from './index.module.css'
+
+// Raw painting data from YAML (without derived fields)
+interface RawPainting {
+  title: string
+  description: string
+  dimensions: string
+  substrate: string
+  substrateSize: string
+  medium: string
+  year: string
+  alt: string
+  order: number
+}
 
 interface IndexPageData {
   allPaintingsYaml: {
     nodes: Array<{
-      paintings: Painting[]
+      paintings: RawPainting[]
     }>
   }
   allFile: {
@@ -34,8 +48,15 @@ interface IndexPageData {
 
 const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
   const paintingsData = data.allPaintingsYaml.nodes[0]
-  const paintings = paintingsData?.paintings || []
+  const rawPaintings = paintingsData?.paintings || []
   const imageNodes = data.allFile.nodes
+
+  // Enrich paintings with derived id and image fields
+  const paintings: Painting[] = rawPaintings.map((raw) => ({
+    ...raw,
+    id: generateSlug(raw.title),
+    image: generateImageFilename(raw.title),
+  }))
 
   // Sort paintings by order
   const sortedPaintings = [...paintings].sort((a, b) => a.order - b.order)
@@ -77,11 +98,11 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
 
   // Get first painting image for OG image
   const paintingsData = data.allPaintingsYaml.nodes[0]
-  const paintings = paintingsData?.paintings || []
-  const sortedPaintings = [...paintings].sort((a, b) => a.order - b.order)
+  const rawPaintings = paintingsData?.paintings || []
+  const sortedPaintings = [...rawPaintings].sort((a, b) => a.order - b.order)
   const firstPainting = sortedPaintings[0]
   const imageNodes = data.allFile.nodes
-  const imageName = firstPainting?.image.replace(/\.[^/.]+$/, '')
+  const imageName = firstPainting ? generateSlug(firstPainting.title) : ''
   const imageNode = imageNodes.find((node) => node.name === imageName)
   const ogImage = imageNode?.childImageSharp?.gatsbyImageData?.images?.fallback
     ?.src
@@ -131,7 +152,6 @@ export const query = graphql`
     allPaintingsYaml {
       nodes {
         paintings {
-          id
           title
           description
           dimensions
@@ -139,7 +159,6 @@ export const query = graphql`
           substrateSize
           medium
           year
-          image
           alt
           order
         }
