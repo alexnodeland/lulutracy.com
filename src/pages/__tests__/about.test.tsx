@@ -2,6 +2,17 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AboutPage, { Head } from '../about'
 
+const mockAllSiteYaml = {
+  nodes: [
+    {
+      site: {
+        name: 'lulutracy',
+        url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+    },
+  ],
+}
+
 const mockData = {
   markdownRemark: {
     frontmatter: {
@@ -11,6 +22,7 @@ const mockData = {
     },
     html: '<p>This is the artist biography.</p><p>More content here.</p>',
   },
+  allSiteYaml: mockAllSiteYaml,
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
@@ -53,13 +65,13 @@ describe('AboutPage', () => {
 
 describe('Head', () => {
   it('renders meta tags', () => {
-    const { container } = render(<Head {...({} as any)} />)
+    const { container } = render(<Head data={mockData} {...({} as any)} />)
     expect(container.querySelector('title')).toHaveTextContent(
-      'About | Lulu Tracy'
+      'about | lulutracy'
     )
     expect(
       container.querySelector('meta[property="og:title"]')
-    ).toHaveAttribute('content', 'About | Lulu Tracy')
+    ).toHaveAttribute('content', 'about | lulutracy')
     expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
       'content',
       'website'

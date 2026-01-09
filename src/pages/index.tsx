@@ -20,6 +20,16 @@ interface IndexPageData {
       }
     }>
   }
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+        tagline: string
+        description: string
+        url: string
+      }
+    }>
+  }
 }
 
 const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
@@ -61,11 +71,9 @@ const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
 
 export default IndexPage
 
-const SITE_URL = 'https://alexnodeland.github.io/lulutracy.com'
-
 export const Head: HeadFC<IndexPageData> = ({ data }) => {
-  const description =
-    'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics'
+  const { site } = data.allSiteYaml.nodes[0]
+  const siteUrl = site.url
 
   // Get first painting image for OG image
   const paintingsData = data.allPaintingsYaml.nodes[0]
@@ -77,29 +85,29 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
   const imageNode = imageNodes.find((node) => node.name === imageName)
   const ogImage = imageNode?.childImageSharp?.gatsbyImageData?.images?.fallback
     ?.src
-    ? `${SITE_URL}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
-    : `${SITE_URL}/icon.png`
+    ? `${siteUrl}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
+    : `${siteUrl}/icon.png`
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Lulu Tracy Art Portfolio',
-    description,
-    url: SITE_URL,
+    name: `${site.name} | ${site.tagline}`,
+    description: site.description,
+    url: siteUrl,
   }
 
   return (
     <>
-      <title>lulutracy | art & design</title>
-      <meta name="description" content={description} />
+      <title>{`${site.name} | ${site.tagline}`}</title>
+      <meta name="description" content={site.description} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content="Lulu Tracy | Art Portfolio" />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={SITE_URL} />
+      <meta property="og:title" content={`${site.name} | ${site.tagline}`} />
+      <meta property="og:description" content={site.description} />
+      <meta property="og:url" content={siteUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Lulu Tracy" />
+      <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
 
       {/* JSON-LD structured data */}
@@ -110,6 +118,16 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
 
 export const query = graphql`
   query IndexPage {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+          tagline
+          description
+          url
+        }
+      }
+    }
     allPaintingsYaml {
       nodes {
         paintings {

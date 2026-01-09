@@ -30,6 +30,20 @@ const mockPaintings: Painting[] = [
   },
 ]
 
+const mockAllSiteYaml = {
+  nodes: [
+    {
+      site: {
+        name: 'lulutracy',
+        tagline: 'art & design',
+        description:
+          'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
+        url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+    },
+  ],
+}
+
 const mockData = {
   allPaintingsYaml: {
     nodes: [
@@ -76,6 +90,7 @@ const mockData = {
       },
     ],
   },
+  allSiteYaml: mockAllSiteYaml,
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
@@ -117,6 +132,7 @@ describe('IndexPage', () => {
       allFile: {
         nodes: [],
       },
+      allSiteYaml: mockAllSiteYaml,
     }
     renderIndexPage(emptyData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
@@ -127,11 +143,11 @@ describe('Head', () => {
   it('renders meta tags with painting image', () => {
     const { container } = render(<Head data={mockData} {...({} as any)} />)
     expect(container.querySelector('title')).toHaveTextContent(
-      'Lulu Tracy | Art Portfolio'
+      'lulutracy | art & design'
     )
     expect(
       container.querySelector('meta[property="og:title"]')
-    ).toHaveAttribute('content', 'Lulu Tracy | Art Portfolio')
+    ).toHaveAttribute('content', 'lulutracy | art & design')
     expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
       'content',
       'website'
@@ -149,6 +165,7 @@ describe('Head', () => {
       allFile: {
         nodes: [],
       },
+      allSiteYaml: mockAllSiteYaml,
     }
     const { container } = render(
       <Head data={emptyData as any} {...({} as any)} />

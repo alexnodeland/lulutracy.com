@@ -13,6 +13,14 @@ interface AboutPageData {
     }
     html: string
   }
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+        url: string
+      }
+    }>
+  }
 }
 
 const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
@@ -51,23 +59,22 @@ const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
 
 export default AboutPage
 
-const SITE_URL = 'https://alexnodeland.github.io/lulutracy.com'
-
-export const Head: HeadFC = () => {
+export const Head: HeadFC<AboutPageData> = ({ data }) => {
+  const { site } = data.allSiteYaml.nodes[0]
   const description =
     'Learn about Lulu Tracy - an artist exploring nature through watercolors and acrylics'
 
   return (
     <>
-      <title>about | lulutracy</title>
+      <title>{`about | ${site.name}`}</title>
       <meta name="description" content={description} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content="About | Lulu Tracy" />
+      <meta property="og:title" content={`about | ${site.name}`} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={`${SITE_URL}/about`} />
+      <meta property="og:url" content={`${site.url}/about`} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Lulu Tracy" />
+      <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
     </>
   )
@@ -75,6 +82,14 @@ export const Head: HeadFC = () => {
 
 export const query = graphql`
   query AboutPage {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+          url
+        }
+      }
+    }
     markdownRemark(frontmatter: { title: { eq: "About" } }) {
       frontmatter {
         title

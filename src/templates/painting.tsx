@@ -28,6 +28,15 @@ interface PaintingPageData {
       gatsbyImageData: IGatsbyImageData
     }
   } | null
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+        title: string
+        url: string
+      }
+    }>
+  }
 }
 
 const PaintingTemplate: React.FC<
@@ -101,19 +110,19 @@ const PaintingTemplate: React.FC<
 
 export default PaintingTemplate
 
-const SITE_URL = 'https://alexnodeland.github.io/lulutracy.com'
-
 export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
   pageContext,
   data,
 }) => {
   const { painting } = pageContext
+  const { site } = data.allSiteYaml.nodes[0]
+  const siteUrl = site.url
 
   // Get image URL for OG image
   const imageData = data.file?.childImageSharp?.gatsbyImageData
   const ogImage = imageData?.images?.fallback?.src
-    ? `${SITE_URL}${imageData.images.fallback.src}`
-    : `${SITE_URL}/icon.png`
+    ? `${siteUrl}${imageData.images.fallback.src}`
+    : `${siteUrl}/icon.png`
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -126,22 +135,22 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     width: painting.dimensions,
     creator: {
       '@type': 'Person',
-      name: 'Lulu Tracy',
+      name: site.title,
     },
   }
 
   return (
     <>
-      <title>{painting.title} | lulutracy</title>
+      <title>{`${painting.title} | ${site.name}`}</title>
       <meta name="description" content={painting.description} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content={`${painting.title} | Lulu Tracy`} />
+      <meta property="og:title" content={`${painting.title} | ${site.name}`} />
       <meta property="og:description" content={painting.description} />
-      <meta property="og:url" content={`${SITE_URL}/painting/${painting.id}`} />
+      <meta property="og:url" content={`${siteUrl}/painting/${painting.id}`} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="article" />
-      <meta property="og:site_name" content="Lulu Tracy" />
+      <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
 
       {/* JSON-LD structured data */}
@@ -152,6 +161,15 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 
 export const query = graphql`
   query PaintingPage($imageName: String!) {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+          title
+          url
+        }
+      }
+    }
     file(
       sourceInstanceName: { eq: "paintingImages" }
       name: { eq: $imageName }

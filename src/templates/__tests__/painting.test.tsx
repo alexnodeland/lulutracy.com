@@ -40,6 +40,18 @@ const mockPageContext = {
   imageName: 'test',
 }
 
+const mockAllSiteYaml = {
+  nodes: [
+    {
+      site: {
+        name: 'lulutracy',
+        title: 'Lulu Tracy',
+        url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+    },
+  ],
+}
+
 const mockDataWithImage = {
   file: {
     childImageSharp: {
@@ -73,11 +85,13 @@ const mockDataWithImage = {
       },
     },
   },
+  allSiteYaml: mockAllSiteYaml,
 }
 
 const mockDataWithoutImage = {
   file: null,
   zoomFile: null,
+  allSiteYaml: mockAllSiteYaml,
 }
 
 const mockDataWithImageButNoZoom = {
@@ -224,7 +238,7 @@ describe('Head component', () => {
       />
     )
     const title = document.querySelector('title')
-    expect(title?.textContent).toBe('Test Painting Title | Lulu Tracy')
+    expect(title?.textContent).toBe('Test Painting Title | lulutracy')
   })
 
   it('renders meta description with painting description', () => {
@@ -251,7 +265,7 @@ describe('Head component', () => {
     )
     expect(
       container.querySelector('meta[property="og:title"]')
-    ).toHaveAttribute('content', 'Test Painting Title | Lulu Tracy')
+    ).toHaveAttribute('content', 'Test Painting Title | lulutracy')
     expect(container.querySelector('meta[property="og:type"]')).toHaveAttribute(
       'content',
       'article'
