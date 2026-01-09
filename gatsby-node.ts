@@ -1,12 +1,36 @@
-const path = require('path')
-const { generateSlug, generateImageFilename } = require('./src/utils/slug')
+import path from 'path'
+import type { GatsbyNode } from 'gatsby'
+import { generateSlug, generateImageFilename } from './src/utils/slug'
 
-exports.createPages = async ({ graphql, actions }) => {
+interface RawPainting {
+  title: string
+  description: string
+  dimensions: string
+  substrate: string
+  substrateSize: string
+  medium: string
+  year: string
+  alt: string
+  order: number
+}
+
+interface PaintingsQueryResult {
+  allPaintingsYaml: {
+    nodes: Array<{
+      paintings: RawPainting[]
+    }>
+  }
+}
+
+export const createPages: GatsbyNode['createPages'] = async ({
+  graphql,
+  actions,
+}) => {
   const { createPage } = actions
   const paintingTemplate = path.resolve('./src/templates/painting.tsx')
 
   // Query all paintings from YAML
-  const result = await graphql(`
+  const result = await graphql<PaintingsQueryResult>(`
     query {
       allPaintingsYaml {
         nodes {
@@ -32,7 +56,7 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 
   // Get paintings array from YAML data
-  const paintingsData = result.data.allPaintingsYaml.nodes[0]
+  const paintingsData = result.data?.allPaintingsYaml.nodes[0]
   if (paintingsData && paintingsData.paintings) {
     paintingsData.paintings.forEach((painting) => {
       // Derive id and image filename from title

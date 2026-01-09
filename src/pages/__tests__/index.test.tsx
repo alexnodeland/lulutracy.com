@@ -139,6 +139,20 @@ describe('IndexPage', () => {
     renderIndexPage(emptyData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
+
+  it('handles undefined paintings gracefully', () => {
+    const undefinedData = {
+      allPaintingsYaml: {
+        nodes: [{}],
+      },
+      allFile: {
+        nodes: [],
+      },
+      allSiteYaml: mockAllSiteYaml,
+    }
+    renderIndexPage(undefinedData as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
 })
 
 describe('Head', () => {
@@ -171,6 +185,24 @@ describe('Head', () => {
     }
     const { container } = render(
       <Head data={emptyData as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with fallback image when paintings is undefined', () => {
+    const undefinedData = {
+      allPaintingsYaml: {
+        nodes: [{}],
+      },
+      allFile: {
+        nodes: [],
+      },
+      allSiteYaml: mockAllSiteYaml,
+    }
+    const { container } = render(
+      <Head data={undefinedData as any} {...({} as any)} />
     )
     expect(
       container.querySelector('meta[property="og:image"]')
