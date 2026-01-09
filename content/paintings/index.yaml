@@ -39,58 +39,58 @@ paintings:
     description: Pink mimosa flowers among green ferns, representing the gentle beauty of nature.
     dimensions: '22.9 x 30.5cm'
     substrate: canvas
-    substrateSize: '45.5 x 35.5 cm'
+    substrateSize: '22.9 x 30.5cm'
     medium: acrylic
     year: '2021'
     alt: Painting of pink mimosa flowers with green fern leaves
     order: 4
 
-  - title: Tropical Scene
+  - title: Looking Up
     description: A vibrant tropical landscape with rich greens and natural elements.
-    dimensions: '45.5 x 35.5cm'
-    substrate: canvas
-    substrateSize: '45.5 x 35.5 cm'
+    dimensions: '30.5 x 22.9cm'
+    substrate: paper
+    substrateSize: '30.5 x 22.9cm'
     medium: acrylic
-    year: '2022'
-    alt: Tropical landscape painting with lush vegetation
+    year: '2021'
+    alt: Tropical tree canopy painting with lush vegetation
     order: 5
 
-  - title: Koi Pond
-    description: Colorful koi fish swimming in a tranquil pond, representing harmony and beauty.
+  - title: Thinking Space
+    description: Colorful abstract fluid forms.
     dimensions: '45.5 x 35.5cm'
     substrate: paper
     substrateSize: '45.5 x 35.5 cm'
     medium: watercolor
-    year: '2022'
-    alt: Painting of colorful koi fish in water
+    year: '2020'
+    alt: Painting of colorful abstract fluid
     order: 6
 
-  - title: Ripe Bananas
-    description: A study of ripe bananas, capturing the beauty in everyday objects.
-    dimensions: '45.5 x 35.5cm'
-    substrate: paper
-    substrateSize: '45.5 x 35.5 cm'
-    medium: watercolor
-    year: '2023'
-    alt: Watercolor painting of ripe yellow bananas with brown spots
+  - title: Tropical Forest Study
+    description: An intimate study of natural forms and textures.
+    dimensions: '30.5 x 22.9cm'
+    substrate: canvas
+    substrateSize: '30.5 x 22.9cm'
+    medium: acrylic
+    year: '2021'
+    alt: Nature study painting with organic forms
     order: 7
 
-  - title: Nature Study I
-    description: An intimate study of natural forms and textures.
-    dimensions: '45.5 x 35.5cm'
-    substrate: canvas
-    substrateSize: '45.5 x 35.5 cm'
-    medium: acrylic
-    year: '2023'
-    alt: Nature study painting with organic forms
+  - title: Flourish
+    description: Continued exploration of natural beauty and organic patterns.
+    dimensions: '38.0 x 48.8cm'
+    substrate: paper
+    substrateSize: '40.6 x 50.8 cm'
+    medium: watercolor
+    year: '2020'
+    alt: Nature study painting exploring organic patterns
     order: 8
 
-  - title: Nature Study II
-    description: Continued exploration of natural beauty and organic patterns.
-    dimensions: '45.5 x 35.5cm'
-    substrate: canvas
-    substrateSize: '45.5 x 35.5 cm'
-    medium: acrylic
-    year: '2024'
-    alt: Nature study painting exploring organic patterns
+  - title: Pretty Ripe
+    description: A study of ripe bananas, capturing the beauty in everyday objects.
+    dimensions: '30.5 x 22.9cm'
+    substrate: paper
+    substrateSize: '30.5 x 22.9cm'
+    medium: watercolor
+    year: '2021'
+    alt: Watercolor painting of ripe yellow bananas with brown spots
     order: 9
