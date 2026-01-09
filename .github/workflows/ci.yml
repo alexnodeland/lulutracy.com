@@ -18,6 +18,10 @@ concurrency:
   group: ci-${{ github.ref_name }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   NODE_VERSION: '20'
 
@@ -127,20 +131,30 @@ jobs:
             const fs = require('fs');
             const results = JSON.parse(fs.readFileSync('.lighthouseci/manifest.json'));
 
+            // Aggregate scores by URL (average of multiple runs)
+            const scores = {};
+            for (const result of results) {
+              const summary = JSON.parse(fs.readFileSync(result.jsonPath));
+              const url = new URL(summary.finalUrl).pathname.replace(/index\.html$/, '') || '/';
+
+              if (!scores[url]) {
+                scores[url] = { perf: [], a11y: [], bp: [], seo: [] };
+              }
+              scores[url].perf.push(summary.categories.performance.score * 100);
+              scores[url].a11y.push(summary.categories.accessibility.score * 100);
+              scores[url].bp.push(summary.categories['best-practices'].score * 100);
+              scores[url].seo.push(summary.categories.seo.score * 100);
+            }
+
+            const avg = arr => Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
+            const getEmoji = score => score >= 90 ? '🟢' : score >= 50 ? '🟡' : '🔴';
+
             let comment = '## Lighthouse Results\n\n';
             comment += '| Page | Performance | Accessibility | Best Practices | SEO |\n';
             comment += '|------|-------------|---------------|----------------|-----|\n';
 
-            for (const result of results) {
-              const summary = JSON.parse(fs.readFileSync(result.jsonPath));
-              const url = new URL(summary.finalUrl).pathname || '/';
-              const perf = Math.round(summary.categories.performance.score * 100);
-              const a11y = Math.round(summary.categories.accessibility.score * 100);
-              const bp = Math.round(summary.categories['best-practices'].score * 100);
-              const seo = Math.round(summary.categories.seo.score * 100);
-
-              const getEmoji = (score) => score >= 90 ? '🟢' : score >= 50 ? '🟡' : '🔴';
-
+            for (const [url, s] of Object.entries(scores)) {
+              const perf = avg(s.perf), a11y = avg(s.a11y), bp = avg(s.bp), seo = avg(s.seo);
               comment += `| ${url} | ${getEmoji(perf)} ${perf} | ${getEmoji(a11y)} ${a11y} | ${getEmoji(bp)} ${bp} | ${getEmoji(seo)} ${seo} |\n`;
             }
 
