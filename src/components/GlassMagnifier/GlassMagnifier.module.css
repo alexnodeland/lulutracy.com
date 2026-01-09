@@ -6,6 +6,11 @@
   cursor: zoom-in;
 }
 
+.container:focus {
+  outline: 2px solid var(--color-text, #333);
+  outline-offset: 2px;
+}
+
 .image {
   display: block;
   width: 100%;
@@ -17,23 +22,74 @@
   opacity: 0.95;
 }
 
-.touchHint {
+/* Zoom icon indicator in corner */
+.zoomIndicator {
   position: absolute;
-  bottom: var(--spacing-md, 1rem);
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: var(--spacing-xs, 0.5rem) var(--spacing-md, 1rem);
-  border-radius: 4px;
-  font-size: var(--font-size-xs, 0.75rem);
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  bottom: var(--spacing-sm, 0.5rem);
+  right: var(--spacing-sm, 0.5rem);
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text, #333);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
 }
 
-.container:not(.zooming) .touchHint {
-  animation: fadeInOut 4s ease-in-out forwards;
+.container:hover .zoomIndicator {
+  opacity: 1;
+}
+
+.zooming .zoomIndicator {
+  opacity: 0;
+}
+
+/* Hint tooltip */
+.touchHint {
+  position: absolute;
+  bottom: var(--spacing-xl, 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-md, 1rem);
+  border-radius: 4px;
+  font-size: var(--font-size-sm, 0.875rem);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Mobile hint with fade animation */
+.touchHint.mobile {
+  animation: fadeInOut 5s ease-in-out forwards;
+}
+
+/* Desktop hint - subtle and persistent until interaction */
+.touchHint.desktop {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 1s forwards;
+}
+
+.container:hover .touchHint.desktop {
+  animation: fadeOut 0.2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes fadeInOut {
@@ -116,6 +172,16 @@
     cursor: default;
   }
 
+  .zoomIndicator {
+    width: 28px;
+    height: 28px;
+  }
+
+  .zoomIndicator svg {
+    width: 16px;
+    height: 16px;
+  }
+
   :global(.drift-zoom-pane.drift-inline) {
     background-color: rgba(255, 255, 255, 0.98);
   }
@@ -134,6 +200,14 @@
 
   .touchHint {
     animation: none;
+  }
+
+  .touchHint.mobile,
+  .touchHint.desktop {
     opacity: 1;
+  }
+
+  .zoomIndicator {
+    transition: none;
   }
 }

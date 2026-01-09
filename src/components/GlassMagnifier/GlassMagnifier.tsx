@@ -31,9 +31,12 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
   > | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [showHint, setShowHint] = useState(true)
 
-  // Detect mobile device
+  // Detect mobile device (SSR-safe)
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const checkMobile = () => {
       setIsMobile(window.matchMedia('(max-width: 768px)').matches)
     }
@@ -44,7 +47,13 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
 
   // Initialize Drift when image is loaded
   const initDrift = useCallback(async () => {
-    if (!imageRef.current || !containerRef.current || driftRef.current) return
+    if (!imageRef.current || !containerRef.current) return
+
+    // Destroy existing instance first
+    if (driftRef.current) {
+      driftRef.current.destroy()
+      driftRef.current = null
+    }
 
     try {
       const Drift = (await import('drift-zoom')).default
@@ -62,6 +71,7 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
         injectBaseStyles: true,
         onShow: () => {
           containerRef.current?.classList.add(styles.zooming)
+          setShowHint(false)
         },
         onHide: () => {
           containerRef.current?.classList.remove(styles.zooming)
@@ -77,7 +87,7 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
     setIsLoaded(true)
   }, [])
 
-  // Initialize Drift after image loads and component mounts
+  // Initialize Drift after image loads and when mobile state changes
   useEffect(() => {
     if (isLoaded) {
       initDrift()
@@ -89,24 +99,28 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
         driftRef.current = null
       }
     }
-  }, [isLoaded, initDrift])
+  }, [isLoaded, isMobile, initDrift])
 
-  // Update Drift settings when mobile state changes
-  useEffect(() => {
-    if (driftRef.current) {
-      driftRef.current.destroy()
-      driftRef.current = null
-      if (isLoaded) {
-        initDrift()
+  // Handle keyboard activation for accessibility
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        setShowHint((prev) => !prev)
       }
-    }
-  }, [isMobile, isLoaded, initDrift])
+    },
+    []
+  )
 
   return (
     <div
       ref={containerRef}
       className={`${styles.container} ${className}`.trim()}
       data-testid="glass-magnifier"
+      role="group"
+      aria-label={`Zoomable image: ${alt}. ${isMobile ? 'Tap and hold' : 'Hover'} to zoom.`}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
     >
       <img
         ref={imageRef}
@@ -116,9 +130,30 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
         className={styles.image}
         onLoad={handleImageLoad}
       />
-      {isMobile && enableTouch && (
-        <div className={styles.touchHint}>
-          <span>Tap and hold to zoom</span>
+      {/* Zoom icon indicator */}
+      <div className={styles.zoomIndicator} aria-hidden="true">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+          <path d="M11 8v6M8 11h6" />
+        </svg>
+      </div>
+      {/* Touch hint for mobile / Hover hint for desktop on first view */}
+      {showHint && (
+        <div
+          className={`${styles.touchHint} ${isMobile ? styles.mobile : styles.desktop}`}
+          aria-live="polite"
+        >
+          <span>{isMobile ? 'Tap and hold to zoom' : 'Hover to zoom'}</span>
         </div>
       )}
     </div>

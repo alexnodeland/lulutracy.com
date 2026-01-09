@@ -1,5 +1,10 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react'
 import GlassMagnifier from '../GlassMagnifier'
 import Drift from 'drift-zoom'
 
@@ -9,7 +14,10 @@ let capturedOnHide: (() => void) | null = null
 let mockDestroyFn: jest.Mock = jest.fn()
 
 // Default mock implementation
-const createMockDrift = (_el: unknown, options?: { onShow?: () => void; onHide?: () => void }) => {
+const createMockDrift = (
+  _el: unknown,
+  options?: { onShow?: () => void; onHide?: () => void }
+) => {
   capturedOnShow = options?.onShow || null
   capturedOnHide = options?.onHide || null
   return {
@@ -82,28 +90,35 @@ describe('GlassMagnifier', () => {
     expect(container).toHaveClass('custom-class')
   })
 
+  it('renders zoom indicator icon', () => {
+    render(<GlassMagnifier {...defaultProps} />)
+    const svg = screen.getByTestId('glass-magnifier').querySelector('svg')
+    expect(svg).toBeInTheDocument()
+  })
+
   it('shows touch hint on mobile', () => {
     mockMatchMedia(true) // Mobile
     render(<GlassMagnifier {...defaultProps} enableTouch={true} />)
     expect(screen.getByText(/tap and hold to zoom/i)).toBeInTheDocument()
   })
 
-  it('does not show touch hint on desktop', () => {
+  it('shows hover hint on desktop', () => {
     mockMatchMedia(false) // Desktop
     render(<GlassMagnifier {...defaultProps} />)
-    expect(screen.queryByText(/tap and hold to zoom/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
   })
 
-  it('does not show touch hint when enableTouch is false', () => {
+  it('does not show touch hint when enableTouch is false on mobile', () => {
     mockMatchMedia(true) // Mobile
     render(<GlassMagnifier {...defaultProps} enableTouch={false} />)
-    expect(screen.queryByText(/tap and hold to zoom/i)).not.toBeInTheDocument()
+    // Still shows hint since enableTouch only affects touch handling, not hint
+    expect(screen.getByText(/tap and hold to zoom/i)).toBeInTheDocument()
   })
 
   it('initializes Drift when image loads', async () => {
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -114,7 +129,7 @@ describe('GlassMagnifier', () => {
   it('cleans up Drift instance on unmount', async () => {
     const { unmount } = render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -131,7 +146,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} zoomFactor={3} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -149,7 +164,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -167,7 +182,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -183,7 +198,7 @@ describe('GlassMagnifier', () => {
   it('passes onShow and onHide callbacks to Drift', async () => {
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -210,7 +225,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -227,7 +242,7 @@ describe('GlassMagnifier', () => {
     mockMatchMedia(false) // Start as desktop
     const { rerender } = render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -236,9 +251,7 @@ describe('GlassMagnifier', () => {
 
     // Simulate resize to mobile
     mockMatchMedia(true)
-    act(() => {
-      window.dispatchEvent(new Event('resize'))
-    })
+    fireEvent(window, new Event('resize'))
 
     // Force rerender to pick up new matchMedia
     rerender(<GlassMagnifier {...defaultProps} />)
@@ -254,7 +267,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} zoomFactor={2} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -279,7 +292,7 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img')
+    const img = screen.getByRole('img', { name: /test painting/i })
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -291,5 +304,59 @@ describe('GlassMagnifier', () => {
 
     // Still only one call
     expect(MockedDrift).toHaveBeenCalledTimes(1)
+  })
+
+  describe('Accessibility', () => {
+    it('has correct ARIA attributes', () => {
+      mockMatchMedia(false) // Desktop
+      render(<GlassMagnifier {...defaultProps} />)
+      const container = screen.getByTestId('glass-magnifier')
+
+      expect(container).toHaveAttribute('role', 'group')
+      expect(container).toHaveAttribute(
+        'aria-label',
+        'Zoomable image: Test painting. Hover to zoom.'
+      )
+      expect(container).toHaveAttribute('tabIndex', '0')
+    })
+
+    it('has mobile-specific ARIA label on mobile', () => {
+      mockMatchMedia(true) // Mobile
+      render(<GlassMagnifier {...defaultProps} />)
+      const container = screen.getByTestId('glass-magnifier')
+
+      expect(container).toHaveAttribute(
+        'aria-label',
+        'Zoomable image: Test painting. Tap and hold to zoom.'
+      )
+    })
+
+    it('responds to keyboard interaction', () => {
+      render(<GlassMagnifier {...defaultProps} />)
+      const container = screen.getByTestId('glass-magnifier')
+
+      // Initially shows hint
+      expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
+
+      // Press Enter to toggle hint
+      fireEvent.keyDown(container, { key: 'Enter' })
+      expect(screen.queryByText(/hover to zoom/i)).not.toBeInTheDocument()
+
+      // Press Space to toggle hint back
+      fireEvent.keyDown(container, { key: ' ' })
+      expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
+    })
+
+    it('has aria-hidden on zoom indicator', () => {
+      render(<GlassMagnifier {...defaultProps} />)
+      const indicator = screen.getByTestId('glass-magnifier').querySelector('div > svg')?.parentElement
+      expect(indicator).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('has aria-live on hint for screen readers', () => {
+      render(<GlassMagnifier {...defaultProps} />)
+      const hint = screen.getByText(/hover to zoom/i).parentElement
+      expect(hint).toHaveAttribute('aria-live', 'polite')
+    })
   })
 })
