@@ -50,9 +50,9 @@
   --breakpoint-desktop: 768px;
 
   /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 300ms ease;
-  --transition-slow: 500ms ease;
+  --transition-fast: 500ms ease;
+  --transition-base: 750ms ease;
+  --transition-slow: 1000ms ease;
 
   /* Z-index */
   --z-header: 100;
