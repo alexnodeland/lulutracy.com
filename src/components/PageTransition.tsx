@@ -3,7 +3,8 @@ import { navigate } from 'gatsby'
 import { useLocation } from './LocationContext'
 import * as styles from './PageTransition.module.css'
 
-const TRANSITION_DURATION = 150
+// Must match --transition-fast in global.css
+const TRANSITION_DURATION = 500
 
 interface PageTransitionProps {
   children: React.ReactNode
@@ -70,14 +71,24 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       // Don't handle if modifier keys are pressed
       if (e.metaKey || e.ctrlKey || e.shiftKey) return
 
+      // Strip path prefix for comparison and navigation
+      // In production, href includes prefix (e.g., /lulutracy.com/about)
+      // but navigate() expects path without prefix (e.g., /about)
+      const pathPrefix =
+        typeof __PATH_PREFIX__ !== 'undefined' ? __PATH_PREFIX__ : ''
+      const normalizedHref =
+        pathPrefix && href.startsWith(pathPrefix)
+          ? href.slice(pathPrefix.length) || '/'
+          : href
+
       // Don't handle same-page links
-      if (href === location.pathname) return
+      if (normalizedHref === location.pathname) return
 
       e.preventDefault()
       setIsVisible(false)
 
       setTimeout(() => {
-        navigate(href)
+        navigate(normalizedHref)
       }, TRANSITION_DURATION)
     },
     [location.pathname]
