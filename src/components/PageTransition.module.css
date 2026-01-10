@@ -1,6 +1,6 @@
 .pageTransition {
   opacity: 0;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--transition-fast);
 }
 
 .visible {

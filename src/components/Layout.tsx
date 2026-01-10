@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Header from './Header'
 import Navigation from './Navigation'
 import Footer from './Footer'
+import PageTransition from './PageTransition'
 import type { LayoutProps } from '../types'
 import '../styles/global.css'
 import * as styles from './Layout.module.css'
@@ -21,7 +22,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className={styles.layout}>
       <Header onMenuToggle={toggleMenu} isMenuOpen={isMenuOpen} />
       <Navigation isOpen={isMenuOpen} onClose={closeMenu} />
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        <PageTransition>{children}</PageTransition>
+      </main>
       <Footer />
     </div>
   )

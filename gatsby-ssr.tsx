@@ -1,6 +1,6 @@
 import React from 'react'
 import type { GatsbySSR } from 'gatsby'
-import PageTransition from './src/components/PageTransition'
+import { LocationProvider } from './src/components/LocationContext'
 
 export const onRenderBody: GatsbySSR['onRenderBody'] = ({
   setHeadComponents,
@@ -29,5 +29,7 @@ export const wrapPageElement: GatsbySSR['wrapPageElement'] = ({
   element,
   props,
 }) => {
-  return <PageTransition location={props.location}>{element}</PageTransition>
+  return (
+    <LocationProvider location={props.location}>{element}</LocationProvider>
+  )
 }

@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { navigate } from 'gatsby'
-import type { PageTransitionProps } from '../types'
+import { useLocation } from './LocationContext'
 import * as styles from './PageTransition.module.css'
 
-const PageTransition: React.FC<PageTransitionProps> = ({
-  children,
-  location,
-}) => {
+const TRANSITION_DURATION = 150
+
+interface PageTransitionProps {
+  children: React.ReactNode
+}
+
+const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
+  const location = useLocation()
   const [isVisible, setIsVisible] = useState(false)
   const [displayChildren, setDisplayChildren] = useState(children)
   const previousPathRef = useRef(location.pathname)
@@ -31,13 +35,12 @@ const PageTransition: React.FC<PageTransitionProps> = ({
 
     // Path changed - fade out, swap content, fade in
     if (location.pathname !== previousPathRef.current) {
-      // Start fade out via CSS (isVisible becomes false via click handler)
       // After transition, update children and fade back in
       const timeout = setTimeout(() => {
         setDisplayChildren(children)
         previousPathRef.current = location.pathname
         setIsVisible(true)
-      }, 300) // Match CSS transition duration
+      }, TRANSITION_DURATION)
 
       return () => clearTimeout(timeout)
     }
@@ -68,7 +71,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
 
       setTimeout(() => {
         navigate(href)
-      }, 300) // Match CSS transition duration
+      }, TRANSITION_DURATION)
     },
     [location.pathname]
   )
