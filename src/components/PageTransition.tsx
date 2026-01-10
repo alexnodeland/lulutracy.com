@@ -12,7 +12,8 @@ interface PageTransitionProps {
 const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   const location = useLocation()
   const [isVisible, setIsVisible] = useState(false)
-  const [displayChildren, setDisplayChildren] = useState(children)
+  const [transitionChildren, setTransitionChildren] = useState(children)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const previousPathRef = useRef(location.pathname)
   const isFirstRender = useRef(true)
 
@@ -35,16 +36,22 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
 
     // Path changed - fade out, swap content, fade in
     if (location.pathname !== previousPathRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: need to freeze children during transition
+      setIsTransitioning(true)
       // After transition, update children and fade back in
       const timeout = setTimeout(() => {
-        setDisplayChildren(children)
+        setTransitionChildren(children)
         previousPathRef.current = location.pathname
+        setIsTransitioning(false)
         setIsVisible(true)
       }, TRANSITION_DURATION)
 
       return () => clearTimeout(timeout)
     }
   }, [location.pathname, children])
+
+  // Sync children when not transitioning (same path, children changed)
+  const displayChildren = isTransitioning ? transitionChildren : children
 
   // Intercept internal link clicks for fade-out effect
   const handleClick = useCallback(
