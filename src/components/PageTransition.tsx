@@ -11,6 +11,20 @@ const getPathPrefix = (): string => {
   return prefixedRoot.length > 1 ? prefixedRoot.slice(0, -1) : ''
 }
 
+// Normalize a path by stripping the path prefix and trailing slash
+const normalizePath = (path: string): string => {
+  const pathPrefix = getPathPrefix()
+  let normalized =
+    pathPrefix && path.startsWith(pathPrefix)
+      ? path.slice(pathPrefix.length) || '/'
+      : path
+  // Remove trailing slash (except for root)
+  if (normalized !== '/' && normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1)
+  }
+  return normalized
+}
+
 // Must match --transition-fast in global.css
 const TRANSITION_DURATION = 500
 
@@ -79,17 +93,14 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       // Don't handle if modifier keys are pressed
       if (e.metaKey || e.ctrlKey || e.shiftKey) return
 
-      // Strip path prefix for comparison and navigation
+      // Normalize both paths for comparison (strips prefix and trailing slash)
       // In production, href includes prefix (e.g., /lulutracy.com/about)
       // but navigate() expects path without prefix (e.g., /about)
-      const pathPrefix = getPathPrefix()
-      const normalizedHref =
-        pathPrefix && href.startsWith(pathPrefix)
-          ? href.slice(pathPrefix.length) || '/'
-          : href
+      const normalizedHref = normalizePath(href)
+      const normalizedCurrentPath = normalizePath(location.pathname)
 
       // Don't handle same-page links
-      if (normalizedHref === location.pathname) return
+      if (normalizedHref === normalizedCurrentPath) return
 
       e.preventDefault()
       setIsVisible(false)

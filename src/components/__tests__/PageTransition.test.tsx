@@ -315,5 +315,77 @@ describe('PageTransition', () => {
       // Should navigate with original path
       expect(mockNavigate).toHaveBeenCalledWith('/about')
     })
+
+    it('does not intercept same-page links when location.pathname includes prefix', () => {
+      // Simulate production environment where location.pathname includes the path prefix
+      renderWithLocation(
+        <PageTransition>
+          <a href="/lulutracy.com/about">About</a>
+        </PageTransition>,
+        '/lulutracy.com/about'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('About')
+      fireEvent.click(link)
+
+      // Should not navigate for same-page links (even with prefix in pathname)
+      act(() => {
+        jest.advanceTimersByTime(500)
+      })
+
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
+
+    it('does not intercept same-page links with trailing slash differences', () => {
+      // Simulate case where href has no trailing slash but pathname does
+      renderWithLocation(
+        <PageTransition>
+          <a href="/lulutracy.com/about">About</a>
+        </PageTransition>,
+        '/lulutracy.com/about/'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('About')
+      fireEvent.click(link)
+
+      // Should not navigate for same-page links (even with trailing slash difference)
+      act(() => {
+        jest.advanceTimersByTime(500)
+      })
+
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
+
+    it('does not intercept same-page links at root with prefix', () => {
+      // Simulate clicking logo on homepage in production
+      renderWithLocation(
+        <PageTransition>
+          <a href="/lulutracy.com/">Home</a>
+        </PageTransition>,
+        '/lulutracy.com/'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('Home')
+      fireEvent.click(link)
+
+      // Should not navigate for same-page links
+      act(() => {
+        jest.advanceTimersByTime(500)
+      })
+
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
   })
 })
