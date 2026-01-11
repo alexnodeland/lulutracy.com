@@ -1,6 +1,6 @@
 # Architecture Decisions
 
-This file records significant architecture and design decisions made for the Lulu Tracy Art Portfolio project. Claude should reference this when making related decisions.
+This file records significant architecture and design decisions made for the lulutracy Art Portfolio project. Claude should reference this when making related decisions.
 
 ## Technology Choices
 

@@ -1,6 +1,6 @@
 ---
 name: gatsby-content
-description: Manage content for the Lulu Tracy art portfolio. Use this skill when adding new paintings to the gallery, updating painting metadata, editing the about page, or modifying site configuration. Handles YAML and Markdown content files with i18n support.
+description: Manage content for the lulutracy art portfolio. Use this skill when adding new paintings to the gallery, updating painting metadata, editing the about page, or modifying site configuration. Handles YAML and Markdown content files with i18n support.
 allowed-tools: Read, Write, Edit, Bash(ls:*), Bash(make build)
 ---
 
@@ -49,17 +49,17 @@ Note: The `id` and image filename are derived automatically from the title.
 
 ### Required Fields
 
-| Field           | Format                        | Example                          |
-| --------------- | ----------------------------- | -------------------------------- |
-| `title`         | Title case                    | `Autumn Leaves`                  |
-| `description`   | Plain text                    | `A vibrant fall scene...`        |
+| Field           | Format                        | Example                                   |
+| --------------- | ----------------------------- | ----------------------------------------- |
+| `title`         | Title case                    | `Autumn Leaves`                           |
+| `description`   | Plain text                    | `A vibrant fall scene...`                 |
 | `dimensions`    | Object with width/height/unit | `{ width: 40.6, height: 50.8, unit: cm }` |
-| `substrate`     | String (canvas, paper, etc.)  | `canvas`                         |
+| `substrate`     | String (canvas, paper, etc.)  | `canvas`                                  |
 | `substrateSize` | Object with width/height/unit | `{ width: 40.6, height: 50.8, unit: cm }` |
-| `medium`        | Art medium description        | `acrylic`                        |
-| `year`          | String (quoted)               | `'2024'`                         |
-| `alt`           | Accessibility text            | `Colorful maple leaves...`       |
-| `order`         | Integer                       | `5`                              |
+| `medium`        | Art medium description        | `acrylic`                                 |
+| `year`          | String (quoted)               | `'2024'`                                  |
+| `alt`           | Accessibility text            | `Colorful maple leaves...`                |
+| `order`         | Integer                       | `5`                                       |
 
 ### Step 4: Add Translations (Optional)
 
@@ -68,7 +68,7 @@ For non-English translations, add entries to `content/paintings/locales/{lang}/p
 ```yaml
 # content/paintings/locales/zh/painting-locales.yaml
 paintings:
-  - id: painting-title  # kebab-case of original title
+  - id: painting-title # kebab-case of original title
     title: 中文标题
     description: 中文描述
     alt: 中文替代文本
@@ -137,6 +137,7 @@ Edit `locales/{lang}/common.json` for navigation, buttons, and other UI text:
 ```
 
 **Translation files by namespace:**
+
 - `common.json` - Shared UI strings (nav, buttons)
 - `about.json` - About page specific strings
 - `painting.json` - Painting detail page strings
@@ -144,12 +145,12 @@ Edit `locales/{lang}/common.json` for navigation, buttons, and other UI text:
 
 ## Supported Languages
 
-| Code  | Language            |
-| ----- | ------------------- |
-| `en`  | English (default)   |
-| `zh`  | Chinese (Simplified)|
-| `yue` | Cantonese           |
-| `ms`  | Malay               |
+| Code  | Language             |
+| ----- | -------------------- |
+| `en`  | English (default)    |
+| `zh`  | Chinese (Simplified) |
+| `yue` | Cantonese            |
+| `ms`  | Malay                |
 
 ## Common Issues
 

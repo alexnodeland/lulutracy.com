@@ -17,7 +17,7 @@ describe('Header', () => {
 
   it('renders the logo', () => {
     render(<Header onMenuToggle={mockOnMenuToggle} />)
-    expect(screen.getByLabelText('Lulu Tracy - Home')).toBeInTheDocument()
+    expect(screen.getByLabelText('lulutracy - Home')).toBeInTheDocument()
   })
 
   it('renders the menu button', () => {
@@ -39,7 +39,7 @@ describe('Header', () => {
 
   it('logo links to homepage', () => {
     render(<Header onMenuToggle={mockOnMenuToggle} />)
-    const logoLink = screen.getByLabelText('Lulu Tracy - Home')
+    const logoLink = screen.getByLabelText('lulutracy - Home')
     expect(logoLink).toHaveAttribute('href', '/')
   })
 

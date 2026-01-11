@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({
         <Link to="/" className={styles.logo} aria-label={t('nav.home')}>
           <StaticImage
             src="../images/logo.png"
-            alt="Lulu Tracy"
+            alt="lulutracy"
             className={styles.logoImage}
             placeholder="none"
             layout="fixed"
