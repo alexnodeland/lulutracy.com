@@ -37,11 +37,13 @@ describe('PaintingNav', () => {
 
   beforeEach(() => {
     mockHref = ''
-    delete (window as { location?: Location }).location
-    window.location = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (window as any).location
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).location = {
       ...originalLocation,
       href: '',
-    } as Location
+    }
     Object.defineProperty(window.location, 'href', {
       get: () => mockHref,
       set: (value: string) => {
@@ -51,7 +53,8 @@ describe('PaintingNav', () => {
   })
 
   afterEach(() => {
-    window.location = originalLocation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).location = originalLocation
   })
 
   it('renders navigation element', () => {

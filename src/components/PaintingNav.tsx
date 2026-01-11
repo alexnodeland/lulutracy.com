@@ -25,8 +25,8 @@ interface PaintingNavProps {
 const PaintingNav: React.FC<PaintingNavProps> = ({
   prevPainting,
   nextPainting,
-  currentIndex,
-  totalCount,
+  currentIndex = 0,
+  totalCount = 0,
 }) => {
   const { t } = useTranslation('painting')
 
@@ -126,9 +126,11 @@ const PaintingNav: React.FC<PaintingNavProps> = ({
             </span>
           )}
 
-          <span className={styles.counter}>
-            {currentIndex + 1} / {totalCount}
-          </span>
+          {totalCount > 0 && (
+            <span className={styles.counter}>
+              {currentIndex + 1} / {totalCount}
+            </span>
+          )}
 
           {nextPainting ? (
             <Link

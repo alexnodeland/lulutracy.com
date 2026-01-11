@@ -95,8 +95,10 @@ describe('ErrorBoundary', () => {
   it('navigates to home when Go Home button is clicked', () => {
     const mockHref = jest.fn()
     const originalLocation = window.location
-    delete (window as { location?: Location }).location
-    window.location = { ...originalLocation, href: '' } as Location
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (window as any).location
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).location = { ...originalLocation, href: '' }
     Object.defineProperty(window.location, 'href', {
       set: mockHref,
     })
@@ -113,7 +115,8 @@ describe('ErrorBoundary', () => {
 
     expect(mockHref).toHaveBeenCalledWith('/')
 
-    window.location = originalLocation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).location = originalLocation
   })
 
   it('does not render error UI when children render successfully', () => {
