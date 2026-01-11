@@ -24,6 +24,9 @@ interface IndexPageData {
   allPaintingsYaml: {
     nodes: Array<{
       paintings: RawPainting[]
+      parent: {
+        name: string
+      }
     }>
   }
   allFile: {
@@ -42,21 +45,46 @@ interface IndexPageData {
         description: string
         url: string
       }
+      parent: {
+        name: string
+      }
     }>
   }
 }
 
-const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
-  const paintingsData = data.allPaintingsYaml.nodes[0]
-  const rawPaintings = paintingsData?.paintings || []
+interface IndexPageContext {
+  language: string
+}
+
+const IndexPage: React.FC<PageProps<IndexPageData, IndexPageContext>> = ({
+  data,
+  pageContext,
+}) => {
+  const language = pageContext.language || 'en'
+
+  // Find paintings for the current language
+  const paintingsNode = data.allPaintingsYaml.nodes.find(
+    (node) => node.parent?.name === language
+  )
+  const rawPaintings = paintingsNode?.paintings || []
   const imageNodes = data.allFile.nodes
 
-  // Enrich paintings with derived id and image fields
-  const paintings: Painting[] = rawPaintings.map((raw) => ({
-    ...raw,
-    id: generateSlug(raw.title),
-    image: generateImageFilename(raw.title),
-  }))
+  // Get English paintings for consistent slug generation
+  const enPaintingsNode = data.allPaintingsYaml.nodes.find(
+    (node) => node.parent?.name === 'en'
+  )
+  const enPaintings = enPaintingsNode?.paintings || []
+
+  // Enrich paintings with derived id and image fields (using English titles for slugs)
+  const paintings: Painting[] = rawPaintings.map((raw, index) => {
+    const enPainting = enPaintings[index]
+    const slugSource = enPainting || raw
+    return {
+      ...raw,
+      id: generateSlug(slugSource.title),
+      image: generateImageFilename(slugSource.title),
+    }
+  })
 
   // Sort paintings by order
   const sortedPaintings = [...paintings].sort((a, b) => a.order - b.order)
@@ -92,13 +120,22 @@ const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
 
 export default IndexPage
 
-export const Head: HeadFC<IndexPageData> = ({ data }) => {
-  const { site } = data.allSiteYaml.nodes[0]
-  const siteUrl = site.url
+export const Head: HeadFC<IndexPageData, IndexPageContext> = ({
+  data,
+  pageContext,
+}) => {
+  const language = pageContext?.language || 'en'
+  const siteNode = data.allSiteYaml.nodes.find(
+    (node) => node.parent?.name === 'en'
+  )
+  const site = siteNode?.site
+  const siteUrl = site?.url || ''
 
   // Get first painting image for OG image
-  const paintingsData = data.allPaintingsYaml.nodes[0]
-  const rawPaintings = paintingsData?.paintings || []
+  const paintingsNode = data.allPaintingsYaml.nodes.find(
+    (node) => node.parent?.name === 'en'
+  )
+  const rawPaintings = paintingsNode?.paintings || []
   const sortedPaintings = [...rawPaintings].sort((a, b) => a.order - b.order)
   const firstPainting = sortedPaintings[0]
   const imageNodes = data.allFile.nodes
@@ -109,35 +146,57 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
     ? `${siteUrl}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
     : `${siteUrl}/icon.png`
 
+  // Define supported languages for hreflang
+  const languages = ['en', 'zh']
+  const ogLocale = language === 'zh' ? 'zh_CN' : 'en_US'
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${site.name} | ${site.tagline}`,
-    description: site.description,
+    name: `${site?.name} | ${site?.tagline}`,
+    description: site?.description,
     url: siteUrl,
   }
 
   return (
     <>
-      <title>{`${site.name} | ${site.tagline}`}</title>
-      <meta name="description" content={site.description} />
+      <html lang={language} />
+      <title>{`${site?.name} | ${site?.tagline}`}</title>
+      <meta name="description" content={site?.description || ''} />
 
       {/* Canonical URL */}
-      <link rel="canonical" href={siteUrl} />
+      <link
+        rel="canonical"
+        href={language === 'en' ? siteUrl : `${siteUrl}/zh/`}
+      />
+
+      {/* Hreflang alternate links */}
+      {languages.map((lang) => (
+        <link
+          key={lang}
+          rel="alternate"
+          hrefLang={lang}
+          href={lang === 'en' ? siteUrl : `${siteUrl}/${lang}/`}
+        />
+      ))}
+      <link rel="alternate" hrefLang="x-default" href={siteUrl} />
 
       {/* Open Graph meta tags */}
-      <meta property="og:title" content={`${site.name} | ${site.tagline}`} />
-      <meta property="og:description" content={site.description} />
-      <meta property="og:url" content={siteUrl} />
+      <meta property="og:title" content={`${site?.name} | ${site?.tagline}`} />
+      <meta property="og:description" content={site?.description || ''} />
+      <meta
+        property="og:url"
+        content={language === 'en' ? siteUrl : `${siteUrl}/zh/`}
+      />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={site.name} />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:site_name" content={site?.name || ''} />
+      <meta property="og:locale" content={ogLocale} />
 
       {/* Twitter Card meta tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${site.name} | ${site.tagline}`} />
-      <meta name="twitter:description" content={site.description} />
+      <meta name="twitter:title" content={`${site?.name} | ${site?.tagline}`} />
+      <meta name="twitter:description" content={site?.description || ''} />
       <meta name="twitter:image" content={ogImage} />
 
       {/* JSON-LD structured data */}
@@ -147,7 +206,16 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
 }
 
 export const query = graphql`
-  query IndexPage {
+  query IndexPage($language: String!) {
+    locales: allLocale(filter: { language: { eq: $language } }) {
+      edges {
+        node {
+          ns
+          data
+          language
+        }
+      }
+    }
     allSiteYaml {
       nodes {
         site {
@@ -155,6 +223,11 @@ export const query = graphql`
           tagline
           description
           url
+        }
+        parent {
+          ... on File {
+            name
+          }
         }
       }
     }
@@ -170,6 +243,11 @@ export const query = graphql`
           year
           alt
           order
+        }
+        parent {
+          ... on File {
+            name
+          }
         }
       }
     }

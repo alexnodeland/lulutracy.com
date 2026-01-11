@@ -42,6 +42,9 @@ const mockAllSiteYaml = {
           'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
         url: 'https://alexnodeland.github.io/lulutracy.com',
       },
+      parent: {
+        name: 'en',
+      },
     },
   ],
 }
@@ -51,6 +54,9 @@ const mockData = {
     nodes: [
       {
         paintings: mockPaintings,
+        parent: {
+          name: 'en',
+        },
       },
     ],
   },
@@ -95,9 +101,15 @@ const mockData = {
   allSiteYaml: mockAllSiteYaml,
 }
 
+const mockPageContext = {
+  language: 'en',
+}
+
 // Cast to any to bypass Gatsby PageProps typing in tests
-const renderIndexPage = (data = mockData) => {
-  return render(<IndexPage data={data} {...({} as any)} />)
+const renderIndexPage = (data = mockData, pageContext = mockPageContext) => {
+  return render(
+    <IndexPage data={data} pageContext={pageContext} {...({} as any)} />
+  )
 }
 
 describe('IndexPage', () => {
@@ -129,7 +141,7 @@ describe('IndexPage', () => {
   it('handles empty paintings gracefully', () => {
     const emptyData = {
       allPaintingsYaml: {
-        nodes: [{ paintings: [] }],
+        nodes: [{ paintings: [], parent: { name: 'en' } }],
       },
       allFile: {
         nodes: [],
@@ -143,7 +155,7 @@ describe('IndexPage', () => {
   it('handles undefined paintings gracefully', () => {
     const undefinedData = {
       allPaintingsYaml: {
-        nodes: [{}],
+        nodes: [{ parent: { name: 'en' } }],
       },
       allFile: {
         nodes: [],
@@ -151,6 +163,51 @@ describe('IndexPage', () => {
       allSiteYaml: mockAllSiteYaml,
     }
     renderIndexPage(undefinedData as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('handles missing pageContext.language gracefully', () => {
+    renderIndexPage(mockData, {} as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('handles Chinese language context', () => {
+    const zhData = {
+      ...mockData,
+      allPaintingsYaml: {
+        nodes: [
+          {
+            paintings: mockPaintings,
+            parent: { name: 'en' },
+          },
+          {
+            paintings: mockPaintings,
+            parent: { name: 'zh' },
+          },
+        ],
+      },
+    }
+    renderIndexPage(zhData, { language: 'zh' })
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('falls back to raw painting when English painting is missing', () => {
+    const dataWithMissingEnPainting = {
+      ...mockData,
+      allPaintingsYaml: {
+        nodes: [
+          {
+            paintings: [],
+            parent: { name: 'en' },
+          },
+          {
+            paintings: mockPaintings,
+            parent: { name: 'zh' },
+          },
+        ],
+      },
+    }
+    renderIndexPage(dataWithMissingEnPainting, { language: 'zh' })
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
@@ -176,7 +233,7 @@ describe('Head', () => {
   it('renders with fallback image when no paintings exist', () => {
     const emptyData = {
       allPaintingsYaml: {
-        nodes: [{ paintings: [] }],
+        nodes: [{ paintings: [], parent: { name: 'en' } }],
       },
       allFile: {
         nodes: [],
@@ -194,7 +251,7 @@ describe('Head', () => {
   it('renders with fallback image when paintings is undefined', () => {
     const undefinedData = {
       allPaintingsYaml: {
-        nodes: [{}],
+        nodes: [{ parent: { name: 'en' } }],
       },
       allFile: {
         nodes: [],
@@ -207,5 +264,24 @@ describe('Head', () => {
     expect(
       container.querySelector('meta[property="og:image"]')
     ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with Chinese locale when language is zh', () => {
+    const { container } = render(
+      <Head data={mockData} pageContext={{ language: 'zh' }} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'zh_CN')
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/zh/')
+    )
+  })
+
+  it('renders hreflang alternate links', () => {
+    const { container } = render(<Head data={mockData} {...({} as any)} />)
+    const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
+    expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
   })
 })

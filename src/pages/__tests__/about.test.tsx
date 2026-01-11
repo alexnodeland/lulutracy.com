@@ -13,6 +13,9 @@ const mockAllSiteYaml = {
         email: 'tracy@lulutracy.com',
         url: 'https://alexnodeland.github.io/lulutracy.com',
       },
+      parent: {
+        name: 'en',
+      },
     },
   ],
 }
@@ -94,6 +97,31 @@ describe('AboutPage', () => {
     render(<AboutPage data={dataWithoutImage} {...({} as any)} />)
     expect(screen.getByText(/photo not available/i)).toBeInTheDocument()
   })
+
+  it('renders fallback when markdownRemark is null', () => {
+    const dataWithoutMarkdown = {
+      ...mockData,
+      markdownRemark: null,
+    }
+    render(<AboutPage data={dataWithoutMarkdown} {...({} as any)} />)
+    expect(screen.getByText(/content not available/i)).toBeInTheDocument()
+  })
+
+  it('uses fallback site when English site node not found', () => {
+    const dataWithNonEnglishSite = {
+      ...mockData,
+      allSiteYaml: {
+        nodes: [
+          {
+            site: mockAllSiteYaml.nodes[0].site,
+            parent: { name: 'zh' },
+          },
+        ],
+      },
+    }
+    render(<AboutPage data={dataWithNonEnglishSite} {...({} as any)} />)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
 })
 
 describe('Head', () => {
@@ -112,6 +140,58 @@ describe('Head', () => {
     expect(container.querySelector('meta[property="og:url"]')).toHaveAttribute(
       'content',
       expect.stringContaining('/about')
+    )
+  })
+
+  it('renders fallback title when markdownRemark is null', () => {
+    const dataWithoutMarkdown = {
+      ...mockData,
+      markdownRemark: null,
+    }
+    const { container } = render(
+      <Head data={dataWithoutMarkdown} {...({} as any)} />
+    )
+    expect(container.querySelector('title')).toHaveTextContent(
+      'About | lulutracy'
+    )
+  })
+
+  it('renders with Chinese locale when language is zh', () => {
+    const { container } = render(
+      <Head data={mockData} pageContext={{ language: 'zh' }} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'zh_CN')
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/zh/about')
+    )
+  })
+
+  it('renders hreflang alternate links', () => {
+    const { container } = render(<Head data={mockData} {...({} as any)} />)
+    const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
+    expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('uses fallback site when English site node not found', () => {
+    const dataWithNonEnglishSite = {
+      ...mockData,
+      allSiteYaml: {
+        nodes: [
+          {
+            site: mockAllSiteYaml.nodes[0].site,
+            parent: { name: 'zh' },
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataWithNonEnglishSite} {...({} as any)} />
+    )
+    expect(container.querySelector('title')).toHaveTextContent(
+      'about | lulutracy'
     )
   })
 })

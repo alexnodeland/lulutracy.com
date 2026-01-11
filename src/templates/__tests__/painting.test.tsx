@@ -39,6 +39,7 @@ const mockPageContext = {
   id: 'test-painting',
   painting: mockPainting,
   imageName: 'test',
+  language: 'en',
 }
 
 const mockAllSiteYaml = {
@@ -48,6 +49,9 @@ const mockAllSiteYaml = {
         name: 'lulutracy',
         author: 'Tracy Mah',
         url: 'https://alexnodeland.github.io/lulutracy.com',
+      },
+      parent: {
+        name: 'en',
       },
     },
   ],
@@ -304,5 +308,87 @@ describe('Head component', () => {
     expect(
       container.querySelector('meta[property="og:image"]')
     ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with Chinese locale when language is zh', () => {
+    const zhPageContext = {
+      ...mockPageContext,
+      language: 'zh',
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={zhPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'zh_CN')
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/zh/painting/')
+    )
+  })
+
+  it('renders hreflang alternate links', () => {
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
+    expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles missing language in pageContext', () => {
+    const contextWithoutLanguage = {
+      ...mockPageContext,
+      language: undefined,
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={contextWithoutLanguage as any}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'en_US')
+  })
+})
+
+describe('Portrait image handling', () => {
+  it('applies portrait class for tall images', () => {
+    const portraitImageData = {
+      ...mockDataWithImage,
+      file: {
+        childImageSharp: {
+          gatsbyImageData: {
+            layout: 'constrained' as const,
+            width: 600,
+            height: 800,
+            images: {
+              fallback: {
+                src: '/test.jpg',
+                srcSet: '/test.jpg 600w',
+                sizes: '(min-width: 600px) 600px, 100vw',
+              },
+            },
+          },
+        },
+      },
+    }
+    render(
+      <PaintingTemplate
+        data={portraitImageData as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(screen.getByRole('article')).toBeInTheDocument()
   })
 })

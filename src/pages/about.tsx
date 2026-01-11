@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql, PageProps, HeadFC } from 'gatsby'
 import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image'
+import { useTranslation } from 'gatsby-plugin-react-i18next'
 import Layout from '../components/Layout'
 import * as styles from './about.module.css'
 
@@ -17,7 +18,7 @@ interface AboutPageData {
     }
     html: string
     excerpt: string
-  }
+  } | null
   allSiteYaml: {
     nodes: Array<{
       site: {
@@ -27,13 +28,38 @@ interface AboutPageData {
         email: string
         url: string
       }
+      parent: {
+        name: string
+      }
     }>
   }
 }
 
-const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
-  const { frontmatter, html } = data.markdownRemark
-  const { site } = data.allSiteYaml.nodes[0]
+interface AboutPageContext {
+  language: string
+}
+
+const AboutPage: React.FC<PageProps<AboutPageData, AboutPageContext>> = ({
+  data,
+}) => {
+  const { t } = useTranslation('about')
+  const markdownRemark = data.markdownRemark
+  const siteNode = data.allSiteYaml.nodes.find(
+    (node) => node.parent?.name === 'en'
+  )
+  const site = siteNode?.site || data.allSiteYaml.nodes[0]?.site
+
+  if (!markdownRemark) {
+    return (
+      <Layout>
+        <div className={styles.about}>
+          <p>Content not available</p>
+        </div>
+      </Layout>
+    )
+  }
+
+  const { frontmatter, html } = markdownRemark
   const image = frontmatter.photo?.childImageSharp
     ? getImage(frontmatter.photo.childImageSharp.gatsbyImageData)
     : null
@@ -49,7 +75,7 @@ const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
               className={styles.photo}
             />
           ) : (
-            <div className={styles.placeholder}>Photo not available</div>
+            <div className={styles.placeholder}>{t('photoNotAvailable')}</div>
           )}
         </div>
         <div className={styles.content}>
@@ -59,7 +85,7 @@ const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
             dangerouslySetInnerHTML={{ __html: html }}
           />
           <a href={`mailto:${site.email}`} className={styles.contactButton}>
-            Contact
+            {t('contact')}
           </a>
         </div>
       </div>
@@ -69,18 +95,36 @@ const AboutPage: React.FC<PageProps<AboutPageData>> = ({ data }) => {
 
 export default AboutPage
 
-export const Head: HeadFC<AboutPageData> = ({ data }) => {
-  const { site } = data.allSiteYaml.nodes[0]
-  const { frontmatter, excerpt } = data.markdownRemark
+export const Head: HeadFC<AboutPageData, AboutPageContext> = ({
+  data,
+  pageContext,
+}) => {
+  const language = pageContext?.language || 'en'
+  const siteNode = data.allSiteYaml.nodes.find(
+    (node) => node.parent?.name === 'en'
+  )
+  const site = siteNode?.site || data.allSiteYaml.nodes[0]?.site
+  const markdownRemark = data.markdownRemark
+
+  if (!markdownRemark || !site) {
+    return <title>About | {site?.name || 'lulutracy'}</title>
+  }
+
+  const { frontmatter, excerpt } = markdownRemark
   // Use excerpt from markdown content for description
   const description = `About ${site.author} - ${excerpt}`
-  const pageUrl = `${site.url}/about`
+  const pageUrl =
+    language === 'en' ? `${site.url}/about` : `${site.url}/${language}/about`
 
   // Get about photo for OG image
   const ogImage = frontmatter.photo?.childImageSharp?.gatsbyImageData?.images
     ?.fallback?.src
     ? `${site.url}${frontmatter.photo.childImageSharp.gatsbyImageData.images.fallback.src}`
     : `${site.url}/icon.png`
+
+  // Define supported languages for hreflang
+  const languages = ['en', 'zh']
+  const ogLocale = language === 'zh' ? 'zh_CN' : 'en_US'
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -98,11 +142,25 @@ export const Head: HeadFC<AboutPageData> = ({ data }) => {
 
   return (
     <>
+      <html lang={language} />
       <title>{`about | ${site.name}`}</title>
       <meta name="description" content={description} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={pageUrl} />
+
+      {/* Hreflang alternate links */}
+      {languages.map((lang) => (
+        <link
+          key={lang}
+          rel="alternate"
+          hrefLang={lang}
+          href={
+            lang === 'en' ? `${site.url}/about` : `${site.url}/${lang}/about`
+          }
+        />
+      ))}
+      <link rel="alternate" hrefLang="x-default" href={`${site.url}/about`} />
 
       {/* Open Graph meta tags */}
       <meta property="og:title" content={`about | ${site.name}`} />
@@ -111,7 +169,7 @@ export const Head: HeadFC<AboutPageData> = ({ data }) => {
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content={site.name} />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:locale" content={ogLocale} />
 
       {/* Twitter Card meta tags */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -126,7 +184,16 @@ export const Head: HeadFC<AboutPageData> = ({ data }) => {
 }
 
 export const query = graphql`
-  query AboutPage {
+  query AboutPage($language: String!) {
+    locales: allLocale(filter: { language: { eq: $language } }) {
+      edges {
+        node {
+          ns
+          data
+          language
+        }
+      }
+    }
     allSiteYaml {
       nodes {
         site {
@@ -136,9 +203,17 @@ export const query = graphql`
           email
           url
         }
+        parent {
+          ... on File {
+            name
+          }
+        }
       }
     }
-    markdownRemark(frontmatter: { title: { eq: "About" } }) {
+    markdownRemark(
+      frontmatter: { locale: { eq: $language } }
+      fileAbsolutePath: { regex: "/content/about/" }
+    ) {
       frontmatter {
         title
         artistName

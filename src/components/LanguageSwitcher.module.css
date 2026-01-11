@@ -1,0 +1,35 @@
+.switcher {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.button:hover {
+  opacity: 1;
+}
+
+.active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Separator between languages */
+.button:not(:last-child)::after {
+  content: '/';
+  margin-left: 0.25rem;
+  opacity: 0.4;
+}

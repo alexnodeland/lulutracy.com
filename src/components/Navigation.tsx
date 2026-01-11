@@ -1,9 +1,19 @@
 import React, { useEffect } from 'react'
-import { Link } from 'gatsby'
+import { Link as I18nLink, useTranslation } from 'gatsby-plugin-react-i18next'
 import type { NavigationProps } from '../types'
 import * as styles from './Navigation.module.css'
 
+// Workaround for gatsby-plugin-react-i18next Link type issues
+const Link = I18nLink as unknown as React.FC<{
+  to: string
+  className?: string
+  children: React.ReactNode
+  onClick?: () => void
+}>
+
 const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation('common')
+
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -39,13 +49,13 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
       {/* Navigation Panel */}
       <nav
         className={`${styles.nav} ${isOpen ? styles.navOpen : ''}`}
-        aria-label="Main navigation"
+        aria-label={t('mainNavigation')}
         aria-hidden={!isOpen}
       >
         <ul className={styles.navList}>
           <li>
             <Link to="/about" className={styles.navLink} onClick={onClose}>
-              about
+              {t('nav.about')}
             </Link>
           </li>
         </ul>

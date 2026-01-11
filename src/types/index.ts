@@ -62,6 +62,30 @@ export interface AboutMarkdownNode {
     title: string
     artistName: string
     photo: string
+    locale?: string
   }
   html: string
+}
+
+// i18n types
+export interface I18nPageContext {
+  language: string
+  languages: readonly string[]
+  defaultLanguage: string
+  originalPath: string
+  routed: boolean
+}
+
+export interface LocaleNode {
+  ns: string
+  data: string
+  language: string
+}
+
+export interface LocaleQueryResult {
+  locales: {
+    edges: Array<{
+      node: LocaleNode
+    }>
+  }
 }

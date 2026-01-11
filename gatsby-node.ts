@@ -8,6 +8,11 @@ import { generateSlug, generateImageFilename } from './src/utils/slug'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const piexif = require('piexifjs')
 
+const LANGUAGES = ['en', 'zh'] as const
+const DEFAULT_LANGUAGE = 'en'
+
+type Language = (typeof LANGUAGES)[number]
+
 interface SiteConfig {
   name: string
   author: string
@@ -29,8 +34,19 @@ interface PaintingsQueryResult {
   allPaintingsYaml: {
     nodes: Array<{
       paintings: RawPainting[]
+      parent: {
+        name: string
+      }
     }>
   }
+}
+
+interface I18nContext {
+  language: Language
+  languages: readonly string[]
+  defaultLanguage: Language
+  originalPath: string
+  routed: boolean
 }
 
 export const createPages: GatsbyNode['createPages'] = async ({
@@ -40,7 +56,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
   const { createPage } = actions
   const paintingTemplate = path.resolve('./src/templates/painting.tsx')
 
-  // Query all paintings from YAML
+  // Query all paintings from locale-specific YAML files
   const result = await graphql<PaintingsQueryResult>(`
     query {
       allPaintingsYaml {
@@ -56,6 +72,11 @@ export const createPages: GatsbyNode['createPages'] = async ({
             alt
             order
           }
+          parent {
+            ... on File {
+              name
+            }
+          }
         }
       }
     }
@@ -66,14 +87,34 @@ export const createPages: GatsbyNode['createPages'] = async ({
     return
   }
 
-  // Get paintings array from YAML data
-  const paintingsData = result.data?.allPaintingsYaml.nodes[0]
-  if (paintingsData && paintingsData.paintings) {
-    paintingsData.paintings.forEach((painting) => {
-      // Derive id and image filename from title
-      const id = generateSlug(painting.title)
-      const image = generateImageFilename(painting.title)
+  // Group paintings by locale
+  const paintingsByLocale = new Map<Language, RawPainting[]>()
+
+  result.data?.allPaintingsYaml.nodes.forEach((node) => {
+    const locale = node.parent?.name as Language
+    if (LANGUAGES.includes(locale)) {
+      paintingsByLocale.set(locale, node.paintings)
+    }
+  })
+
+  // Get English paintings for consistent slug generation
+  const enPaintings = paintingsByLocale.get('en') || []
+
+  // Create pages for each language
+  LANGUAGES.forEach((lang) => {
+    const paintings = paintingsByLocale.get(lang) || []
+
+    paintings.forEach((painting, index) => {
+      // Use English painting for slug generation (for URL consistency)
+      const enPainting = enPaintings[index]
+      const slugSource = enPainting || painting
+      const id = generateSlug(slugSource.title)
+      const image = generateImageFilename(slugSource.title)
       const imageName = image.replace(/\.[^/.]+$/, '')
+
+      const originalPath = `/painting/${id}`
+      const pagePath =
+        lang === DEFAULT_LANGUAGE ? originalPath : `/${lang}${originalPath}`
 
       // Create enriched painting object with derived fields
       const enrichedPainting = {
@@ -82,17 +123,27 @@ export const createPages: GatsbyNode['createPages'] = async ({
         image,
       }
 
+      const i18n: I18nContext = {
+        language: lang,
+        languages: LANGUAGES,
+        defaultLanguage: DEFAULT_LANGUAGE,
+        originalPath,
+        routed: lang !== DEFAULT_LANGUAGE,
+      }
+
       createPage({
-        path: `/painting/${id}`,
+        path: pagePath,
         component: paintingTemplate,
         context: {
-          id: id,
+          id,
           painting: enrichedPainting,
-          imageName: imageName,
+          imageName,
+          language: lang,
+          i18n,
         },
       })
     })
-  }
+  })
 }
 
 /**
@@ -149,17 +200,14 @@ export const onPostBuild: GatsbyNode['onPostBuild'] = async ({ reporter }) => {
   activity.start()
 
   try {
-    // Load site config
-    const siteYamlPath = path.join(__dirname, 'content/site/index.yaml')
+    // Load site config (use English for EXIF metadata)
+    const siteYamlPath = path.join(__dirname, 'content/site/en.yaml')
     const siteYamlContent = fs.readFileSync(siteYamlPath, 'utf8')
     const siteYaml = yaml.load(siteYamlContent) as { site: SiteConfig }
     const site = siteYaml.site
 
-    // Load paintings metadata
-    const paintingsYamlPath = path.join(
-      __dirname,
-      'content/paintings/index.yaml'
-    )
+    // Load English paintings metadata for EXIF
+    const paintingsYamlPath = path.join(__dirname, 'content/paintings/en.yaml')
     const paintingsYamlContent = fs.readFileSync(paintingsYamlPath, 'utf8')
     const paintingsYaml = yaml.load(paintingsYamlContent) as {
       paintings: RawPainting[]
