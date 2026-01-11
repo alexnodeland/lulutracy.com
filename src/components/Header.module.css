@@ -6,6 +6,7 @@
   z-index: var(--z-header);
   background-color: var(--color-background);
   height: var(--header-height);
+  transition: background-color var(--theme-transition);
 }
 
 .container {

@@ -1,0 +1,54 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: inherit;
+  transition: opacity var(--transition-fast);
+}
+
+.toggle:hover {
+  opacity: 0.7;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.iconWrapper {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.iconHidden {
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .icon {
+    transition: opacity var(--transition-fast);
+  }
+
+  .iconHidden {
+    transform: none;
+  }
+}

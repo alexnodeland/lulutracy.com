@@ -1,6 +1,18 @@
 import React from 'react'
 import type { GatsbySSR } from 'gatsby'
 import { LocationProvider } from './src/components/LocationContext'
+import { ThemeProvider } from './src/components/ThemeContext'
+
+// Inline script to set theme before paint (prevents flash)
+const themeInitScript = `
+(function() {
+  var theme = localStorage.getItem('theme');
+  if (!theme) {
+    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+`
 
 export const onRenderBody: GatsbySSR['onRenderBody'] = ({
   setHeadComponents,
@@ -8,6 +20,10 @@ export const onRenderBody: GatsbySSR['onRenderBody'] = ({
 }) => {
   setHtmlAttributes({ lang: 'en' })
   setHeadComponents([
+    <script
+      key="theme-init"
+      dangerouslySetInnerHTML={{ __html: themeInitScript }}
+    />,
     <link
       key="google-fonts-preconnect"
       rel="preconnect"
@@ -32,6 +48,8 @@ export const wrapPageElement: GatsbySSR['wrapPageElement'] = ({
   props,
 }) => {
   return (
-    <LocationProvider location={props.location}>{element}</LocationProvider>
+    <ThemeProvider>
+      <LocationProvider location={props.location}>{element}</LocationProvider>
+    </ThemeProvider>
   )
 }

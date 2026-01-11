@@ -9,5 +9,9 @@
     "home": "lulutracy"
   },
   "toggleMenu": "Togol menu navigasi",
-  "mainNavigation": "Navigasi utama"
+  "mainNavigation": "Navigasi utama",
+  "theme": {
+    "switchToDark": "Tukar ke mod gelap",
+    "switchToLight": "Tukar ke mod terang"
+  }
 }

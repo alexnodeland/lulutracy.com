@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link as I18nLink, useTranslation } from 'gatsby-plugin-react-i18next'
+import ThemeToggle from './ThemeToggle'
 import type { NavigationProps } from '../types'
 import * as styles from './Navigation.module.css'
 
@@ -59,6 +60,9 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
             </Link>
           </li>
         </ul>
+        <div className={styles.themeToggleWrapper}>
+          <ThemeToggle />
+        </div>
       </nav>
     </>
   )

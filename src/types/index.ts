@@ -76,6 +76,14 @@ export interface AboutMarkdownNode {
   html: string
 }
 
+// Theme types
+export type Theme = 'light' | 'dark'
+
+export interface ThemeContextValue {
+  theme: Theme
+  toggleTheme: () => void
+}
+
 // i18n types
 export interface I18nPageContext {
   language: string

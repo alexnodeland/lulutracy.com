@@ -3,6 +3,12 @@ import { render, screen } from '@testing-library/react'
 import IndexPage, { Head } from '../index'
 import type { Painting } from '../../types'
 
+// Mock ThemeContext to avoid ThemeProvider requirement
+jest.mock('../../components/ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
 const mockPaintings: Painting[] = [
   {
     id: 'painting-1',

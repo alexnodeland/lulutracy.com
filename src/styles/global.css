@@ -1,6 +1,6 @@
 /* Design Tokens */
 :root {
-  /* Colors */
+  /* Colors - Light Mode (default) */
   --color-background: #ffffff;
   --color-text: #555555;
   --color-text-light: #666666;
@@ -8,6 +8,9 @@
   --color-white: #ffffff;
   --color-border: #e5e5e5;
   --color-footer-bg: #f5f5f5;
+
+  /* Color scheme for browser UI */
+  color-scheme: light dark;
 
   /* Typography */
   --font-family-base:
@@ -60,6 +63,30 @@
   --z-overlay: 150;
 }
 
+/* Dark Mode Colors */
+[data-theme='dark'] {
+  --color-background: #1a1a1a;
+  --color-text: #d4d4d4;
+  --color-text-light: #a3a3a3;
+  --color-black: #ffffff;
+  --color-white: #1a1a1a;
+  --color-border: #333333;
+  --color-footer-bg: #141414;
+}
+
+/* System preference fallback (before JS loads) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-background: #1a1a1a;
+    --color-text: #d4d4d4;
+    --color-text-light: #a3a3a3;
+    --color-black: #ffffff;
+    --color-white: #1a1a1a;
+    --color-border: #333333;
+    --color-footer-bg: #141414;
+  }
+}
+
 /* Reset */
 *,
 *::before,
@@ -82,6 +109,25 @@ body {
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Theme transition timing variable */
+:root {
+  --theme-transition: 300ms ease;
+}
+
+/* Theme transition for body */
+body {
+  transition:
+    background-color var(--theme-transition),
+    color var(--theme-transition);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --theme-transition: 0ms;
+  }
 }
 
 img {

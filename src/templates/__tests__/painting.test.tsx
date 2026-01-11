@@ -3,6 +3,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import PaintingTemplate, { Head } from '../painting'
 import type { Painting } from '../../types'
 
+// Mock ThemeContext to avoid ThemeProvider requirement
+jest.mock('../../components/ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
 // Mock drift-zoom
 jest.mock('drift-zoom')
 

@@ -2,6 +2,12 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AboutPage, { Head } from '../about'
 
+// Mock ThemeContext to avoid ThemeProvider requirement
+jest.mock('../../components/ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
 const mockSiteYaml = {
   site: {
     name: 'lulutracy',

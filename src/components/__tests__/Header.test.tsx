@@ -2,6 +2,12 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import Header from '../Header'
 
+// Mock ThemeContext to avoid ThemeProvider requirement
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
 describe('Header', () => {
   const mockOnMenuToggle = jest.fn()
 

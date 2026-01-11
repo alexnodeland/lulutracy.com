@@ -9,5 +9,9 @@
     "home": "lulutracy"
   },
   "toggleMenu": "切換導航選單",
-  "mainNavigation": "主導航"
+  "mainNavigation": "主導航",
+  "theme": {
+    "switchToDark": "切換到深色模式",
+    "switchToLight": "切換到淺色模式"
+  }
 }

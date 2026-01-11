@@ -2,6 +2,7 @@ import React from 'react'
 import { Link as I18nLink, useTranslation } from 'gatsby-plugin-react-i18next'
 import { StaticImage } from 'gatsby-plugin-image'
 import LanguageSwitcher from './LanguageSwitcher'
+import ThemeToggle from './ThemeToggle'
 import type { HeaderProps } from '../types'
 import * as styles from './Header.module.css'
 
@@ -41,6 +42,7 @@ const Header: React.FC<HeaderProps> = ({
             </Link>
           </nav>
           <LanguageSwitcher />
+          <ThemeToggle />
         </div>
         <button
           className={styles.menuButton}

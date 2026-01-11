@@ -2,6 +2,12 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import Navigation from '../Navigation'
 
+// Mock ThemeContext to avoid ThemeProvider requirement
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
 describe('Navigation', () => {
   const mockOnClose = jest.fn()
 
