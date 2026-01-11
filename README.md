@@ -1,11 +1,11 @@
 # 🎨 Lulu Tracy
 
-[![Deploy](https://github.com/alexnodeland/lulutracy.com/actions/workflows/deploy.yml/badge.svg)](https://github.com/alexnodeland/lulutracy.com/actions/workflows/deploy.yml)
-[![CI](https://github.com/alexnodeland/lulutracy.com/actions/workflows/ci.yml/badge.svg)](https://github.com/alexnodeland/lulutracy.com/actions/workflows/ci.yml)
+[![Deploy](https://github.com/our-nature/lulutracy.com/actions/workflows/deploy.yml/badge.svg)](https://github.com/our-nature/lulutracy.com/actions/workflows/deploy.yml)
+[![CI](https://github.com/our-nature/lulutracy.com/actions/workflows/ci.yml/badge.svg)](https://github.com/our-nature/lulutracy.com/actions/workflows/ci.yml)
 
 An art portfolio showcasing watercolor and acrylic paintings.
 
-**🌐 [Visit the Gallery](https://alexnodeland.github.io/lulutracy.com)**
+**🌐 [Visit the Gallery](https://our-nature.github.io/lulutracy.com)**
 
 ---
 

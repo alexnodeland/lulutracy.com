@@ -6,7 +6,7 @@ module.exports = {
     title: `Lulu Tracy`,
     description: `Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics`,
     author: `Lulu Tracy`,
-    siteUrl: `https://alexnodeland.github.io/lulutracy.com`,
+    siteUrl: `https://our-nature.github.io/lulutracy.com`,
     supportedLanguages: ['en', 'zh', 'yue', 'ms'],
     defaultLanguage: 'en',
   },
@@ -15,9 +15,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-sitemap`,
       options: {
-        resolveSiteUrl: () => `https://alexnodeland.github.io/lulutracy.com`,
+        resolveSiteUrl: () => `https://our-nature.github.io/lulutracy.com`,
         serialize: ({ path }) => ({
-          url: `https://alexnodeland.github.io/lulutracy.com${path}`,
+          url: `https://our-nature.github.io/lulutracy.com${path}`,
           changefreq: `weekly`,
           priority: path === `/` ? 1.0 : 0.7,
         }),
@@ -93,7 +93,7 @@ module.exports = {
         languages: ['en', 'zh', 'yue', 'ms'],
         defaultLanguage: 'en',
         generateDefaultLanguagePages: true,
-        siteUrl: `https://alexnodeland.github.io/lulutracy.com`,
+        siteUrl: `https://our-nature.github.io/lulutracy.com`,
         i18nextOptions: {
           interpolation: {
             escapeValue: false,

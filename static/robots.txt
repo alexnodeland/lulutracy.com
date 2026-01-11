@@ -29,4 +29,4 @@ Allow: /
 Disallow: /404
 Disallow: /404.html
 
-Sitemap: https://alexnodeland.github.io/lulutracy.com/sitemap-0.xml
+Sitemap: https://our-nature.github.io/lulutracy.com/sitemap-0.xml

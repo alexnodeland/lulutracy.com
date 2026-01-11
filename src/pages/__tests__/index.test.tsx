@@ -57,7 +57,7 @@ const mockPaintings: Painting[] = [
 const mockSiteYaml = {
   site: {
     name: 'lulutracy',
-    url: 'https://alexnodeland.github.io/lulutracy.com',
+    url: 'https://our-nature.github.io/lulutracy.com',
   },
 }
 

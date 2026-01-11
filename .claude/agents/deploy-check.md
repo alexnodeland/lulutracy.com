@@ -27,7 +27,7 @@ make ci
 
 This site uses path prefix for GitHub Pages:
 
-- **Site URL**: https://alexnodeland.github.io/lulutracy.com
+- **Site URL**: https://our-nature.github.io/lulutracy.com
 - **Path Prefix**: `/lulutracy.com`
 
 Verify in `gatsby-config.js`:
@@ -170,14 +170,14 @@ NODE_OPTIONS="--max-old-space-size=4096"
 
 After deployment completes:
 
-1. **Visit live site**: https://alexnodeland.github.io/lulutracy.com
+1. **Visit live site**: https://our-nature.github.io/lulutracy.com
 2. **Check all navigation**: Click through all links
 3. **Verify images load**: Gallery and about page photos
 4. **Test on mobile**: Responsive layout works
 5. **Run Lighthouse**: Check production performance
 
 ```bash
-npx lighthouse https://alexnodeland.github.io/lulutracy.com --view
+npx lighthouse https://our-nature.github.io/lulutracy.com --view
 ```
 
 ## Output Format
