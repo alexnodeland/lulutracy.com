@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'gatsby'
 import { GatsbyImage, getImage, IGatsbyImageData } from 'gatsby-plugin-image'
+import { useTranslation } from 'gatsby-plugin-react-i18next'
 import type { Painting } from '../types'
 import SkeletonLoader from './SkeletonLoader'
 import * as styles from './GalleryImage.module.css'
@@ -17,6 +18,7 @@ const GalleryImage: React.FC<GalleryImageProps> = ({
   image,
   index = 0,
 }) => {
+  const { t } = useTranslation('common')
   const imageData = image ? getImage(image) : null
   const [isLoaded, setIsLoaded] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
@@ -83,7 +85,7 @@ const GalleryImage: React.FC<GalleryImageProps> = ({
           )}
           {/* Hover overlay */}
           <div className={styles.overlay} aria-hidden="true">
-            <span className={styles.viewText}>View</span>
+            <span className={styles.viewText}>{t('gallery.view')}</span>
           </div>
         </div>
       </Link>

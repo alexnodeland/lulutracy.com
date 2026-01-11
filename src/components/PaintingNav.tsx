@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
+import { navigate } from 'gatsby'
 import { Link as I18nLink, useTranslation } from 'gatsby-plugin-react-i18next'
 import * as styles from './PaintingNav.module.css'
 
@@ -45,10 +46,10 @@ const PaintingNav: React.FC<PaintingNavProps> = ({
 
       if (e.key === 'ArrowLeft' && prevPainting) {
         e.preventDefault()
-        window.location.href = `/painting/${prevPainting.id}`
+        navigate(`/painting/${prevPainting.id}`)
       } else if (e.key === 'ArrowRight' && nextPainting) {
         e.preventDefault()
-        window.location.href = `/painting/${nextPainting.id}`
+        navigate(`/painting/${nextPainting.id}`)
       }
     },
     [prevPainting, nextPainting]

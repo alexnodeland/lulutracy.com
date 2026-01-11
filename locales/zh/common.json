@@ -19,6 +19,7 @@
   "backOnline": "已恢复在线",
   "gallery": {
     "emptyTitle": "画廊即将开放",
-    "emptyMessage": "新作品正在准备中。请稍后再来探索我们的收藏。"
+    "emptyMessage": "新作品正在准备中。请稍后再来探索我们的收藏。",
+    "view": "查看"
   }
 }

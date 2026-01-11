@@ -156,13 +156,16 @@ const PaintingTemplate: React.FC<
   }
 
   return (
-    <Layout>
-      <PaintingNav
-        prevPainting={prevPainting}
-        nextPainting={nextPainting}
-        currentIndex={currentIndex}
-        totalCount={totalCount}
-      />
+    <Layout
+      persistentNav={
+        <PaintingNav
+          prevPainting={prevPainting}
+          nextPainting={nextPainting}
+          currentIndex={currentIndex}
+          totalCount={totalCount}
+        />
+      }
+    >
       <article ref={articleRef} className={styles.paintingDetail}>
         <div className={styles.imageContainer}>
           {canUseMagnifier ? (

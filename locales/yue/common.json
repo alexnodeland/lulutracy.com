@@ -19,6 +19,7 @@
   "backOnline": "已經恢復上線",
   "gallery": {
     "emptyTitle": "畫廊即將開放",
-    "emptyMessage": "新作品準備緊中。請遲啲再嚟睇下我哋嘅收藏。"
+    "emptyMessage": "新作品準備緊中。請遲啲再嚟睇下我哋嘅收藏。",
+    "view": "睇"
   }
 }

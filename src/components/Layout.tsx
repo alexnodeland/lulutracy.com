@@ -10,7 +10,7 @@ import type { LayoutProps } from '../types'
 import '../styles/global.css'
 import * as styles from './Layout.module.css'
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, persistentNav }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleMenu = () => {
@@ -28,6 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Header onMenuToggle={toggleMenu} isMenuOpen={isMenuOpen} />
         <Navigation isOpen={isMenuOpen} onClose={closeMenu} />
         <main id="main-content" className={styles.main} tabIndex={-1}>
+          {persistentNav}
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />

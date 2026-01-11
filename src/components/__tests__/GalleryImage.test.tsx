@@ -3,6 +3,18 @@ import { render, screen, act } from '@testing-library/react'
 import GalleryImage from '../GalleryImage'
 import type { Painting } from '../../types'
 
+// Mock the useTranslation hook
+jest.mock('gatsby-plugin-react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'gallery.view': 'View',
+      }
+      return translations[key] || key
+    },
+  }),
+}))
+
 // Mock IntersectionObserver
 const mockObserve = jest.fn()
 const mockUnobserve = jest.fn()

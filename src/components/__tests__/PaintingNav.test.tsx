@@ -2,6 +2,12 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import PaintingNav from '../PaintingNav'
 
+// Mock gatsby navigate
+const mockNavigate = jest.fn()
+jest.mock('gatsby', () => ({
+  navigate: (path: string) => mockNavigate(path),
+}))
+
 // Mock gatsby-plugin-react-i18next Link
 jest.mock('gatsby-plugin-react-i18next', () => ({
   useTranslation: () => ({
@@ -32,29 +38,8 @@ describe('PaintingNav', () => {
     title: 'Next Painting',
   }
 
-  let mockHref: string
-  const originalLocation = window.location
-
   beforeEach(() => {
-    mockHref = ''
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).location
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any).location = {
-      ...originalLocation,
-      href: '',
-    }
-    Object.defineProperty(window.location, 'href', {
-      get: () => mockHref,
-      set: (value: string) => {
-        mockHref = value
-      },
-    })
-  })
-
-  afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any).location = originalLocation
+    mockNavigate.mockClear()
   })
 
   it('renders navigation element', () => {
@@ -167,7 +152,7 @@ describe('PaintingNav', () => {
     )
 
     fireEvent.keyDown(document, { key: 'ArrowLeft' })
-    expect(mockHref).toBe('/painting/prev-painting')
+    expect(mockNavigate).toHaveBeenCalledWith('/painting/prev-painting')
   })
 
   it('handles keyboard navigation with ArrowRight', () => {
@@ -181,7 +166,7 @@ describe('PaintingNav', () => {
     )
 
     fireEvent.keyDown(document, { key: 'ArrowRight' })
-    expect(mockHref).toBe('/painting/next-painting')
+    expect(mockNavigate).toHaveBeenCalledWith('/painting/next-painting')
   })
 
   it('does not navigate with ArrowLeft when no previous painting', () => {
@@ -195,7 +180,7 @@ describe('PaintingNav', () => {
     )
 
     fireEvent.keyDown(document, { key: 'ArrowLeft' })
-    expect(mockHref).toBe('')
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('does not navigate with ArrowRight when no next painting', () => {
@@ -209,7 +194,7 @@ describe('PaintingNav', () => {
     )
 
     fireEvent.keyDown(document, { key: 'ArrowRight' })
-    expect(mockHref).toBe('')
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('does not navigate when modifier key is pressed', () => {
@@ -223,10 +208,10 @@ describe('PaintingNav', () => {
     )
 
     fireEvent.keyDown(document, { key: 'ArrowLeft', ctrlKey: true })
-    expect(mockHref).toBe('')
+    expect(mockNavigate).not.toHaveBeenCalled()
 
     fireEvent.keyDown(document, { key: 'ArrowRight', metaKey: true })
-    expect(mockHref).toBe('')
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('cleans up keyboard event listener on unmount', () => {
