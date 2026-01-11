@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react'
+import { useTranslation } from 'gatsby-plugin-react-i18next'
 import * as styles from './GlassMagnifier.module.css'
 
 interface GlassMagnifierProps {
@@ -27,6 +28,7 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
   enableTouch = true,
   onError,
 }) => {
+  const { t } = useTranslation('painting')
   const containerRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const driftRef = useRef<InstanceType<
@@ -126,7 +128,10 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
       className={`${styles.container} ${className}`.trim()}
       data-testid="glass-magnifier"
       role="group"
-      aria-label={`Zoomable image: ${alt}. ${isMobile ? 'Tap and hold' : 'Hover'} to zoom.`}
+      aria-label={t('zoomableImage', {
+        alt,
+        hint: isMobile ? t('tapToZoom') : t('hoverToZoom'),
+      })}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Needed for keyboard focus
       tabIndex={0}
       onKeyDown={handleKeyDown}
@@ -163,7 +168,7 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
           className={`${styles.touchHint} ${isMobile ? styles.mobile : styles.desktop}`}
           aria-live="polite"
         >
-          <span>{isMobile ? 'Tap and hold to zoom' : 'Hover to zoom'}</span>
+          <span>{isMobile ? t('tapToZoom') : t('hoverToZoom')}</span>
         </div>
       )}
     </div>

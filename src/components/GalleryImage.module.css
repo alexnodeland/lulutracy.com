@@ -1,27 +1,100 @@
 .galleryItem {
   display: block;
   width: 100%;
-  transition: opacity var(--transition-fast);
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base);
 }
 
-.galleryItem:hover {
-  opacity: 0.9;
+.galleryItem.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.galleryLink {
+  display: block;
+  width: 100%;
 }
 
 .imageWrapper {
+  position: relative;
   aspect-ratio: 9 / 8;
   overflow: hidden;
   background-color: var(--color-border);
 }
 
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 .image {
   width: 100%;
   height: 100%;
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.image.imageLoaded {
+  opacity: 1;
 }
 
 /* Ensure GatsbyImage fills the wrapper and crops properly */
 .image img {
   object-fit: cover;
+}
+
+/* Hover overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+  pointer-events: none;
+}
+
+.viewText {
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* Hover effects */
+.galleryLink:hover .image,
+.galleryLink:focus-visible .image {
+  transform: scale(1.05);
+}
+
+.galleryLink:hover .overlay,
+.galleryLink:focus-visible .overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.galleryLink:hover .viewText,
+.galleryLink:focus-visible .viewText {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .placeholder {
@@ -32,4 +105,22 @@
   justify-content: center;
   color: var(--color-text-light);
   font-size: var(--font-size-sm);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .galleryItem {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .image {
+    transition: none;
+  }
+
+  .galleryLink:hover .image,
+  .galleryLink:focus-visible .image {
+    transform: none;
+  }
 }

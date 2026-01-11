@@ -26,5 +26,13 @@
     "mm": "mm"
   },
 
-  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}",
+
+  "tapToZoom": "Tekan dan tahan untuk zum",
+  "hoverToZoom": "Hover untuk zum",
+  "zoomableImage": "Imej boleh zum: {{alt}}. {{hint}}",
+  "paintingNavigation": "Navigasi lukisan",
+  "backToGallery": "Kembali ke galeri",
+  "previous": "Sebelumnya",
+  "next": "Seterusnya"
 }
