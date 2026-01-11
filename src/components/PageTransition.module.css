@@ -6,3 +6,9 @@
 .visible {
   opacity: 1;
 }
+
+/* Skip transition entirely (e.g., for language changes) */
+.instant {
+  opacity: 1;
+  transition: none;
+}

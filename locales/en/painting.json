@@ -26,5 +26,13 @@
     "mm": "mm"
   },
 
-  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}",
+
+  "tapToZoom": "Tap and hold to zoom",
+  "hoverToZoom": "Hover to zoom",
+  "zoomableImage": "Zoomable image: {{alt}}. {{hint}}",
+  "paintingNavigation": "Painting navigation",
+  "backToGallery": "Back to gallery",
+  "previous": "Previous",
+  "next": "Next"
 }

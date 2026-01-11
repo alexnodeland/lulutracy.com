@@ -12,6 +12,16 @@ jest.mock('../../components/ThemeContext', () => ({
 // Mock drift-zoom
 jest.mock('drift-zoom')
 
+// Mock navigate from Gatsby
+const mockNavigate = jest.fn()
+jest.mock('gatsby', () => {
+  const actual = jest.requireActual('gatsby')
+  return {
+    ...actual,
+    navigate: (...args: unknown[]) => mockNavigate(...args),
+  }
+})
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -441,6 +451,187 @@ describe('Legacy string dimensions handling', () => {
     const jsonLd = container.querySelector('script[type="application/ld+json"]')
     const data = JSON.parse(jsonLd?.textContent || '{}')
     expect(data.width).toBe('45.5 x 35.5 cm')
+  })
+})
+
+describe('Navigation and swipe gestures', () => {
+  const navContext = {
+    ...mockPageContext,
+    currentIndex: 1,
+    totalCount: 3,
+    prevPainting: { id: 'prev-painting', title: 'Previous Painting' },
+    nextPainting: { id: 'next-painting', title: 'Next Painting' },
+  }
+
+  beforeEach(() => {
+    mockNavigate.mockClear()
+  })
+
+  it('renders PaintingNav with navigation props', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    // PaintingNav should be rendered with counter
+    expect(screen.getByText('2 / 3')).toBeInTheDocument()
+  })
+
+  it('handles swipe right to navigate to previous painting', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate swipe right (positive deltaX)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 100, clientY: 200 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 200, clientY: 200 }],
+    })
+
+    expect(mockNavigate).toHaveBeenCalledWith('/painting/prev-painting')
+  })
+
+  it('handles swipe left to navigate to next painting', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate swipe left (negative deltaX)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 200, clientY: 200 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 100, clientY: 200 }],
+    })
+
+    expect(mockNavigate).toHaveBeenCalledWith('/painting/next-painting')
+  })
+
+  it('does not navigate on small swipe distance', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate small swipe (less than 50px)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 100, clientY: 200 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 130, clientY: 200 }],
+    })
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('does not navigate on vertical swipe', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate vertical swipe (deltaY > deltaX)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 100, clientY: 100 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 150, clientY: 300 }],
+    })
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('does not navigate left when on first painting', () => {
+    const firstPaintingContext = {
+      ...navContext,
+      currentIndex: 0,
+      prevPainting: null,
+    }
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={firstPaintingContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate swipe right (should not navigate)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 100, clientY: 200 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 200, clientY: 200 }],
+    })
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('does not navigate right when on last painting', () => {
+    const lastPaintingContext = {
+      ...navContext,
+      currentIndex: 2,
+      nextPainting: null,
+    }
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={lastPaintingContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Simulate swipe left (should not navigate)
+    fireEvent.touchStart(article, {
+      touches: [{ clientX: 200, clientY: 200 }],
+    })
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 100, clientY: 200 }],
+    })
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('handles touchEnd without touchStart', () => {
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={navContext as any}
+        {...({} as any)}
+      />
+    )
+    const article = screen.getByRole('article')
+
+    // Fire touchEnd without touchStart
+    fireEvent.touchEnd(article, {
+      changedTouches: [{ clientX: 100, clientY: 200 }],
+    })
+
+    // Should not crash and should not navigate
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 })
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { graphql, PageProps, HeadFC } from 'gatsby'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { graphql, PageProps, HeadFC, navigate } from 'gatsby'
 import {
   GatsbyImage,
   getImage,
@@ -9,8 +9,14 @@ import {
 import { useTranslation } from 'gatsby-plugin-react-i18next'
 import Layout from '../components/Layout'
 import GlassMagnifier from '../components/GlassMagnifier'
+import PaintingNav from '../components/PaintingNav'
 import type { Painting, I18nPageContext, Dimensions } from '../types'
 import * as styles from './painting.module.css'
+
+interface PaintingNavItem {
+  id: string
+  title: string
+}
 
 interface PaintingPageContext {
   id: string
@@ -18,6 +24,10 @@ interface PaintingPageContext {
   imageName: string
   language: string
   i18n: I18nPageContext
+  currentIndex: number
+  totalCount: number
+  prevPainting: PaintingNavItem | null
+  nextPainting: PaintingNavItem | null
 }
 
 interface PaintingPageData {
@@ -43,9 +53,12 @@ interface PaintingPageData {
 const PaintingTemplate: React.FC<
   PageProps<PaintingPageData, PaintingPageContext>
 > = ({ data, pageContext }) => {
-  const { painting } = pageContext
+  const { painting, prevPainting, nextPainting, currentIndex, totalCount } =
+    pageContext
   const { t } = useTranslation('painting')
   const [magnifierError, setMagnifierError] = useState(false)
+  const articleRef = useRef<HTMLElement>(null)
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
 
   const imageData = data.file?.childImageSharp
     ? getImage(data.file.childImageSharp.gatsbyImageData)
@@ -69,6 +82,61 @@ const PaintingTemplate: React.FC<
     setMagnifierError(true)
   }
 
+  // Swipe gesture handling
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    }
+  }, [])
+
+  const handleTouchEnd = useCallback(
+    (e: TouchEvent) => {
+      if (!touchStartRef.current) return
+
+      const touchEnd = {
+        x: e.changedTouches[0].clientX,
+        y: e.changedTouches[0].clientY,
+      }
+
+      const deltaX = touchEnd.x - touchStartRef.current.x
+      const deltaY = touchEnd.y - touchStartRef.current.y
+
+      // Only trigger swipe if horizontal movement is significant
+      // and greater than vertical movement (to avoid conflict with scroll)
+      const minSwipeDistance = 50
+      if (
+        Math.abs(deltaX) > minSwipeDistance &&
+        Math.abs(deltaX) > Math.abs(deltaY) * 1.5
+      ) {
+        if (deltaX > 0 && prevPainting) {
+          // Swipe right - go to previous
+          navigate(`/painting/${prevPainting.id}`)
+        } else if (deltaX < 0 && nextPainting) {
+          // Swipe left - go to next
+          navigate(`/painting/${nextPainting.id}`)
+        }
+      }
+
+      touchStartRef.current = null
+    },
+    [prevPainting, nextPainting]
+  )
+
+  // Add touch event listeners
+  useEffect(() => {
+    const article = articleRef.current
+    if (!article) return
+
+    article.addEventListener('touchstart', handleTouchStart, { passive: true })
+    article.addEventListener('touchend', handleTouchEnd, { passive: true })
+
+    return () => {
+      article.removeEventListener('touchstart', handleTouchStart)
+      article.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [handleTouchStart, handleTouchEnd])
+
   // Capitalize first letter helper
   const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
@@ -88,8 +156,17 @@ const PaintingTemplate: React.FC<
   }
 
   return (
-    <Layout>
-      <article className={styles.paintingDetail}>
+    <Layout
+      persistentNav={
+        <PaintingNav
+          prevPainting={prevPainting}
+          nextPainting={nextPainting}
+          currentIndex={currentIndex}
+          totalCount={totalCount}
+        />
+      }
+    >
+      <article ref={articleRef} className={styles.paintingDetail}>
         <div className={styles.imageContainer}>
           {canUseMagnifier ? (
             <GlassMagnifier

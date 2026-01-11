@@ -49,6 +49,12 @@ export interface NavigationProps {
 
 export interface LayoutProps {
   children: React.ReactNode
+  /** Content rendered above PageTransition - updates instantly without fade */
+  persistentNav?: React.ReactNode
+}
+
+export interface PersistentNavProps {
+  children: React.ReactNode
 }
 
 export interface GalleryImageProps {

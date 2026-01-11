@@ -21,12 +21,38 @@ const renderWithLocation = (
   )
 }
 
+// Mock sessionStorage
+const mockSessionStorage: Record<string, string> = {}
+const mockGetItem = jest.fn((key: string) => mockSessionStorage[key] || null)
+const mockSetItem = jest.fn((key: string, value: string) => {
+  mockSessionStorage[key] = value
+})
+const mockRemoveItem = jest.fn((key: string) => {
+  delete mockSessionStorage[key]
+})
+
+Object.defineProperty(window, 'sessionStorage', {
+  value: {
+    getItem: mockGetItem,
+    setItem: mockSetItem,
+    removeItem: mockRemoveItem,
+  },
+  writable: true,
+})
+
 describe('PageTransition', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     mockNavigate.mockClear()
     mockWithPrefix.mockClear()
     mockWithPrefix.mockImplementation((path: string) => path)
+    // Clear sessionStorage mock
+    Object.keys(mockSessionStorage).forEach(
+      (key) => delete mockSessionStorage[key]
+    )
+    mockGetItem.mockClear()
+    mockSetItem.mockClear()
+    mockRemoveItem.mockClear()
   })
 
   afterEach(() => {
@@ -386,6 +412,178 @@ describe('PageTransition', () => {
       })
 
       expect(mockNavigate).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('skip transition functionality', () => {
+    it('skips fade-in when sessionStorage flag is set', () => {
+      // Set the skip flag before rendering
+      mockSessionStorage['pageTransition:skipNext'] = 'true'
+
+      renderWithLocation(
+        <PageTransition>
+          <div>Test content</div>
+        </PageTransition>
+      )
+
+      // Should have checked sessionStorage
+      expect(mockGetItem).toHaveBeenCalledWith('pageTransition:skipNext')
+
+      // Should have removed the flag
+      expect(mockRemoveItem).toHaveBeenCalledWith('pageTransition:skipNext')
+
+      // Content should be rendered immediately
+      expect(screen.getByText('Test content')).toBeInTheDocument()
+    })
+
+    it('clears instant mode after initial render via requestAnimationFrame', () => {
+      mockSessionStorage['pageTransition:skipNext'] = 'true'
+
+      renderWithLocation(
+        <PageTransition>
+          <div>Test content</div>
+        </PageTransition>
+      )
+
+      // After requestAnimationFrame runs, the instant mode should be cleared
+      act(() => {
+        jest.runAllTimers()
+      })
+
+      // Content should still be visible
+      expect(screen.getByText('Test content')).toBeInTheDocument()
+    })
+
+    it('handles sessionStorage errors gracefully', () => {
+      // Make sessionStorage throw an error
+      mockGetItem.mockImplementationOnce(() => {
+        throw new Error('sessionStorage error')
+      })
+
+      // Should not throw and should render normally
+      renderWithLocation(
+        <PageTransition>
+          <div>Test content</div>
+        </PageTransition>
+      )
+
+      expect(screen.getByText('Test content')).toBeInTheDocument()
+    })
+  })
+
+  describe('language-only route changes', () => {
+    it('updates content instantly for language-only changes (same base path)', () => {
+      const { rerender } = renderWithLocation(
+        <PageTransition>
+          <div>English content</div>
+        </PageTransition>,
+        '/about'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      // Simulate language change: /about -> /zh/about (same base path)
+      rerender(
+        <LocationProvider location={{ pathname: '/zh/about' }}>
+          <PageTransition>
+            <div>Chinese content</div>
+          </PageTransition>
+        </LocationProvider>
+      )
+
+      // Content should update instantly without waiting for transition
+      expect(screen.getByText('Chinese content')).toBeInTheDocument()
+    })
+
+    it('updates content instantly for root language changes', () => {
+      const { rerender } = renderWithLocation(
+        <PageTransition>
+          <div>English home</div>
+        </PageTransition>,
+        '/'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      // Simulate language change: / -> /zh (both are root)
+      rerender(
+        <LocationProvider location={{ pathname: '/zh' }}>
+          <PageTransition>
+            <div>Chinese home</div>
+          </PageTransition>
+        </LocationProvider>
+      )
+
+      // Content should update instantly
+      expect(screen.getByText('Chinese home')).toBeInTheDocument()
+    })
+
+    it('navigates immediately for language-only link clicks', () => {
+      renderWithLocation(
+        <PageTransition>
+          <a href="/zh/about">中文</a>
+        </PageTransition>,
+        '/about'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('中文')
+      fireEvent.click(link)
+
+      // Should navigate immediately (not after transition delay)
+      expect(mockNavigate).toHaveBeenCalledWith('/zh/about')
+    })
+
+    it('navigates immediately for root language link clicks', () => {
+      renderWithLocation(
+        <PageTransition>
+          <a href="/zh">中文</a>
+        </PageTransition>,
+        '/'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('中文')
+      fireEvent.click(link)
+
+      // Should navigate immediately (not after transition delay)
+      expect(mockNavigate).toHaveBeenCalledWith('/zh')
+    })
+
+    it('still fades for different page navigations', () => {
+      renderWithLocation(
+        <PageTransition>
+          <a href="/about">About</a>
+        </PageTransition>,
+        '/'
+      )
+
+      act(() => {
+        jest.advanceTimersByTime(50)
+      })
+
+      const link = screen.getByText('About')
+      fireEvent.click(link)
+
+      // Should not navigate immediately
+      expect(mockNavigate).not.toHaveBeenCalled()
+
+      // After transition duration, navigation should occur
+      act(() => {
+        jest.advanceTimersByTime(500)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith('/about')
     })
   })
 })

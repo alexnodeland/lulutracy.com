@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useI18next } from 'gatsby-plugin-react-i18next'
+import { skipNextTransition } from './PageTransition'
 import * as styles from './LanguageSwitcher.module.css'
 
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -15,6 +16,7 @@ const LanguageSwitcher: React.FC = () => {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const handleSelect = (newLang: string) => {
+    skipNextTransition()
     changeLanguage(newLang)
     setIsOpen(false)
   }

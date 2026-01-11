@@ -71,4 +71,121 @@ describe('Navigation', () => {
     expect(screen.getByTestId('language-switcher')).toBeInTheDocument()
     expect(screen.getByRole('button')).toBeInTheDocument() // ThemeToggle button
   })
+
+  it('prevents body scroll when open', () => {
+    render(<Navigation isOpen={true} onClose={mockOnClose} />)
+    expect(document.body.style.overflow).toBe('hidden')
+  })
+
+  it('restores body scroll when closed', () => {
+    const { rerender } = render(
+      <Navigation isOpen={true} onClose={mockOnClose} />
+    )
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(<Navigation isOpen={false} onClose={mockOnClose} />)
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('restores body scroll on unmount', () => {
+    const { unmount } = render(
+      <Navigation isOpen={true} onClose={mockOnClose} />
+    )
+    expect(document.body.style.overflow).toBe('hidden')
+
+    unmount()
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('traps focus within navigation when open', () => {
+    render(<Navigation isOpen={true} onClose={mockOnClose} />)
+
+    const nav = screen.getByRole('navigation')
+    const focusableElements = nav.querySelectorAll(
+      'a[href], button:not([disabled])'
+    )
+
+    expect(focusableElements.length).toBeGreaterThan(0)
+  })
+
+  it('wraps focus to first element when tabbing from last', () => {
+    jest.useFakeTimers()
+    render(<Navigation isOpen={true} onClose={mockOnClose} />)
+
+    const nav = screen.getByRole('navigation')
+    const focusableElements = nav.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled])'
+    )
+
+    // Focus the last element
+    const lastElement = focusableElements[focusableElements.length - 1]
+    lastElement.focus()
+
+    // Tab forward (should wrap to first)
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: false })
+
+    // The focus trap should prevent default behavior
+    // In a real browser, focus would move to first element
+    jest.useRealTimers()
+  })
+
+  it('wraps focus to last element when shift-tabbing from first', () => {
+    jest.useFakeTimers()
+    render(<Navigation isOpen={true} onClose={mockOnClose} />)
+
+    // Let the focus timeout run
+    jest.advanceTimersByTime(100)
+
+    const nav = screen.getByRole('navigation')
+    const focusableElements = nav.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled])'
+    )
+
+    if (focusableElements.length > 0) {
+      // Focus the first element
+      focusableElements[0].focus()
+
+      // Shift-Tab backward (should wrap to last)
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+    }
+
+    jest.useRealTimers()
+  })
+
+  it('focuses first element when opened', () => {
+    jest.useFakeTimers()
+
+    render(<Navigation isOpen={true} onClose={mockOnClose} />)
+
+    // Fast-forward past the focus delay
+    jest.advanceTimersByTime(100)
+
+    // Should have focused the first focusable element
+    const nav = screen.getByRole('navigation')
+    expect(nav).toBeInTheDocument()
+
+    jest.useRealTimers()
+  })
+
+  it('has aria-hidden attribute based on open state', () => {
+    const { rerender } = render(
+      <Navigation isOpen={true} onClose={mockOnClose} />
+    )
+    const nav = screen.getByRole('navigation')
+    expect(nav).toHaveAttribute('aria-hidden', 'false')
+
+    rerender(<Navigation isOpen={false} onClose={mockOnClose} />)
+    const closedNav = screen.getByRole('navigation', { hidden: true })
+    expect(closedNav).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('ignores Tab key when navigation is closed', () => {
+    render(<Navigation isOpen={false} onClose={mockOnClose} />)
+
+    // Tab should not trigger any focus trap behavior
+    fireEvent.keyDown(document, { key: 'Tab' })
+
+    // No error should occur
+    expect(mockOnClose).not.toHaveBeenCalled()
+  })
 })

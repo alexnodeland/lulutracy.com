@@ -189,11 +189,16 @@ export const createPages: GatsbyNode['createPages'] = async ({
     }
   })
 
+  // Sort paintings by order for navigation
+  const sortedBasePaintings = [...basePaintings].sort(
+    (a, b) => a.order - b.order
+  )
+
   // Create pages for each language
   LANGUAGES.forEach((lang) => {
     const overrides = localeOverrides.get(lang)
 
-    basePaintings.forEach((basePainting) => {
+    sortedBasePaintings.forEach((basePainting, index) => {
       // Merge base painting with locale overrides (if any)
       const override = overrides?.get(basePainting.title)
       const painting: RawPainting = {
@@ -226,6 +231,35 @@ export const createPages: GatsbyNode['createPages'] = async ({
         routed: lang !== DEFAULT_LANGUAGE,
       }
 
+      // Get prev/next paintings for navigation
+      const prevBasePainting = index > 0 ? sortedBasePaintings[index - 1] : null
+      const nextBasePainting =
+        index < sortedBasePaintings.length - 1
+          ? sortedBasePaintings[index + 1]
+          : null
+
+      // Get localized titles for prev/next
+      const prevOverride = prevBasePainting
+        ? overrides?.get(prevBasePainting.title)
+        : null
+      const nextOverride = nextBasePainting
+        ? overrides?.get(nextBasePainting.title)
+        : null
+
+      const prevPainting = prevBasePainting
+        ? {
+            id: generateSlug(prevBasePainting.title),
+            title: prevOverride?.title || prevBasePainting.title,
+          }
+        : null
+
+      const nextPainting = nextBasePainting
+        ? {
+            id: generateSlug(nextBasePainting.title),
+            title: nextOverride?.title || nextBasePainting.title,
+          }
+        : null
+
       createPage({
         path: pagePath,
         component: paintingTemplate,
@@ -235,6 +269,11 @@ export const createPages: GatsbyNode['createPages'] = async ({
           imageName,
           language: lang,
           i18n,
+          // Navigation context for prev/next
+          currentIndex: index,
+          totalCount: sortedBasePaintings.length,
+          prevPainting,
+          nextPainting,
         },
       })
     })

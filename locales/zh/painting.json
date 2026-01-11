@@ -26,5 +26,13 @@
     "mm": "毫米"
   },
 
-  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}",
+
+  "tapToZoom": "长按放大",
+  "hoverToZoom": "悬停放大",
+  "zoomableImage": "可放大图片：{{alt}}。{{hint}}",
+  "paintingNavigation": "作品导航",
+  "backToGallery": "返回画廊",
+  "previous": "上一幅",
+  "next": "下一幅"
 }

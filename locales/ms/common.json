@@ -13,5 +13,13 @@
   "theme": {
     "switchToDark": "Tukar ke mod gelap",
     "switchToLight": "Tukar ke mod terang"
+  },
+  "skipToContent": "Langkau ke kandungan utama",
+  "offline": "Anda di luar talian",
+  "backOnline": "Kembali dalam talian",
+  "gallery": {
+    "emptyTitle": "Galeri Akan Datang",
+    "emptyMessage": "Karya seni baharu sedang disediakan. Sila kembali kemudian untuk meneroka koleksi kami.",
+    "view": "Lihat"
   }
 }
