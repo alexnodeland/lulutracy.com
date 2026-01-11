@@ -1,15 +1,18 @@
-# Paintings Data
-# Add new paintings by adding entries to this file
-# Images should be placed in /content/paintings/images/
-# Note: substrate and medium values should be lowercase
+# Paintings Data - English
 # Note: id and image filename are derived from title automatically
 
 paintings:
   - title: Symbiosis
     description: An exploration of organic forms and vibrant colors representing the interconnectedness of nature.
-    dimensions: '45.5 x 35.5 cm'
+    dimensions:
+      width: 45.5
+      height: 35.5
+      unit: cm
     substrate: canvas
-    substrateSize: '45.5 x 35.5 cm'
+    substrateSize:
+      width: 45.5
+      height: 35.5
+      unit: cm
     medium: acrylic
     year: '2020'
     alt: Abstract painting of hands with blue, red, yellow and purple flowing forms
@@ -17,9 +20,15 @@ paintings:
 
   - title: Night Hours
     description: A lush view of tree branches and green foliage capturing the essence of nature's beauty.
-    dimensions: '38.2 x 48.4 cm'
+    dimensions:
+      width: 38.2
+      height: 48.4
+      unit: cm
     substrate: canvas
-    substrateSize: '40.6 x 50.8 cm'
+    substrateSize:
+      width: 40.6
+      height: 50.8
+      unit: cm
     medium: acrylic
     year: '2021'
     alt: Painting of dense green forest canopy with intertwining branches
@@ -27,9 +36,15 @@ paintings:
 
   - title: Get Lucky
     description: A detailed study of clovers, capturing the delicate beauty of these common yet overlooked plants.
-    dimensions: '20.8 x 28.3 cm'
+    dimensions:
+      width: 20.8
+      height: 28.3
+      unit: cm
     substrate: paper
-    substrateSize: '20.8 x 28.3 cm'
+    substrateSize:
+      width: 20.8
+      height: 28.3
+      unit: cm
     medium: acrylic
     year: '2021'
     alt: Painting of green clovers densely packed together
@@ -37,9 +52,15 @@ paintings:
 
   - title: Touch Me Not
     description: Pink mimosa flowers among green ferns, representing the gentle beauty of nature.
-    dimensions: '22.9 x 30.5cm'
+    dimensions:
+      width: 22.9
+      height: 30.5
+      unit: cm
     substrate: canvas
-    substrateSize: '22.9 x 30.5cm'
+    substrateSize:
+      width: 22.9
+      height: 30.5
+      unit: cm
     medium: acrylic
     year: '2021'
     alt: Painting of pink mimosa flowers with green fern leaves
@@ -47,9 +68,15 @@ paintings:
 
   - title: Looking Up
     description: A vibrant tropical landscape with rich greens and natural elements.
-    dimensions: '30.5 x 22.9cm'
+    dimensions:
+      width: 30.5
+      height: 22.9
+      unit: cm
     substrate: paper
-    substrateSize: '30.5 x 22.9cm'
+    substrateSize:
+      width: 30.5
+      height: 22.9
+      unit: cm
     medium: acrylic
     year: '2021'
     alt: Tropical tree canopy painting with lush vegetation
@@ -57,9 +84,15 @@ paintings:
 
   - title: Thinking Space
     description: Colorful abstract fluid forms.
-    dimensions: '45.5 x 35.5cm'
+    dimensions:
+      width: 45.5
+      height: 35.5
+      unit: cm
     substrate: paper
-    substrateSize: '45.5 x 35.5 cm'
+    substrateSize:
+      width: 45.5
+      height: 35.5
+      unit: cm
     medium: watercolor
     year: '2020'
     alt: Painting of colorful abstract fluid
@@ -67,9 +100,15 @@ paintings:
 
   - title: Tropical Forest Study
     description: An intimate study of natural forms and textures.
-    dimensions: '30.5 x 22.9cm'
+    dimensions:
+      width: 30.5
+      height: 22.9
+      unit: cm
     substrate: canvas
-    substrateSize: '30.5 x 22.9cm'
+    substrateSize:
+      width: 30.5
+      height: 22.9
+      unit: cm
     medium: acrylic
     year: '2021'
     alt: Nature study painting with organic forms
@@ -77,9 +116,15 @@ paintings:
 
   - title: Flourish
     description: Continued exploration of natural beauty and organic patterns.
-    dimensions: '38.0 x 48.8cm'
+    dimensions:
+      width: 38.0
+      height: 48.8
+      unit: cm
     substrate: paper
-    substrateSize: '40.6 x 50.8 cm'
+    substrateSize:
+      width: 40.6
+      height: 50.8
+      unit: cm
     medium: watercolor
     year: '2020'
     alt: Nature study painting exploring organic patterns
@@ -87,9 +132,15 @@ paintings:
 
   - title: Pretty Ripe
     description: A study of ripe bananas, capturing the beauty in everyday objects.
-    dimensions: '30.5 x 22.9cm'
+    dimensions:
+      width: 30.5
+      height: 22.9
+      unit: cm
     substrate: paper
-    substrateSize: '30.5 x 22.9cm'
+    substrateSize:
+      width: 30.5
+      height: 22.9
+      unit: cm
     medium: watercolor
     year: '2021'
     alt: Watercolor painting of ripe yellow bananas with brown spots

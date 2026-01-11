@@ -1,17 +1,29 @@
 import React from 'react'
-import { Link } from 'gatsby'
+import { Link as I18nLink, useTranslation } from 'gatsby-plugin-react-i18next'
 import { StaticImage } from 'gatsby-plugin-image'
+import LanguageSwitcher from './LanguageSwitcher'
 import type { HeaderProps } from '../types'
 import * as styles from './Header.module.css'
+
+// Workaround for gatsby-plugin-react-i18next Link type issues
+const Link = I18nLink as unknown as React.FC<{
+  to: string
+  className?: string
+  children: React.ReactNode
+  'aria-label'?: string
+  onClick?: () => void
+}>
 
 const Header: React.FC<HeaderProps> = ({
   onMenuToggle,
   isMenuOpen = false,
 }) => {
+  const { t } = useTranslation('common')
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <Link to="/" className={styles.logo} aria-label="Lulu Tracy - Home">
+        <Link to="/" className={styles.logo} aria-label={t('nav.home')}>
           <StaticImage
             src="../images/logo.png"
             alt="Lulu Tracy"
@@ -22,15 +34,18 @@ const Header: React.FC<HeaderProps> = ({
             loading="eager"
           />
         </Link>
-        <nav className={styles.desktopNav} aria-label="Main navigation">
-          <Link to="/about" className={styles.desktopNavLink}>
-            about
-          </Link>
-        </nav>
+        <div className={styles.rightSection}>
+          <nav className={styles.desktopNav} aria-label={t('mainNavigation')}>
+            <Link to="/about" className={styles.desktopNavLink}>
+              {t('nav.about')}
+            </Link>
+          </nav>
+          <LanguageSwitcher />
+        </div>
         <button
           className={styles.menuButton}
           onClick={onMenuToggle}
-          aria-label="Toggle navigation menu"
+          aria-label={t('toggleMenu')}
           type="button"
         >
           <span

@@ -8,9 +8,17 @@ const mockPaintings: Painting[] = [
     id: 'painting-1',
     title: 'Test Painting 1',
     description: 'Description 1',
-    dimensions: '24 x 36',
+    dimensions: {
+      width: 24,
+      height: 36,
+      unit: 'cm',
+    },
     substrate: 'canvas',
-    substrateSize: '24 x 36',
+    substrateSize: {
+      width: 24,
+      height: 36,
+      unit: 'cm',
+    },
     medium: 'oil',
     year: '2023',
     image: 'test1.jpg',
@@ -21,9 +29,17 @@ const mockPaintings: Painting[] = [
     id: 'painting-2',
     title: 'Test Painting 2',
     description: 'Description 2',
-    dimensions: '30 x 40',
+    dimensions: {
+      width: 30,
+      height: 40,
+      unit: 'cm',
+    },
     substrate: 'paper',
-    substrateSize: '30 x 40',
+    substrateSize: {
+      width: 30,
+      height: 40,
+      unit: 'cm',
+    },
     medium: 'acrylic',
     year: '2024',
     image: 'test2.jpg',
@@ -32,27 +48,46 @@ const mockPaintings: Painting[] = [
   },
 ]
 
-const mockAllSiteYaml = {
-  nodes: [
+const mockSiteYaml = {
+  site: {
+    name: 'lulutracy',
+    url: 'https://alexnodeland.github.io/lulutracy.com',
+  },
+}
+
+// Mock locale data (simulates allLocale query)
+const mockLocales = {
+  edges: [
     {
-      site: {
-        name: 'lulutracy',
-        tagline: 'art & design',
-        description:
-          'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
-        url: 'https://alexnodeland.github.io/lulutracy.com',
+      node: {
+        ns: 'common',
+        data: JSON.stringify({
+          site: {
+            tagline: 'art & design',
+            description:
+              'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
+          },
+          nav: { about: 'about', home: 'Lulu Tracy - Home' },
+          copyright: 'Copyright {{year}} lulutracy. All rights reserved.',
+        }),
+        language: 'en',
       },
     },
   ],
 }
 
+interface LocaleNode {
+  locale: string
+  paintings: Array<{ title: string; description: string; alt: string }>
+}
+
 const mockData = {
-  allPaintingsYaml: {
-    nodes: [
-      {
-        paintings: mockPaintings,
-      },
-    ],
+  locales: mockLocales,
+  paintingsYaml: {
+    paintings: mockPaintings,
+  },
+  allPaintingLocalesYaml: {
+    nodes: [] as LocaleNode[],
   },
   allFile: {
     nodes: [
@@ -92,12 +127,18 @@ const mockData = {
       },
     ],
   },
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
+}
+
+const mockPageContext = {
+  language: 'en',
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
-const renderIndexPage = (data = mockData) => {
-  return render(<IndexPage data={data} {...({} as any)} />)
+const renderIndexPage = (data = mockData, pageContext = mockPageContext) => {
+  return render(
+    <IndexPage data={data} pageContext={pageContext} {...({} as any)} />
+  )
 }
 
 describe('IndexPage', () => {
@@ -128,13 +169,11 @@ describe('IndexPage', () => {
 
   it('handles empty paintings gracefully', () => {
     const emptyData = {
-      allPaintingsYaml: {
-        nodes: [{ paintings: [] }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      locales: mockLocales,
+      paintingsYaml: { paintings: [] },
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
     }
     renderIndexPage(emptyData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
@@ -142,15 +181,55 @@ describe('IndexPage', () => {
 
   it('handles undefined paintings gracefully', () => {
     const undefinedData = {
-      allPaintingsYaml: {
-        nodes: [{}],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      locales: mockLocales,
+      paintingsYaml: null,
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
     }
     renderIndexPage(undefinedData as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('handles missing pageContext.language gracefully', () => {
+    renderIndexPage(mockData, {} as any)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('handles Chinese language context with locale overrides', () => {
+    const zhData = {
+      ...mockData,
+      allPaintingLocalesYaml: {
+        nodes: [
+          {
+            locale: 'zh',
+            paintings: [
+              {
+                title: 'Test Painting 1',
+                description: '描述1',
+                alt: '替代文本1',
+              },
+              {
+                title: 'Test Painting 2',
+                description: '描述2',
+                alt: '替代文本2',
+              },
+            ],
+          },
+        ],
+      },
+    }
+    renderIndexPage(zhData, { language: 'zh' })
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('uses base painting data when locale override is missing', () => {
+    // No locale overrides provided - should fall back to base (English) data
+    const dataNoOverrides = {
+      ...mockData,
+      allPaintingLocalesYaml: { nodes: [] },
+    }
+    renderIndexPage(dataNoOverrides, { language: 'zh' })
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
@@ -175,13 +254,11 @@ describe('Head', () => {
 
   it('renders with fallback image when no paintings exist', () => {
     const emptyData = {
-      allPaintingsYaml: {
-        nodes: [{ paintings: [] }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      locales: mockLocales,
+      paintingsYaml: { paintings: [] },
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
     }
     const { container } = render(
       <Head data={emptyData as any} {...({} as any)} />
@@ -193,13 +270,11 @@ describe('Head', () => {
 
   it('renders with fallback image when paintings is undefined', () => {
     const undefinedData = {
-      allPaintingsYaml: {
-        nodes: [{}],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      locales: mockLocales,
+      paintingsYaml: null,
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
     }
     const { container } = render(
       <Head data={undefinedData as any} {...({} as any)} />
@@ -207,5 +282,103 @@ describe('Head', () => {
     expect(
       container.querySelector('meta[property="og:image"]')
     ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with Chinese locale when language is zh', () => {
+    const { container } = render(
+      <Head data={mockData} pageContext={{ language: 'zh' }} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'zh_CN')
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/zh/')
+    )
+  })
+
+  it('renders hreflang alternate links', () => {
+    const { container } = render(<Head data={mockData} {...({} as any)} />)
+    const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
+    expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles missing site properties gracefully', () => {
+    const dataMissingSiteProps = {
+      ...mockData,
+      siteYaml: {
+        site: {},
+      },
+    }
+    const { container } = render(
+      <Head data={dataMissingSiteProps as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:site_name"]')
+    ).toHaveAttribute('content', '')
+  })
+
+  it('handles missing image node gracefully', () => {
+    const dataNoImageMatch = {
+      ...mockData,
+      allFile: {
+        nodes: [
+          {
+            name: 'nonexistent',
+            childImageSharp: null,
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataNoImageMatch as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('handles invalid JSON in locale data gracefully', () => {
+    const dataInvalidJson = {
+      ...mockData,
+      locales: {
+        edges: [
+          {
+            node: {
+              ns: 'common',
+              data: 'invalid json {{{',
+              language: 'en',
+            },
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataInvalidJson as any} {...({} as any)} />
+    )
+    // Should still render, falling back to defaults
+    expect(container.querySelector('title')).toBeInTheDocument()
+  })
+
+  it('handles missing locale namespace gracefully', () => {
+    const dataMissingNs = {
+      ...mockData,
+      locales: {
+        edges: [
+          {
+            node: {
+              ns: 'other',
+              data: JSON.stringify({ key: 'value' }),
+              language: 'en',
+            },
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataMissingNs as any} {...({} as any)} />
+    )
+    // Should still render, falling back to defaults
+    expect(container.querySelector('title')).toBeInTheDocument()
   })
 })

@@ -1,0 +1,6 @@
+{
+  "title": "Page Not Found",
+  "message": "The page you're looking for doesn't exist.",
+  "returnLink": "Return to Gallery",
+  "pageTitle": "Page Not Found | {{siteName}}"
+}

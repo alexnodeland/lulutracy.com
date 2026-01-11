@@ -1,0 +1,6 @@
+{
+  "title": "搵唔到頁面",
+  "message": "你搵緊嘅頁面唔存在。",
+  "returnLink": "返回畫廊",
+  "pageTitle": "搵唔到頁面 | {{siteName}}"
+}

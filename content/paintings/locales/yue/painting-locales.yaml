@@ -1,0 +1,41 @@
+# Painting Translations - Cantonese (粵語)
+# Only contains translatable fields (description, alt)
+# Title is used as a key to match with base paintings.yaml
+
+locale: yue
+paintings:
+  - title: Symbiosis
+    description: 探索有機形態同鮮艷色彩，表現大自然嘅相互聯繫。
+    alt: 手部抽象畫，藍色、紅色、黃色同紫色嘅流動形態
+
+  - title: Night Hours
+    description: 茂盛嘅樹枝同綠色植物，捕捉大自然之美嘅精髓。
+    alt: 密集嘅綠色森林樹冠同交織嘅樹枝
+
+  - title: Get Lucky
+    description: 對三葉草嘅細緻研究，捕捉呢啲常見但被忽視嘅植物嘅精緻美感。
+    alt: 密集排列嘅綠色三葉草畫作
+
+  - title: Touch Me Not
+    description: 綠色蕨類植物中嘅粉紅色含羞草花，代表大自然嘅柔美。
+    alt: 粉紅色含羞草花同綠色蕨葉嘅畫作
+
+  - title: Looking Up
+    description: 充滿活力嘅熱帶景觀，豐富嘅綠色同自然元素。
+    alt: 熱帶樹冠畫作，茂盛嘅植被
+
+  - title: Thinking Space
+    description: 色彩豐富嘅抽象流體形態。
+    alt: 色彩豐富嘅抽象流體畫作
+
+  - title: Tropical Forest Study
+    description: 對自然形態同紋理嘅親密研究。
+    alt: 自然研究畫作，有機形態
+
+  - title: Flourish
+    description: 繼續探索大自然之美同有機圖案。
+    alt: 探索有機圖案嘅自然研究畫作
+
+  - title: Pretty Ripe
+    description: 對成熟香蕉嘅研究，捕捉日常物品中嘅美。
+    alt: 成熟黃色香蕉水彩畫，帶有棕色斑點

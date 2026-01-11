@@ -1,0 +1,13 @@
+{
+  "site": {
+    "tagline": "艺术与设计",
+    "description": "lulutracy艺术作品集 - 通过水彩和丙烯探索自然"
+  },
+  "copyright": "版权所有 {{year}} lulutracy。保留所有权利。",
+  "nav": {
+    "about": "关于",
+    "home": "lulutracy"
+  },
+  "toggleMenu": "切换导航菜单",
+  "mainNavigation": "主导航"
+}

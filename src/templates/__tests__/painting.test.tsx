@@ -25,9 +25,17 @@ const mockPainting: Painting = {
   id: 'test-painting',
   title: 'Test Painting Title',
   description: 'This is a test painting description.',
-  dimensions: '45.5 x 35.5cm',
+  dimensions: {
+    width: 45.5,
+    height: 35.5,
+    unit: 'cm',
+  },
   substrate: 'canvas',
-  substrateSize: '45.5 x 35.5 cm',
+  substrateSize: {
+    width: 45.5,
+    height: 35.5,
+    unit: 'cm',
+  },
   medium: 'acrylic',
   year: '2023',
   image: 'test.jpeg',
@@ -39,18 +47,15 @@ const mockPageContext = {
   id: 'test-painting',
   painting: mockPainting,
   imageName: 'test',
+  language: 'en',
 }
 
-const mockAllSiteYaml = {
-  nodes: [
-    {
-      site: {
-        name: 'lulutracy',
-        author: 'Tracy Mah',
-        url: 'https://alexnodeland.github.io/lulutracy.com',
-      },
-    },
-  ],
+const mockSiteYaml = {
+  site: {
+    name: 'lulutracy',
+    author: 'Tracy Mah',
+    url: 'https://alexnodeland.github.io/lulutracy.com',
+  },
 }
 
 const mockDataWithImage = {
@@ -86,13 +91,13 @@ const mockDataWithImage = {
       },
     },
   },
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
 }
 
 const mockDataWithoutImage = {
   file: null,
   zoomFile: null,
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
 }
 
 const mockDataWithImageButNoZoom = {
@@ -160,7 +165,7 @@ describe('PaintingTemplate', () => {
 
   it('displays the painting dimensions and medium', () => {
     renderPaintingTemplate()
-    expect(screen.getByText(/45.5 x 35.5cm/)).toBeInTheDocument()
+    expect(screen.getByText(/45.5 × 35.5 cm/)).toBeInTheDocument()
     expect(screen.getByText(/Acrylic on canvas/)).toBeInTheDocument()
   })
 
@@ -304,5 +309,218 @@ describe('Head component', () => {
     expect(
       container.querySelector('meta[property="og:image"]')
     ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
+  })
+
+  it('renders with Chinese locale when language is zh', () => {
+    const zhPageContext = {
+      ...mockPageContext,
+      language: 'zh',
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={zhPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'zh_CN')
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/zh/painting/')
+    )
+  })
+
+  it('renders hreflang alternate links', () => {
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
+    expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles missing language in pageContext', () => {
+    const contextWithoutLanguage = {
+      ...mockPageContext,
+      language: undefined,
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={contextWithoutLanguage as any}
+        {...({} as any)}
+      />
+    )
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'en_US')
+  })
+})
+
+describe('Portrait image handling', () => {
+  it('applies portrait class for tall images', () => {
+    const portraitImageData = {
+      ...mockDataWithImage,
+      file: {
+        childImageSharp: {
+          gatsbyImageData: {
+            layout: 'constrained' as const,
+            width: 600,
+            height: 800,
+            images: {
+              fallback: {
+                src: '/test.jpg',
+                srcSet: '/test.jpg 600w',
+                sizes: '(min-width: 600px) 600px, 100vw',
+              },
+            },
+          },
+        },
+      },
+    }
+    render(
+      <PaintingTemplate
+        data={portraitImageData as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(screen.getByRole('article')).toBeInTheDocument()
+  })
+})
+
+describe('Legacy string dimensions handling', () => {
+  it('handles legacy string format dimensions', () => {
+    const legacyPainting = {
+      ...mockPainting,
+      dimensions: '45.5 x 35.5 cm',
+      substrateSize: '45.5 x 35.5 cm',
+    }
+    const legacyContext = {
+      ...mockPageContext,
+      painting: legacyPainting,
+    }
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={legacyContext as any}
+        {...({} as any)}
+      />
+    )
+    // Legacy string format should be displayed as-is
+    expect(screen.getByText(/45.5 x 35.5 cm/)).toBeInTheDocument()
+  })
+
+  it('handles legacy string dimensions in Head JSON-LD', () => {
+    const legacyPainting = {
+      ...mockPainting,
+      dimensions: '45.5 x 35.5 cm',
+    }
+    const legacyContext = {
+      ...mockPageContext,
+      painting: legacyPainting,
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={legacyContext as any}
+        {...({} as any)}
+      />
+    )
+    const jsonLd = container.querySelector('script[type="application/ld+json"]')
+    const data = JSON.parse(jsonLd?.textContent || '{}')
+    expect(data.width).toBe('45.5 x 35.5 cm')
+  })
+})
+
+describe('Site data fallbacks', () => {
+  it('handles missing site URL in Head', () => {
+    const dataWithoutUrl = {
+      ...mockDataWithImage,
+      siteYaml: {
+        site: {
+          name: 'lulutracy',
+          author: 'Tracy Mah',
+        },
+      },
+    }
+    const { container } = render(
+      <Head
+        data={dataWithoutUrl as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(container.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      '/painting/test-painting'
+    )
+  })
+
+  it('handles missing site name in Head', () => {
+    const dataWithoutName = {
+      ...mockDataWithImage,
+      siteYaml: {
+        site: {
+          url: 'https://example.com',
+          author: 'Tracy Mah',
+        },
+      },
+    }
+    const { container } = render(
+      <Head
+        data={dataWithoutName as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    expect(container.querySelector('title')).toHaveTextContent(
+      'Test Painting Title | lulutracy'
+    )
+  })
+
+  it('handles missing author in Head', () => {
+    const dataWithoutAuthor = {
+      ...mockDataWithImage,
+      siteYaml: {
+        site: {
+          name: 'lulutracy',
+          url: 'https://example.com',
+        },
+      },
+    }
+    const { container } = render(
+      <Head
+        data={dataWithoutAuthor as any}
+        pageContext={mockPageContext}
+        {...({} as any)}
+      />
+    )
+    const jsonLd = container.querySelector('script[type="application/ld+json"]')
+    const data = JSON.parse(jsonLd?.textContent || '{}')
+    expect(data.creator.name).toBe('')
+  })
+
+  it('handles unknown language in locale map', () => {
+    const unknownLangContext = {
+      ...mockPageContext,
+      language: 'unknown',
+    }
+    const { container } = render(
+      <Head
+        data={mockDataWithImage as any}
+        pageContext={unknownLangContext as any}
+        {...({} as any)}
+      />
+    )
+    // Should fall back to en_US
+    expect(
+      container.querySelector('meta[property="og:locale"]')
+    ).toHaveAttribute('content', 'en_US')
   })
 })

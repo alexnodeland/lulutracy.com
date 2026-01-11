@@ -37,16 +37,19 @@
     "gatsby": "^5.13.0",
     "gatsby-plugin-image": "^3.13.0",
     "gatsby-plugin-manifest": "^5.13.0",
+    "gatsby-plugin-react-i18next": "^3.0.1",
     "gatsby-plugin-sharp": "^5.13.0",
     "gatsby-plugin-sitemap": "^6.13.0",
     "gatsby-source-filesystem": "^5.13.0",
     "gatsby-transformer-remark": "^6.13.0",
     "gatsby-transformer-sharp": "^5.13.0",
     "gatsby-transformer-yaml": "^5.13.0",
+    "i18next": "^25.7.4",
     "js-yaml": "^4.1.1",
     "piexifjs": "^1.0.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-i18next": "^16.5.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",

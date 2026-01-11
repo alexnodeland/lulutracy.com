@@ -1,0 +1,13 @@
+{
+  "site": {
+    "tagline": "seni & reka bentuk",
+    "description": "Portfolio seni lulutracy - meneroka alam semula jadi melalui cat air dan akrilik"
+  },
+  "copyright": "Hak Cipta {{year}} lulutracy. Hak cipta terpelihara.",
+  "nav": {
+    "about": "tentang",
+    "home": "lulutracy"
+  },
+  "toggleMenu": "Togol menu navigasi",
+  "mainNavigation": "Navigasi utama"
+}

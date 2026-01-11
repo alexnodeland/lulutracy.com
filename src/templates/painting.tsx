@@ -6,15 +6,18 @@ import {
   getSrc,
   IGatsbyImageData,
 } from 'gatsby-plugin-image'
+import { useTranslation } from 'gatsby-plugin-react-i18next'
 import Layout from '../components/Layout'
 import GlassMagnifier from '../components/GlassMagnifier'
-import type { Painting } from '../types'
+import type { Painting, I18nPageContext, Dimensions } from '../types'
 import * as styles from './painting.module.css'
 
 interface PaintingPageContext {
   id: string
   painting: Painting
   imageName: string
+  language: string
+  i18n: I18nPageContext
 }
 
 interface PaintingPageData {
@@ -28,14 +31,12 @@ interface PaintingPageData {
       gatsbyImageData: IGatsbyImageData
     }
   } | null
-  allSiteYaml: {
-    nodes: Array<{
-      site: {
-        name: string
-        author: string
-        url: string
-      }
-    }>
+  siteYaml: {
+    site: {
+      name: string
+      author: string
+      url: string
+    }
   }
 }
 
@@ -43,6 +44,7 @@ const PaintingTemplate: React.FC<
   PageProps<PaintingPageData, PaintingPageContext>
 > = ({ data, pageContext }) => {
   const { painting } = pageContext
+  const { t } = useTranslation('painting')
   const [magnifierError, setMagnifierError] = useState(false)
 
   const imageData = data.file?.childImageSharp
@@ -67,6 +69,24 @@ const PaintingTemplate: React.FC<
     setMagnifierError(true)
   }
 
+  // Capitalize first letter helper
+  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
+  // Format dimensions with translated units
+  const formatDimensions = (dim: Dimensions | string) => {
+    if (typeof dim === 'string') {
+      // Legacy string format - return as-is
+      return dim
+    }
+    const unit = t(`units.${dim.unit.toLowerCase()}`)
+    return t('dimensionFormat', { width: dim.width, height: dim.height, unit })
+  }
+
+  // Get translated term (case-insensitive lookup)
+  const getTerm = (key: string, namespace: string) => {
+    return t(`${namespace}.${key.toLowerCase()}`)
+  }
+
   return (
     <Layout>
       <article className={styles.paintingDetail}>
@@ -89,21 +109,20 @@ const PaintingTemplate: React.FC<
             />
           ) : (
             <div className={styles.placeholder}>
-              <span>Image not available</span>
+              <span>{t('imageNotAvailable')}</span>
             </div>
           )}
         </div>
 
         <div className={styles.metadata}>
-          <span className={styles.category}>PAINTING</span>
+          <span className={styles.category}>{t('category')}</span>
           <h1 className={styles.title}>{painting.title}</h1>
           <p className={styles.info}>
-            Artwork Size: {painting.dimensions} |{' '}
-            {painting.substrate.charAt(0).toUpperCase() +
-              painting.substrate.slice(1)}{' '}
-            Size: {painting.substrateSize} | Medium:{' '}
-            {painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)}{' '}
-            on {painting.substrate}
+            {t('artworkSize')}: {formatDimensions(painting.dimensions)} |{' '}
+            {capitalize(getTerm(painting.substrate, 'substrates'))} {t('size')}:{' '}
+            {formatDimensions(painting.substrateSize)} | {t('medium')}:{' '}
+            {capitalize(getTerm(painting.medium, 'mediums'))} {t('on')}{' '}
+            {getTerm(painting.substrate, 'substrates')}
           </p>
           <p className={styles.year}>{painting.year}</p>
         </div>
@@ -118,15 +137,33 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
   pageContext,
   data,
 }) => {
-  const { painting } = pageContext
-  const { site } = data.allSiteYaml.nodes[0]
-  const siteUrl = site.url
+  const { painting, language } = pageContext
+  const currentLang = language || 'en'
+  const site = data.siteYaml?.site
+  const siteUrl = site?.url || ''
 
   // Get image URL for OG image
   const imageData = data.file?.childImageSharp?.gatsbyImageData
   const ogImage = imageData?.images?.fallback?.src
     ? `${siteUrl}${imageData.images.fallback.src}`
     : `${siteUrl}/icon.png`
+
+  const siteName = site?.name || 'lulutracy'
+
+  // Define supported languages for hreflang
+  const languages = ['en', 'zh', 'yue', 'ms']
+  const ogLocaleMap: Record<string, string> = {
+    en: 'en_US',
+    zh: 'zh_CN',
+    yue: 'zh_HK',
+    ms: 'ms_MY',
+  }
+  const ogLocale = ogLocaleMap[currentLang] || 'en_US'
+  const basePath = `/painting/${painting.id}`
+  const pageUrl =
+    currentLang === 'en'
+      ? `${siteUrl}${basePath}`
+      : `${siteUrl}/${currentLang}${basePath}`
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -136,35 +173,56 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     image: ogImage,
     dateCreated: painting.year,
     artMedium: `${painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)} on ${painting.substrate}`,
-    width: painting.dimensions,
+    width:
+      typeof painting.dimensions === 'string'
+        ? painting.dimensions
+        : `${painting.dimensions.width} × ${painting.dimensions.height} ${painting.dimensions.unit}`,
     creator: {
       '@type': 'Person',
-      name: site.author,
+      name: site?.author || '',
     },
   }
 
-  const pageUrl = `${siteUrl}/painting/${painting.id}`
-
   return (
     <>
-      <title>{`${painting.title} | ${site.name}`}</title>
+      <html lang={currentLang} />
+      <title>{`${painting.title} | ${siteName}`}</title>
       <meta name="description" content={painting.description} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={pageUrl} />
 
+      {/* Hreflang alternate links */}
+      {languages.map((lang) => (
+        <link
+          key={lang}
+          rel="alternate"
+          hrefLang={lang}
+          href={
+            lang === 'en'
+              ? `${siteUrl}${basePath}`
+              : `${siteUrl}/${lang}${basePath}`
+          }
+        />
+      ))}
+      <link
+        rel="alternate"
+        hrefLang="x-default"
+        href={`${siteUrl}${basePath}`}
+      />
+
       {/* Open Graph meta tags */}
-      <meta property="og:title" content={`${painting.title} | ${site.name}`} />
+      <meta property="og:title" content={`${painting.title} | ${siteName}`} />
       <meta property="og:description" content={painting.description} />
       <meta property="og:url" content={pageUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="article" />
-      <meta property="og:site_name" content={site.name} />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content={ogLocale} />
 
       {/* Twitter Card meta tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${painting.title} | ${site.name}`} />
+      <meta name="twitter:title" content={`${painting.title} | ${siteName}`} />
       <meta name="twitter:description" content={painting.description} />
       <meta name="twitter:image" content={ogImage} />
 
@@ -175,14 +233,21 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 }
 
 export const query = graphql`
-  query PaintingPage($imageName: String!) {
-    allSiteYaml {
-      nodes {
-        site {
-          name
-          author
-          url
+  query PaintingPage($imageName: String!, $language: String!) {
+    locales: allLocale(filter: { language: { eq: $language } }) {
+      edges {
+        node {
+          ns
+          data
+          language
         }
+      }
+    }
+    siteYaml {
+      site {
+        name
+        author
+        url
       }
     }
     file(

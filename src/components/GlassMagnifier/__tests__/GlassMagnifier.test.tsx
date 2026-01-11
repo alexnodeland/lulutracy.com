@@ -242,6 +242,29 @@ describe('GlassMagnifier', () => {
     })
   })
 
+  it('destroys existing Drift instance before creating new one', async () => {
+    mockMatchMedia(false) // Desktop
+    render(<GlassMagnifier {...defaultProps} />)
+
+    const img = screen.getByRole('img', { name: /test painting/i })
+    fireEvent.load(img)
+
+    await waitFor(() => {
+      expect(MockedDrift).toHaveBeenCalledTimes(1)
+    })
+
+    // Simulate mobile state change to trigger reinit
+    mockMatchMedia(true)
+    fireEvent(window, new Event('resize'))
+
+    await waitFor(() => {
+      // Previous instance should be destroyed
+      expect(mockDestroyFn).toHaveBeenCalled()
+      // New instance should be created
+      expect(MockedDrift).toHaveBeenCalledTimes(2)
+    })
+  })
+
   it('applies reduced zoom factor on mobile', async () => {
     mockMatchMedia(true) // Mobile
 

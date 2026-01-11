@@ -1,0 +1,8 @@
+# Site Configuration
+# Invariant data only - translations live in locales/*/common.json
+
+site:
+  name: lulutracy
+  author: Tracy Mah
+  email: tracy@lulutracy.com
+  url: https://alexnodeland.github.io/lulutracy.com

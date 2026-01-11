@@ -32,9 +32,16 @@
   width: auto;
 }
 
+/* Right section containing nav and language switcher */
+.rightSection {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
 /* Desktop navigation - hidden on mobile */
 .desktopNav {
-  display: none;
+  display: flex;
 }
 
 .desktopNavLink {
@@ -92,9 +99,9 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Desktop: show nav link, hide hamburger */
+/* Desktop: show nav link and language switcher, hide hamburger */
 @media (min-width: 768px) {
-  .desktopNav {
+  .rightSection {
     display: flex;
   }
 

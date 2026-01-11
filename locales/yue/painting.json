@@ -1,0 +1,30 @@
+{
+  "category": "畫作",
+  "artworkSize": "作品尺寸",
+  "size": "尺寸",
+  "medium": "媒介",
+  "on": "喺",
+  "imageNotAvailable": "圖片暫時無法顯示",
+
+  "mediums": {
+    "acrylic": "塑膠彩",
+    "watercolor": "水彩",
+    "oil": "油畫",
+    "ink": "水墨",
+    "mixed": "混合媒介"
+  },
+
+  "substrates": {
+    "canvas": "畫布",
+    "paper": "紙",
+    "board": "木板"
+  },
+
+  "units": {
+    "cm": "厘米",
+    "in": "吋",
+    "mm": "毫米"
+  },
+
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
+}

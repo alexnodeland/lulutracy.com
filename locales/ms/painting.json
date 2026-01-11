@@ -1,0 +1,30 @@
+{
+  "category": "LUKISAN",
+  "artworkSize": "Saiz Karya",
+  "size": "Saiz",
+  "medium": "Medium",
+  "on": "atas",
+  "imageNotAvailable": "Imej tidak tersedia",
+
+  "mediums": {
+    "acrylic": "akrilik",
+    "watercolor": "cat air",
+    "oil": "cat minyak",
+    "ink": "dakwat",
+    "mixed": "media campuran"
+  },
+
+  "substrates": {
+    "canvas": "kanvas",
+    "paper": "kertas",
+    "board": "papan"
+  },
+
+  "units": {
+    "cm": "cm",
+    "in": "inci",
+    "mm": "mm"
+  },
+
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
+}

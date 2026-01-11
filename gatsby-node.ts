@@ -8,30 +8,121 @@ import { generateSlug, generateImageFilename } from './src/utils/slug'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const piexif = require('piexifjs')
 
+const LANGUAGES = ['en', 'zh', 'yue', 'ms'] as const
+const DEFAULT_LANGUAGE = 'en'
+
+type Language = (typeof LANGUAGES)[number]
+
 interface SiteConfig {
   name: string
   author: string
 }
 
+interface Dimensions {
+  width: number
+  height: number
+  unit: string
+}
+
 interface RawPainting {
   title: string
   description: string
-  dimensions: string
+  dimensions: Dimensions | string
   substrate: string
-  substrateSize: string
+  substrateSize: Dimensions | string
   medium: string
   year: string
   alt: string
   order: number
 }
 
+interface LocaleOverride {
+  title: string
+  description: string
+  alt: string
+}
+
 interface PaintingsQueryResult {
-  allPaintingsYaml: {
+  paintingsYaml: {
+    paintings: RawPainting[]
+  }
+  allPaintingLocalesYaml: {
     nodes: Array<{
-      paintings: RawPainting[]
+      locale: string
+      paintings: LocaleOverride[]
     }>
   }
 }
+
+interface I18nContext {
+  language: Language
+  languages: readonly string[]
+  defaultLanguage: Language
+  originalPath: string
+  routed: boolean
+}
+
+/**
+ * Explicitly define GraphQL schema for paintings with structured dimensions
+ */
+export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] =
+  ({ actions }) => {
+    const { createTypes } = actions
+    const typeDefs = `
+      type PaintingsYamlPaintingsDimensions {
+        width: Float!
+        height: Float!
+        unit: String!
+      }
+
+      type PaintingsYamlPaintingsSubstrateSize {
+        width: Float!
+        height: Float!
+        unit: String!
+      }
+
+      type PaintingsYamlPaintings {
+        title: String!
+        description: String!
+        dimensions: PaintingsYamlPaintingsDimensions!
+        substrate: String!
+        substrateSize: PaintingsYamlPaintingsSubstrateSize!
+        medium: String!
+        year: String!
+        alt: String!
+        order: Int!
+      }
+
+      type PaintingLocalesYamlPaintings {
+        title: String!
+        description: String
+        alt: String
+      }
+
+      type PaintingLocalesYaml implements Node {
+        locale: String!
+        paintings: [PaintingLocalesYamlPaintings!]!
+      }
+
+      type SiteLocaleYamlSite {
+        tagline: String
+        description: String
+        copyright: String
+      }
+
+      type SiteLocaleYamlNavigation {
+        label: String!
+        path: String!
+      }
+
+      type SiteLocaleYaml implements Node {
+        locale: String!
+        site: SiteLocaleYamlSite
+        navigation: [SiteLocaleYamlNavigation!]
+      }
+    `
+    createTypes(typeDefs)
+  }
 
 export const createPages: GatsbyNode['createPages'] = async ({
   graphql,
@@ -40,21 +131,37 @@ export const createPages: GatsbyNode['createPages'] = async ({
   const { createPage } = actions
   const paintingTemplate = path.resolve('./src/templates/painting.tsx')
 
-  // Query all paintings from YAML
+  // Query base paintings (invariant data + English defaults) and locale overrides
   const result = await graphql<PaintingsQueryResult>(`
     query {
-      allPaintingsYaml {
+      paintingsYaml {
+        paintings {
+          title
+          description
+          dimensions {
+            width
+            height
+            unit
+          }
+          substrate
+          substrateSize {
+            width
+            height
+            unit
+          }
+          medium
+          year
+          alt
+          order
+        }
+      }
+      allPaintingLocalesYaml {
         nodes {
+          locale
           paintings {
             title
             description
-            dimensions
-            substrate
-            substrateSize
-            medium
-            year
             alt
-            order
           }
         }
       }
@@ -66,14 +173,43 @@ export const createPages: GatsbyNode['createPages'] = async ({
     return
   }
 
-  // Get paintings array from YAML data
-  const paintingsData = result.data?.allPaintingsYaml.nodes[0]
-  if (paintingsData && paintingsData.paintings) {
-    paintingsData.paintings.forEach((painting) => {
-      // Derive id and image filename from title
-      const id = generateSlug(painting.title)
-      const image = generateImageFilename(painting.title)
+  // Get base paintings (English defaults + invariant data)
+  const basePaintings = result.data?.paintingsYaml?.paintings || []
+
+  // Build locale override maps (keyed by title for robust matching)
+  const localeOverrides = new Map<string, Map<string, LocaleOverride>>()
+  result.data?.allPaintingLocalesYaml?.nodes?.forEach((node) => {
+    const locale = node.locale as Language
+    if (locale && LANGUAGES.includes(locale)) {
+      const overrideMap = new Map<string, LocaleOverride>()
+      node.paintings?.forEach((p) => {
+        overrideMap.set(p.title, p)
+      })
+      localeOverrides.set(locale, overrideMap)
+    }
+  })
+
+  // Create pages for each language
+  LANGUAGES.forEach((lang) => {
+    const overrides = localeOverrides.get(lang)
+
+    basePaintings.forEach((basePainting) => {
+      // Merge base painting with locale overrides (if any)
+      const override = overrides?.get(basePainting.title)
+      const painting: RawPainting = {
+        ...basePainting,
+        description: override?.description || basePainting.description,
+        alt: override?.alt || basePainting.alt,
+      }
+
+      // Generate slug from base title (consistent across all locales)
+      const id = generateSlug(basePainting.title)
+      const image = generateImageFilename(basePainting.title)
       const imageName = image.replace(/\.[^/.]+$/, '')
+
+      const originalPath = `/painting/${id}`
+      const pagePath =
+        lang === DEFAULT_LANGUAGE ? originalPath : `/${lang}${originalPath}`
 
       // Create enriched painting object with derived fields
       const enrichedPainting = {
@@ -82,17 +218,37 @@ export const createPages: GatsbyNode['createPages'] = async ({
         image,
       }
 
+      const i18n: I18nContext = {
+        language: lang,
+        languages: LANGUAGES,
+        defaultLanguage: DEFAULT_LANGUAGE,
+        originalPath,
+        routed: lang !== DEFAULT_LANGUAGE,
+      }
+
       createPage({
-        path: `/painting/${id}`,
+        path: pagePath,
         component: paintingTemplate,
         context: {
-          id: id,
+          id,
           painting: enrichedPainting,
-          imageName: imageName,
+          imageName,
+          language: lang,
+          i18n,
         },
       })
     })
+  })
+}
+
+/**
+ * Format dimensions for display
+ */
+function formatDimensions(dim: Dimensions | string): string {
+  if (typeof dim === 'string') {
+    return dim
   }
+  return `${dim.width} × ${dim.height} ${dim.unit}`
 }
 
 /**
@@ -102,8 +258,8 @@ function formatUserComment(painting: RawPainting): string {
   return [
     painting.description,
     `Medium: ${painting.medium} on ${painting.substrate}`,
-    `Size: ${painting.dimensions}`,
-    `Substrate: ${painting.substrateSize}`,
+    `Size: ${formatDimensions(painting.dimensions)}`,
+    `Substrate: ${formatDimensions(painting.substrateSize)}`,
     `Year: ${painting.year}`,
   ].join(' | ')
 }
@@ -149,16 +305,16 @@ export const onPostBuild: GatsbyNode['onPostBuild'] = async ({ reporter }) => {
   activity.start()
 
   try {
-    // Load site config
-    const siteYamlPath = path.join(__dirname, 'content/site/index.yaml')
+    // Load site config (use base file with English defaults for EXIF metadata)
+    const siteYamlPath = path.join(__dirname, 'content/site/site.yaml')
     const siteYamlContent = fs.readFileSync(siteYamlPath, 'utf8')
     const siteYaml = yaml.load(siteYamlContent) as { site: SiteConfig }
     const site = siteYaml.site
 
-    // Load paintings metadata
+    // Load paintings metadata for EXIF (from base file with English defaults)
     const paintingsYamlPath = path.join(
       __dirname,
-      'content/paintings/index.yaml'
+      'content/paintings/paintings.yaml'
     )
     const paintingsYamlContent = fs.readFileSync(paintingsYamlPath, 'utf8')
     const paintingsYaml = yaml.load(paintingsYamlContent) as {

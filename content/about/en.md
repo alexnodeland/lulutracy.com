@@ -2,6 +2,7 @@
 title: About
 artistName: ';-)'
 photo: about.jpeg
+locale: en
 ---
 
 Born in Malaysia, my mom's garden was my playground. Moments among the plants while she worked cultivated a comforting familiarity with nature that encouraged deeper appreciation, and later nostalgia. Now based in New York, I find home in the similarities I see in nature. Over the past eight years, I channeled that inspiration by studying and pursuing a career in graphic design but later reconnected to art through painting.

@@ -1,0 +1,13 @@
+{
+  "site": {
+    "tagline": "藝術與設計",
+    "description": "lulutracy藝術作品集 - 透過水彩同塑膠彩探索大自然"
+  },
+  "copyright": "版權所有 {{year}} lulutracy。保留所有權利。",
+  "nav": {
+    "about": "關於",
+    "home": "lulutracy"
+  },
+  "toggleMenu": "切換導航選單",
+  "mainNavigation": "主導航"
+}

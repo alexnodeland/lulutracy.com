@@ -24,6 +24,9 @@ module.exports = {
     // Handle Gatsby module
     '^gatsby$': '<rootDir>/__mocks__/gatsby.js',
     '^gatsby-plugin-image$': '<rootDir>/__mocks__/gatsby-plugin-image.js',
+    // Handle Gatsby i18n plugin
+    '^gatsby-plugin-react-i18next$':
+      '<rootDir>/__mocks__/gatsby-plugin-react-i18next.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/.cache/', '/public/'],

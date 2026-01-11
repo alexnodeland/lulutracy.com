@@ -1,0 +1,41 @@
+# Painting Translations - Malay (Bahasa Malaysia)
+# Only contains translatable fields (description, alt)
+# Title is used as a key to match with base paintings.yaml
+
+locale: ms
+paintings:
+  - title: Symbiosis
+    description: Meneroka bentuk organik dan warna terang, memaparkan hubungan saling bergantung dalam alam semula jadi.
+    alt: Lukisan abstrak tangan dengan bentuk mengalir berwarna biru, merah, kuning dan ungu
+
+  - title: Night Hours
+    description: Dahan pokok yang lebat dan kehijauan, menangkap intipati keindahan alam semula jadi.
+    alt: Kanopi hutan hijau yang lebat dengan dahan yang berjalin
+
+  - title: Get Lucky
+    description: Kajian terperinci mengenai semanggi, menangkap keindahan halus tumbuhan biasa yang sering diabaikan.
+    alt: Lukisan semanggi hijau yang tersusun rapat
+
+  - title: Touch Me Not
+    description: Bunga semalu merah jambu di antara paku pakis hijau, mewakili kelembutan alam semula jadi.
+    alt: Lukisan bunga semalu merah jambu dengan daun paku pakis hijau
+
+  - title: Looking Up
+    description: Pemandangan tropika yang bertenaga dengan warna hijau yang kaya dan unsur semula jadi.
+    alt: Lukisan kanopi pokok tropika dengan tumbuhan yang subur
+
+  - title: Thinking Space
+    description: Bentuk cecair abstrak yang kaya dengan warna.
+    alt: Lukisan abstrak cecair berwarna-warni
+
+  - title: Tropical Forest Study
+    description: Kajian intim tentang bentuk dan tekstur semula jadi.
+    alt: Lukisan kajian alam semula jadi dengan bentuk organik
+
+  - title: Flourish
+    description: Penerokaan berterusan keindahan alam semula jadi dan corak organik.
+    alt: Lukisan kajian alam semula jadi yang meneroka corak organik
+
+  - title: Pretty Ripe
+    description: Kajian tentang pisang yang masak, menangkap keindahan dalam objek harian.
+    alt: Lukisan cat air pisang kuning matang dengan tompok coklat

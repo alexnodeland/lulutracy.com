@@ -1,11 +1,20 @@
+// Dimension types for structured measurements
+export type DimensionUnit = 'cm' | 'in' | 'mm'
+
+export interface Dimensions {
+  width: number
+  height: number
+  unit: DimensionUnit
+}
+
 // Painting types
 export interface Painting {
   id: string
   title: string
   description: string
-  dimensions: string
+  dimensions: Dimensions
   substrate: string
-  substrateSize: string
+  substrateSize: Dimensions
   medium: string
   year: string
   image: string
@@ -62,6 +71,30 @@ export interface AboutMarkdownNode {
     title: string
     artistName: string
     photo: string
+    locale?: string
   }
   html: string
+}
+
+// i18n types
+export interface I18nPageContext {
+  language: string
+  languages: readonly string[]
+  defaultLanguage: string
+  originalPath: string
+  routed: boolean
+}
+
+export interface LocaleNode {
+  ns: string
+  data: string
+  language: string
+}
+
+export interface LocaleQueryResult {
+  locales: {
+    edges: Array<{
+      node: LocaleNode
+    }>
+  }
 }
