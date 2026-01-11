@@ -20,13 +20,21 @@ interface RawPainting {
   order: number
 }
 
+// Locale override - only translatable fields
+interface LocaleOverride {
+  title: string
+  description: string
+  alt: string
+}
+
 interface IndexPageData {
-  allPaintingsYaml: {
+  paintingsYaml: {
+    paintings: RawPainting[]
+  }
+  allPaintingLocalesYaml: {
     nodes: Array<{
-      paintings: RawPainting[]
-      parent: {
-        name: string
-      }
+      locale: string
+      paintings: LocaleOverride[]
     }>
   }
   allFile: {
@@ -37,16 +45,20 @@ interface IndexPageData {
       }
     }>
   }
-  allSiteYaml: {
+  siteYaml: {
+    site: {
+      name: string
+      tagline: string
+      description: string
+      url: string
+    }
+  }
+  allSiteLocaleYaml: {
     nodes: Array<{
+      locale: string
       site: {
-        name: string
         tagline: string
         description: string
-        url: string
-      }
-      parent: {
-        name: string
       }
     }>
   }
@@ -62,27 +74,28 @@ const IndexPage: React.FC<PageProps<IndexPageData, IndexPageContext>> = ({
 }) => {
   const language = pageContext.language || 'en'
 
-  // Find paintings for the current language
-  const paintingsNode = data.allPaintingsYaml.nodes.find(
-    (node) => node.parent?.name === language
-  )
-  const rawPaintings = paintingsNode?.paintings || []
+  // Get base paintings (English defaults + invariant data)
+  const basePaintings = data.paintingsYaml?.paintings || []
   const imageNodes = data.allFile.nodes
 
-  // Get English paintings for consistent slug generation
-  const enPaintingsNode = data.allPaintingsYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
+  // Build locale override map (keyed by title)
+  const localeNode = data.allPaintingLocalesYaml?.nodes?.find(
+    (node) => node.locale === language
   )
-  const enPaintings = enPaintingsNode?.paintings || []
+  const overrideMap = new Map<string, LocaleOverride>()
+  localeNode?.paintings?.forEach((p) => {
+    overrideMap.set(p.title, p)
+  })
 
-  // Enrich paintings with derived id and image fields (using English titles for slugs)
-  const paintings: Painting[] = rawPaintings.map((raw, index) => {
-    const enPainting = enPaintings[index]
-    const slugSource = enPainting || raw
+  // Merge base paintings with locale overrides and enrich with derived fields
+  const paintings: Painting[] = basePaintings.map((base) => {
+    const override = overrideMap.get(base.title)
     return {
-      ...raw,
-      id: generateSlug(slugSource.title),
-      image: generateImageFilename(slugSource.title),
+      ...base,
+      description: override?.description || base.description,
+      alt: override?.alt || base.alt,
+      id: generateSlug(base.title),
+      image: generateImageFilename(base.title),
     }
   })
 
@@ -125,18 +138,24 @@ export const Head: HeadFC<IndexPageData, IndexPageContext> = ({
   pageContext,
 }) => {
   const language = pageContext?.language || 'en'
-  const siteNode = data.allSiteYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const site = siteNode?.site
+
+  // Get base site data and merge with locale overrides
+  const baseSite = data.siteYaml?.site
+  const localeOverride = data.allSiteLocaleYaml?.nodes?.find(
+    (node) => node.locale === language
+  )?.site
+  const site = baseSite
+    ? {
+        ...baseSite,
+        tagline: localeOverride?.tagline || baseSite.tagline,
+        description: localeOverride?.description || baseSite.description,
+      }
+    : null
   const siteUrl = site?.url || ''
 
-  // Get first painting image for OG image
-  const paintingsNode = data.allPaintingsYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const rawPaintings = paintingsNode?.paintings || []
-  const sortedPaintings = [...rawPaintings].sort((a, b) => a.order - b.order)
+  // Get first painting image for OG image (from base paintings)
+  const basePaintings = data.paintingsYaml?.paintings || []
+  const sortedPaintings = [...basePaintings].sort((a, b) => a.order - b.order)
   const firstPainting = sortedPaintings[0]
   const imageNodes = data.allFile.nodes
   const imageName = firstPainting ? generateSlug(firstPainting.title) : ''
@@ -216,46 +235,51 @@ export const query = graphql`
         }
       }
     }
-    allSiteYaml {
+    siteYaml {
+      site {
+        name
+        tagline
+        description
+        url
+      }
+    }
+    allSiteLocaleYaml {
       nodes {
+        locale
         site {
-          name
           tagline
           description
-          url
-        }
-        parent {
-          ... on File {
-            name
-          }
         }
       }
     }
-    allPaintingsYaml {
+    paintingsYaml {
+      paintings {
+        title
+        description
+        dimensions {
+          width
+          height
+          unit
+        }
+        substrate
+        substrateSize {
+          width
+          height
+          unit
+        }
+        medium
+        year
+        alt
+        order
+      }
+    }
+    allPaintingLocalesYaml {
       nodes {
+        locale
         paintings {
           title
           description
-          dimensions {
-            width
-            height
-            unit
-          }
-          substrate
-          substrateSize {
-            width
-            height
-            unit
-          }
-          medium
-          year
           alt
-          order
-        }
-        parent {
-          ... on File {
-            name
-          }
         }
       }
     }

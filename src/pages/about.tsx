@@ -19,17 +19,20 @@ interface AboutPageData {
     html: string
     excerpt: string
   } | null
-  allSiteYaml: {
+  siteYaml: {
+    site: {
+      name: string
+      description: string
+      author: string
+      email: string
+      url: string
+    }
+  }
+  allSiteLocaleYaml: {
     nodes: Array<{
+      locale: string
       site: {
-        name: string
         description: string
-        author: string
-        email: string
-        url: string
-      }
-      parent: {
-        name: string
       }
     }>
   }
@@ -44,10 +47,7 @@ const AboutPage: React.FC<PageProps<AboutPageData, AboutPageContext>> = ({
 }) => {
   const { t } = useTranslation('about')
   const markdownRemark = data.markdownRemark
-  const siteNode = data.allSiteYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const site = siteNode?.site || data.allSiteYaml.nodes[0]?.site
+  const site = data.siteYaml?.site
 
   if (!markdownRemark) {
     return (
@@ -100,10 +100,18 @@ export const Head: HeadFC<AboutPageData, AboutPageContext> = ({
   pageContext,
 }) => {
   const language = pageContext?.language || 'en'
-  const siteNode = data.allSiteYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const site = siteNode?.site || data.allSiteYaml.nodes[0]?.site
+
+  // Get base site data and merge with locale overrides
+  const baseSite = data.siteYaml?.site
+  const localeOverride = data.allSiteLocaleYaml?.nodes?.find(
+    (node) => node.locale === language
+  )?.site
+  const site = baseSite
+    ? {
+        ...baseSite,
+        description: localeOverride?.description || baseSite.description,
+      }
+    : null
   const markdownRemark = data.markdownRemark
 
   if (!markdownRemark || !site) {
@@ -194,19 +202,20 @@ export const query = graphql`
         }
       }
     }
-    allSiteYaml {
+    siteYaml {
+      site {
+        name
+        description
+        author
+        email
+        url
+      }
+    }
+    allSiteLocaleYaml {
       nodes {
+        locale
         site {
-          name
           description
-          author
-          email
-          url
-        }
-        parent {
-          ... on File {
-            name
-          }
         }
       }
     }

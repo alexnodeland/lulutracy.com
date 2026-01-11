@@ -1,0 +1,41 @@
+# Painting Translations - Chinese (中文)
+# Only contains translatable fields (description, alt)
+# Title is used as a key to match with base paintings.yaml
+
+locale: zh
+paintings:
+  - title: Symbiosis
+    description: 探索有机形态和鲜艳色彩，表现自然界的相互联系。
+    alt: 手部抽象画，蓝色、红色、黄色和紫色的流动形态
+
+  - title: Night Hours
+    description: 茂盛的树枝和绿色植物，捕捉自然之美的精髓。
+    alt: 密集的绿色森林树冠与交织的树枝
+
+  - title: Get Lucky
+    description: 对三叶草的细致研究，捕捉这些常见却被忽视的植物的精致美感。
+    alt: 密集排列的绿色三叶草画作
+
+  - title: Touch Me Not
+    description: 绿色蕨类植物中的粉红色含羞草花，代表大自然的柔美。
+    alt: 粉红色含羞草花与绿色蕨叶的画作
+
+  - title: Looking Up
+    description: 充满活力的热带景观，丰富的绿色和自然元素。
+    alt: 热带树冠画作，茂盛的植被
+
+  - title: Thinking Space
+    description: 色彩丰富的抽象流体形态。
+    alt: 色彩丰富的抽象流体画作
+
+  - title: Tropical Forest Study
+    description: 对自然形态和纹理的亲密研究。
+    alt: 自然研究画作，有机形态
+
+  - title: Flourish
+    description: 继续探索自然之美和有机图案。
+    alt: 探索有机图案的自然研究画作
+
+  - title: Pretty Ripe
+    description: 对成熟香蕉的研究，捕捉日常物品中的美。
+    alt: 成熟黄色香蕉水彩画，带有棕色斑点

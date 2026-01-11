@@ -50,19 +50,12 @@ const mockPageContext = {
   language: 'en',
 }
 
-const mockAllSiteYaml = {
-  nodes: [
-    {
-      site: {
-        name: 'lulutracy',
-        author: 'Tracy Mah',
-        url: 'https://alexnodeland.github.io/lulutracy.com',
-      },
-      parent: {
-        name: 'en',
-      },
-    },
-  ],
+const mockSiteYaml = {
+  site: {
+    name: 'lulutracy',
+    author: 'Tracy Mah',
+    url: 'https://alexnodeland.github.io/lulutracy.com',
+  },
 }
 
 const mockDataWithImage = {
@@ -98,13 +91,13 @@ const mockDataWithImage = {
       },
     },
   },
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
 }
 
 const mockDataWithoutImage = {
   file: null,
   zoomFile: null,
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
 }
 
 const mockDataWithImageButNoZoom = {

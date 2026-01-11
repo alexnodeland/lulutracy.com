@@ -1,20 +1,14 @@
 # Site Configuration - Chinese (中文)
+# Only contains translatable fields
+# Merges with base site.yaml
+
+locale: zh
 
 site:
-  name: lulutracy
   tagline: 艺术与设计
-  title: lulutracy
   description: lulutracy艺术作品集 - 通过水彩和丙烯探索自然
-  author: Tracy Mah
-  email: tracy@lulutracy.com
-  url: https://alexnodeland.github.io/lulutracy.com
   copyright: '版权所有 {year} lulutracy。保留所有权利。'
 
 navigation:
   - label: 关于
     path: /about
-
-social:
-  # Add social media links here
-  # - platform: instagram
-  #   url: https://instagram.com/lulutracy

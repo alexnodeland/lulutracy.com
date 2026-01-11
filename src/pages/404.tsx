@@ -12,15 +12,10 @@ const Link = I18nLink as unknown as React.FC<{
 }>
 
 interface NotFoundPageData {
-  allSiteYaml: {
-    nodes: Array<{
-      site: {
-        name: string
-      }
-      parent: {
-        name: string
-      }
-    }>
+  siteYaml: {
+    site: {
+      name: string
+    }
   }
 }
 
@@ -53,10 +48,7 @@ export const Head: HeadFC<NotFoundPageData, NotFoundPageContext> = ({
   pageContext,
 }) => {
   const language = pageContext?.language || 'en'
-  const siteNode = data.allSiteYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const site = siteNode?.site
+  const site = data.siteYaml?.site
   return (
     <>
       <html lang={language} />
@@ -77,16 +69,9 @@ export const query = graphql`
         }
       }
     }
-    allSiteYaml {
-      nodes {
-        site {
-          name
-        }
-        parent {
-          ... on File {
-            name
-          }
-        }
+    siteYaml {
+      site {
+        name
       }
     }
   }

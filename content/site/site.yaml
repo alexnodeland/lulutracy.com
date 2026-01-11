@@ -1,4 +1,6 @@
-# Site Configuration - English
+# Site Configuration
+# Single source of truth for invariant data + English defaults
+# Translatable fields: tagline, description, copyright, navigation.label
 
 site:
   name: lulutracy
@@ -14,7 +16,4 @@ navigation:
   - label: about
     path: /about
 
-social:
-  # Add social media links here
-  # - platform: instagram
-  #   url: https://instagram.com/lulutracy
+social: []

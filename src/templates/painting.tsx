@@ -31,17 +31,12 @@ interface PaintingPageData {
       gatsbyImageData: IGatsbyImageData
     }
   } | null
-  allSiteYaml: {
-    nodes: Array<{
-      site: {
-        name: string
-        author: string
-        url: string
-      }
-      parent: {
-        name: string
-      }
-    }>
+  siteYaml: {
+    site: {
+      name: string
+      author: string
+      url: string
+    }
   }
 }
 
@@ -144,10 +139,7 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 }) => {
   const { painting, language } = pageContext
   const currentLang = language || 'en'
-  const siteNode = data.allSiteYaml.nodes.find(
-    (node) => node.parent?.name === 'en'
-  )
-  const site = siteNode?.site || data.allSiteYaml.nodes[0]?.site
+  const site = data.siteYaml?.site
   const siteUrl = site?.url || ''
 
   // Get image URL for OG image
@@ -245,18 +237,11 @@ export const query = graphql`
         }
       }
     }
-    allSiteYaml {
-      nodes {
-        site {
-          name
-          author
-          url
-        }
-        parent {
-          ... on File {
-            name
-          }
-        }
+    siteYaml {
+      site {
+        name
+        author
+        url
       }
     }
     file(

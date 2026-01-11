@@ -34,7 +34,11 @@ module.exports = {
       options: {
         name: `content`,
         path: `${__dirname}/content`,
-        ignore: [`**/paintings/images/**`],
+        ignore: [
+          `**/paintings/images/**`,
+          `**/paintings/locales/**`,
+          `**/site/locales/**`,
+        ],
       },
     },
     // Source painting images
@@ -43,6 +47,22 @@ module.exports = {
       options: {
         name: `paintingImages`,
         path: `${__dirname}/content/paintings/images`,
+      },
+    },
+    // Source painting locale overrides (for i18n translations)
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `paintingLocales`,
+        path: `${__dirname}/content/paintings/locales`,
+      },
+    },
+    // Source site locale overrides (for i18n translations)
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `siteLocales`,
+        path: `${__dirname}/content/site/locales`,
       },
     },
     // Source site images (logo, about photo, etc.)

@@ -36,13 +36,20 @@ interface RawPainting {
   order: number
 }
 
+interface LocaleOverride {
+  title: string
+  description: string
+  alt: string
+}
+
 interface PaintingsQueryResult {
-  allPaintingsYaml: {
+  paintingsYaml: {
+    paintings: RawPainting[]
+  }
+  allPaintingLocalesYaml: {
     nodes: Array<{
-      paintings: RawPainting[]
-      parent: {
-        name: string
-      }
+      locale: string
+      paintings: LocaleOverride[]
     }>
   }
 }
@@ -85,6 +92,34 @@ export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] 
         alt: String!
         order: Int!
       }
+
+      type PaintingLocalesYamlPaintings {
+        title: String!
+        description: String
+        alt: String
+      }
+
+      type PaintingLocalesYaml implements Node {
+        locale: String!
+        paintings: [PaintingLocalesYamlPaintings!]!
+      }
+
+      type SiteLocaleYamlSite {
+        tagline: String
+        description: String
+        copyright: String
+      }
+
+      type SiteLocaleYamlNavigation {
+        label: String!
+        path: String!
+      }
+
+      type SiteLocaleYaml implements Node {
+        locale: String!
+        site: SiteLocaleYamlSite
+        navigation: [SiteLocaleYamlNavigation!]
+      }
     `
     createTypes(typeDefs)
   }
@@ -96,34 +131,37 @@ export const createPages: GatsbyNode['createPages'] = async ({
   const { createPage } = actions
   const paintingTemplate = path.resolve('./src/templates/painting.tsx')
 
-  // Query all paintings from locale-specific YAML files
+  // Query base paintings (invariant data + English defaults) and locale overrides
   const result = await graphql<PaintingsQueryResult>(`
     query {
-      allPaintingsYaml {
+      paintingsYaml {
+        paintings {
+          title
+          description
+          dimensions {
+            width
+            height
+            unit
+          }
+          substrate
+          substrateSize {
+            width
+            height
+            unit
+          }
+          medium
+          year
+          alt
+          order
+        }
+      }
+      allPaintingLocalesYaml {
         nodes {
+          locale
           paintings {
             title
             description
-            dimensions {
-              width
-              height
-              unit
-            }
-            substrate
-            substrateSize {
-              width
-              height
-              unit
-            }
-            medium
-            year
             alt
-            order
-          }
-          parent {
-            ... on File {
-              name
-            }
           }
         }
       }
@@ -135,29 +173,38 @@ export const createPages: GatsbyNode['createPages'] = async ({
     return
   }
 
-  // Group paintings by locale
-  const paintingsByLocale = new Map<Language, RawPainting[]>()
+  // Get base paintings (English defaults + invariant data)
+  const basePaintings = result.data?.paintingsYaml?.paintings || []
 
-  result.data?.allPaintingsYaml.nodes.forEach((node) => {
-    const locale = node.parent?.name as Language
-    if (LANGUAGES.includes(locale)) {
-      paintingsByLocale.set(locale, node.paintings)
+  // Build locale override maps (keyed by title for robust matching)
+  const localeOverrides = new Map<string, Map<string, LocaleOverride>>()
+  result.data?.allPaintingLocalesYaml?.nodes?.forEach((node) => {
+    const locale = node.locale as Language
+    if (locale && LANGUAGES.includes(locale)) {
+      const overrideMap = new Map<string, LocaleOverride>()
+      node.paintings?.forEach((p) => {
+        overrideMap.set(p.title, p)
+      })
+      localeOverrides.set(locale, overrideMap)
     }
   })
 
-  // Get English paintings for consistent slug generation
-  const enPaintings = paintingsByLocale.get('en') || []
-
   // Create pages for each language
   LANGUAGES.forEach((lang) => {
-    const paintings = paintingsByLocale.get(lang) || []
+    const overrides = localeOverrides.get(lang)
 
-    paintings.forEach((painting, index) => {
-      // Use English painting for slug generation (for URL consistency)
-      const enPainting = enPaintings[index]
-      const slugSource = enPainting || painting
-      const id = generateSlug(slugSource.title)
-      const image = generateImageFilename(slugSource.title)
+    basePaintings.forEach((basePainting) => {
+      // Merge base painting with locale overrides (if any)
+      const override = overrides?.get(basePainting.title)
+      const painting: RawPainting = {
+        ...basePainting,
+        description: override?.description || basePainting.description,
+        alt: override?.alt || basePainting.alt,
+      }
+
+      // Generate slug from base title (consistent across all locales)
+      const id = generateSlug(basePainting.title)
+      const image = generateImageFilename(basePainting.title)
       const imageName = image.replace(/\.[^/.]+$/, '')
 
       const originalPath = `/painting/${id}`
@@ -258,14 +305,17 @@ export const onPostBuild: GatsbyNode['onPostBuild'] = async ({ reporter }) => {
   activity.start()
 
   try {
-    // Load site config (use English for EXIF metadata)
-    const siteYamlPath = path.join(__dirname, 'content/site/en.yaml')
+    // Load site config (use base file with English defaults for EXIF metadata)
+    const siteYamlPath = path.join(__dirname, 'content/site/site.yaml')
     const siteYamlContent = fs.readFileSync(siteYamlPath, 'utf8')
     const siteYaml = yaml.load(siteYamlContent) as { site: SiteConfig }
     const site = siteYaml.site
 
-    // Load English paintings metadata for EXIF
-    const paintingsYamlPath = path.join(__dirname, 'content/paintings/en.yaml')
+    // Load paintings metadata for EXIF (from base file with English defaults)
+    const paintingsYamlPath = path.join(
+      __dirname,
+      'content/paintings/paintings.yaml'
+    )
     const paintingsYamlContent = fs.readFileSync(paintingsYamlPath, 'utf8')
     const paintingsYaml = yaml.load(paintingsYamlContent) as {
       paintings: RawPainting[]

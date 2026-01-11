@@ -48,33 +48,36 @@ const mockPaintings: Painting[] = [
   },
 ]
 
-const mockAllSiteYaml = {
-  nodes: [
-    {
-      site: {
-        name: 'lulutracy',
-        tagline: 'art & design',
-        description:
-          'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
-        url: 'https://alexnodeland.github.io/lulutracy.com',
-      },
-      parent: {
-        name: 'en',
-      },
-    },
-  ],
+const mockSiteYaml = {
+  site: {
+    name: 'lulutracy',
+    tagline: 'art & design',
+    description:
+      'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
+    url: 'https://alexnodeland.github.io/lulutracy.com',
+  },
+}
+
+interface SiteLocaleNode {
+  locale: string
+  site: { tagline: string; description: string }
+}
+
+const mockSiteLocales = {
+  nodes: [] as SiteLocaleNode[],
+}
+
+interface LocaleNode {
+  locale: string
+  paintings: Array<{ title: string; description: string; alt: string }>
 }
 
 const mockData = {
-  allPaintingsYaml: {
-    nodes: [
-      {
-        paintings: mockPaintings,
-        parent: {
-          name: 'en',
-        },
-      },
-    ],
+  paintingsYaml: {
+    paintings: mockPaintings,
+  },
+  allPaintingLocalesYaml: {
+    nodes: [] as LocaleNode[],
   },
   allFile: {
     nodes: [
@@ -114,7 +117,8 @@ const mockData = {
       },
     ],
   },
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
+  allSiteLocaleYaml: mockSiteLocales,
 }
 
 const mockPageContext = {
@@ -156,13 +160,11 @@ describe('IndexPage', () => {
 
   it('handles empty paintings gracefully', () => {
     const emptyData = {
-      allPaintingsYaml: {
-        nodes: [{ paintings: [], parent: { name: 'en' } }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      paintingsYaml: { paintings: [] },
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
+      allSiteLocaleYaml: mockSiteLocales,
     }
     renderIndexPage(emptyData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
@@ -170,13 +172,11 @@ describe('IndexPage', () => {
 
   it('handles undefined paintings gracefully', () => {
     const undefinedData = {
-      allPaintingsYaml: {
-        nodes: [{ parent: { name: 'en' } }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      paintingsYaml: null,
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
+      allSiteLocaleYaml: mockSiteLocales,
     }
     renderIndexPage(undefinedData as any)
     expect(screen.getByRole('main')).toBeInTheDocument()
@@ -187,18 +187,25 @@ describe('IndexPage', () => {
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 
-  it('handles Chinese language context', () => {
+  it('handles Chinese language context with locale overrides', () => {
     const zhData = {
       ...mockData,
-      allPaintingsYaml: {
+      allPaintingLocalesYaml: {
         nodes: [
           {
-            paintings: mockPaintings,
-            parent: { name: 'en' },
-          },
-          {
-            paintings: mockPaintings,
-            parent: { name: 'zh' },
+            locale: 'zh',
+            paintings: [
+              {
+                title: 'Test Painting 1',
+                description: '描述1',
+                alt: '替代文本1',
+              },
+              {
+                title: 'Test Painting 2',
+                description: '描述2',
+                alt: '替代文本2',
+              },
+            ],
           },
         ],
       },
@@ -207,23 +214,13 @@ describe('IndexPage', () => {
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 
-  it('falls back to raw painting when English painting is missing', () => {
-    const dataWithMissingEnPainting = {
+  it('uses base painting data when locale override is missing', () => {
+    // No locale overrides provided - should fall back to base (English) data
+    const dataNoOverrides = {
       ...mockData,
-      allPaintingsYaml: {
-        nodes: [
-          {
-            paintings: [],
-            parent: { name: 'en' },
-          },
-          {
-            paintings: mockPaintings,
-            parent: { name: 'zh' },
-          },
-        ],
-      },
+      allPaintingLocalesYaml: { nodes: [] },
     }
-    renderIndexPage(dataWithMissingEnPainting, { language: 'zh' })
+    renderIndexPage(dataNoOverrides, { language: 'zh' })
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
@@ -248,13 +245,11 @@ describe('Head', () => {
 
   it('renders with fallback image when no paintings exist', () => {
     const emptyData = {
-      allPaintingsYaml: {
-        nodes: [{ paintings: [], parent: { name: 'en' } }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      paintingsYaml: { paintings: [] },
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
+      allSiteLocaleYaml: mockSiteLocales,
     }
     const { container } = render(
       <Head data={emptyData as any} {...({} as any)} />
@@ -266,13 +261,11 @@ describe('Head', () => {
 
   it('renders with fallback image when paintings is undefined', () => {
     const undefinedData = {
-      allPaintingsYaml: {
-        nodes: [{ parent: { name: 'en' } }],
-      },
-      allFile: {
-        nodes: [],
-      },
-      allSiteYaml: mockAllSiteYaml,
+      paintingsYaml: null,
+      allPaintingLocalesYaml: { nodes: [] },
+      allFile: { nodes: [] },
+      siteYaml: mockSiteYaml,
+      allSiteLocaleYaml: mockSiteLocales,
     }
     const { container } = render(
       <Head data={undefinedData as any} {...({} as any)} />
@@ -304,14 +297,10 @@ describe('Head', () => {
   it('handles missing site properties gracefully', () => {
     const dataMissingSiteProps = {
       ...mockData,
-      allSiteYaml: {
-        nodes: [
-          {
-            site: {},
-            parent: { name: 'en' },
-          },
-        ],
+      siteYaml: {
+        site: {},
       },
+      allSiteLocaleYaml: { nodes: [] },
     }
     const { container } = render(
       <Head data={dataMissingSiteProps as any} {...({} as any)} />

@@ -2,22 +2,24 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AboutPage, { Head } from '../about'
 
-const mockAllSiteYaml = {
-  nodes: [
-    {
-      site: {
-        name: 'lulutracy',
-        description:
-          'Art portfolio of lulutracy - exploring nature through watercolors and acrylics',
-        author: 'Tracy Mah',
-        email: 'tracy@lulutracy.com',
-        url: 'https://alexnodeland.github.io/lulutracy.com',
-      },
-      parent: {
-        name: 'en',
-      },
-    },
-  ],
+const mockSiteYaml = {
+  site: {
+    name: 'lulutracy',
+    description:
+      'Art portfolio of lulutracy - exploring nature through watercolors and acrylics',
+    author: 'Tracy Mah',
+    email: 'tracy@lulutracy.com',
+    url: 'https://alexnodeland.github.io/lulutracy.com',
+  },
+}
+
+interface SiteLocaleNode {
+  locale: string
+  site: { description: string }
+}
+
+const mockSiteLocales = {
+  nodes: [] as SiteLocaleNode[],
 }
 
 const mockData = {
@@ -43,7 +45,8 @@ const mockData = {
     html: '<p>This is the artist biography.</p><p>More content here.</p>',
     excerpt: 'This is the artist biography. More content here.',
   },
-  allSiteYaml: mockAllSiteYaml,
+  siteYaml: mockSiteYaml,
+  allSiteLocaleYaml: mockSiteLocales,
 }
 
 // Cast to any to bypass Gatsby PageProps typing in tests
@@ -107,19 +110,19 @@ describe('AboutPage', () => {
     expect(screen.getByText(/content not available/i)).toBeInTheDocument()
   })
 
-  it('uses fallback site when English site node not found', () => {
-    const dataWithNonEnglishSite = {
+  it('uses locale override for Chinese language', () => {
+    const dataWithZhOverride = {
       ...mockData,
-      allSiteYaml: {
+      allSiteLocaleYaml: {
         nodes: [
           {
-            site: mockAllSiteYaml.nodes[0].site,
-            parent: { name: 'zh' },
+            locale: 'zh',
+            site: { description: '中文描述' },
           },
         ],
       },
     }
-    render(<AboutPage data={dataWithNonEnglishSite} {...({} as any)} />)
+    render(<AboutPage data={dataWithZhOverride} {...({} as any)} />)
     expect(screen.getByRole('main')).toBeInTheDocument()
   })
 })
@@ -175,20 +178,24 @@ describe('Head', () => {
     expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
   })
 
-  it('uses fallback site when English site node not found', () => {
-    const dataWithNonEnglishSite = {
+  it('uses locale override for Chinese description in Head', () => {
+    const dataWithZhOverride = {
       ...mockData,
-      allSiteYaml: {
+      allSiteLocaleYaml: {
         nodes: [
           {
-            site: mockAllSiteYaml.nodes[0].site,
-            parent: { name: 'zh' },
+            locale: 'zh',
+            site: { description: '中文描述' },
           },
         ],
       },
     }
     const { container } = render(
-      <Head data={dataWithNonEnglishSite} {...({} as any)} />
+      <Head
+        data={dataWithZhOverride}
+        pageContext={{ language: 'zh' }}
+        {...({} as any)}
+      />
     )
     expect(container.querySelector('title')).toHaveTextContent(
       'about | lulutracy'

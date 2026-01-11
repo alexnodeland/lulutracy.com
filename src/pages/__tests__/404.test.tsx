@@ -3,14 +3,10 @@ import { render, screen } from '@testing-library/react'
 import NotFoundPage, { Head } from '../404'
 
 const mockData = {
-  allSiteYaml: {
-    nodes: [
-      {
-        site: {
-          name: 'lulutracy',
-        },
-      },
-    ],
+  siteYaml: {
+    site: {
+      name: 'lulutracy',
+    },
   },
 }
 
