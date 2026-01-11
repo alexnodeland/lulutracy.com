@@ -7,6 +7,10 @@ const mockAllSiteYaml = {
     {
       site: {
         name: 'lulutracy',
+        description:
+          'Art portfolio of lulutracy - exploring nature through watercolors and acrylics',
+        author: 'Tracy Mah',
+        email: 'tracy@lulutracy.com',
         url: 'https://alexnodeland.github.io/lulutracy.com',
       },
     },
@@ -34,6 +38,7 @@ const mockData = {
       },
     },
     html: '<p>This is the artist biography.</p><p>More content here.</p>',
+    excerpt: 'This is the artist biography. More content here.',
   },
   allSiteYaml: mockAllSiteYaml,
 }
@@ -65,12 +70,12 @@ describe('AboutPage', () => {
     renderAboutPage()
     const contactLink = screen.getByRole('link', { name: /contact/i })
     expect(contactLink).toBeInTheDocument()
-    expect(contactLink).toHaveAttribute('href', 'mailto:contact@lulutracy.com')
+    expect(contactLink).toHaveAttribute('href', 'mailto:tracy@lulutracy.com')
   })
 
   it('renders the artist photo', () => {
     renderAboutPage()
-    const images = screen.getAllByRole('img', { name: /lulu tracy/i })
+    const images = screen.getAllByRole('img', { name: /tracy mah/i })
     // Should have at least one image (logo in header and about photo)
     expect(images.length).toBeGreaterThanOrEqual(1)
   })

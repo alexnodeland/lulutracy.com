@@ -122,6 +122,9 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
       <title>{`${site.name} | ${site.tagline}`}</title>
       <meta name="description" content={site.description} />
 
+      {/* Canonical URL */}
+      <link rel="canonical" href={siteUrl} />
+
       {/* Open Graph meta tags */}
       <meta property="og:title" content={`${site.name} | ${site.tagline}`} />
       <meta property="og:description" content={site.description} />
@@ -130,6 +133,12 @@ export const Head: HeadFC<IndexPageData> = ({ data }) => {
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
+
+      {/* Twitter Card meta tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={`${site.name} | ${site.tagline}`} />
+      <meta name="twitter:description" content={site.description} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* JSON-LD structured data */}
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>

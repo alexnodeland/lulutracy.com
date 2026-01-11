@@ -32,7 +32,7 @@ interface PaintingPageData {
     nodes: Array<{
       site: {
         name: string
-        title: string
+        author: string
         url: string
       }
     }>
@@ -139,23 +139,34 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     width: painting.dimensions,
     creator: {
       '@type': 'Person',
-      name: site.title,
+      name: site.author,
     },
   }
+
+  const pageUrl = `${siteUrl}/painting/${painting.id}`
 
   return (
     <>
       <title>{`${painting.title} | ${site.name}`}</title>
       <meta name="description" content={painting.description} />
 
+      {/* Canonical URL */}
+      <link rel="canonical" href={pageUrl} />
+
       {/* Open Graph meta tags */}
       <meta property="og:title" content={`${painting.title} | ${site.name}`} />
       <meta property="og:description" content={painting.description} />
-      <meta property="og:url" content={`${siteUrl}/painting/${painting.id}`} />
+      <meta property="og:url" content={pageUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="article" />
       <meta property="og:site_name" content={site.name} />
       <meta property="og:locale" content="en_US" />
+
+      {/* Twitter Card meta tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={`${painting.title} | ${site.name}`} />
+      <meta name="twitter:description" content={painting.description} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* JSON-LD structured data */}
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
@@ -169,7 +180,7 @@ export const query = graphql`
       nodes {
         site {
           name
-          title
+          author
           url
         }
       }

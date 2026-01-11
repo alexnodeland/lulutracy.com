@@ -1,9 +1,19 @@
 import React from 'react'
-import { Link, HeadFC } from 'gatsby'
+import { graphql, Link, PageProps, HeadFC } from 'gatsby'
 import Layout from '../components/Layout'
 import * as styles from './404.module.css'
 
-const NotFoundPage: React.FC = () => {
+interface NotFoundPageData {
+  allSiteYaml: {
+    nodes: Array<{
+      site: {
+        name: string
+      }
+    }>
+  }
+}
+
+const NotFoundPage: React.FC<PageProps<NotFoundPageData>> = () => {
   return (
     <Layout>
       <div className={styles.container}>
@@ -21,8 +31,24 @@ const NotFoundPage: React.FC = () => {
 
 export default NotFoundPage
 
-export const Head: HeadFC = () => (
-  <>
-    <title>Page Not Found | Lulu Tracy</title>
-  </>
-)
+export const Head: HeadFC<NotFoundPageData> = ({ data }) => {
+  const { site } = data.allSiteYaml.nodes[0]
+  return (
+    <>
+      <title>{`Page Not Found | ${site.name}`}</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </>
+  )
+}
+
+export const query = graphql`
+  query NotFoundPage {
+    allSiteYaml {
+      nodes {
+        site {
+          name
+        }
+      }
+    }
+  }
+`

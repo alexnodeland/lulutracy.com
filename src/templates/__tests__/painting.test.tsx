@@ -46,7 +46,7 @@ const mockAllSiteYaml = {
     {
       site: {
         name: 'lulutracy',
-        title: 'Lulu Tracy',
+        author: 'Tracy Mah',
         url: 'https://alexnodeland.github.io/lulutracy.com',
       },
     },

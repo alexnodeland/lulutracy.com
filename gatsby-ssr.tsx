@@ -4,7 +4,9 @@ import { LocationProvider } from './src/components/LocationContext'
 
 export const onRenderBody: GatsbySSR['onRenderBody'] = ({
   setHeadComponents,
+  setHtmlAttributes,
 }) => {
+  setHtmlAttributes({ lang: 'en' })
   setHeadComponents([
     <link
       key="google-fonts-preconnect"
