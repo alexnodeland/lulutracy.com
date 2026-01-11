@@ -1,6 +1,6 @@
 # Codebase Patterns
 
-This file documents recurring patterns and conventions discovered in the Lulu Tracy Art Portfolio codebase. Claude should follow these patterns for consistency.
+This file documents recurring patterns and conventions discovered in the lulutracy Art Portfolio codebase. Claude should follow these patterns for consistency.
 
 ## Component Patterns
 

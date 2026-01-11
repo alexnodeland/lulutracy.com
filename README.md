@@ -1,4 +1,4 @@
-# 🎨 Lulu Tracy
+# 🎨 lulutracy
 
 [![Deploy](https://github.com/our-nature/lulutracy.com/actions/workflows/deploy.yml/badge.svg)](https://github.com/our-nature/lulutracy.com/actions/workflows/deploy.yml)
 [![CI](https://github.com/our-nature/lulutracy.com/actions/workflows/ci.yml/badge.svg)](https://github.com/our-nature/lulutracy.com/actions/workflows/ci.yml)
@@ -28,4 +28,4 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for how to make changes.
 
 ## 📄 License
 
-Artwork © Lulu Tracy. All rights reserved.
+Artwork © lulutracy. All rights reserved.

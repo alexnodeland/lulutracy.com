@@ -139,7 +139,7 @@ For paintings, alt text comes from `content/paintings/paintings.yaml`.
 ```tsx
 export const Head = () => (
   <>
-    <title>Page Title | Lulu Tracy</title>
+    <title>Page Title | lulutracy</title>
     <meta name="description" content="Description here" />
   </>
 )

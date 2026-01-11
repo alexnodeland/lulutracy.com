@@ -3,9 +3,9 @@
  */
 module.exports = {
   siteMetadata: {
-    title: `Lulu Tracy`,
-    description: `Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics`,
-    author: `Lulu Tracy`,
+    title: `lulutracy`,
+    description: `Art portfolio of lulutracy - exploring nature through watercolors and acrylics`,
+    author: `lulutracy`,
     siteUrl: `https://our-nature.github.io/lulutracy.com`,
     supportedLanguages: ['en', 'zh', 'yue', 'ms'],
     defaultLanguage: 'en',
@@ -68,8 +68,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Lulu Tracy Art Portfolio`,
-        short_name: `Lulu Tracy`,
+        name: `lulutracy Art Portfolio`,
+        short_name: `lulutracy`,
         start_url: `/`,
         background_color: `#ffffff`,
         theme_color: `#000000`,

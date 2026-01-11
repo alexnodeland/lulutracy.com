@@ -5,7 +5,7 @@ const mockTranslations = {
   common: {
     copyright: 'Copyright {{year}} lulutracy. All rights reserved.',
     'nav.about': 'about',
-    'nav.home': 'Lulu Tracy - Home',
+    'nav.home': 'lulutracy - Home',
     toggleMenu: 'Toggle navigation menu',
     mainNavigation: 'Main navigation',
   },

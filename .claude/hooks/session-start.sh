@@ -6,7 +6,7 @@ set -e
 
 cd "$CLAUDE_PROJECT_DIR" 2>/dev/null || cd "$(dirname "$0")/../.."
 
-echo "=== PROJECT: Lulu Tracy Art Portfolio ==="
+echo "=== PROJECT: lulutracy Art Portfolio ==="
 echo ""
 
 # Git status

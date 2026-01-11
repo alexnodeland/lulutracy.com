@@ -71,9 +71,9 @@ const mockLocales = {
           site: {
             tagline: 'art & design',
             description:
-              'Art portfolio of Lulu Tracy - exploring nature through watercolors and acrylics',
+              'Art portfolio of lulutracy - exploring nature through watercolors and acrylics',
           },
-          nav: { about: 'about', home: 'Lulu Tracy - Home' },
+          nav: { about: 'about', home: 'lulutracy - Home' },
           copyright: 'Copyright {{year}} lulutracy. All rights reserved.',
         }),
         language: 'en',

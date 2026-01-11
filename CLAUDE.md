@@ -1,4 +1,4 @@
-# Lulu Tracy Art Portfolio
+# lulutracy Art Portfolio
 
 Gatsby-based art portfolio with i18n (en, zh, yue, ms), dark mode, and image magnification.
 

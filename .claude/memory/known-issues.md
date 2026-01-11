@@ -1,6 +1,6 @@
 # Known Issues
 
-This file documents known issues, limitations, and workarounds for the Lulu Tracy Art Portfolio project. Claude should check this before troubleshooting.
+This file documents known issues, limitations, and workarounds for the lulutracy Art Portfolio project. Claude should check this before troubleshooting.
 
 ## Environment Issues
 
