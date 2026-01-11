@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import GalleryImage from '../GalleryImage'
 import type { Painting } from '../../types'
 
@@ -14,6 +14,19 @@ jest.mock('gatsby-plugin-react-i18next', () => ({
     },
   }),
 }))
+
+// Mock sessionStorage
+const mockSessionStorage: Record<string, string> = {}
+const mockGetItem = jest.fn((key: string) => mockSessionStorage[key] || null)
+
+Object.defineProperty(window, 'sessionStorage', {
+  value: {
+    getItem: mockGetItem,
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+  },
+  writable: true,
+})
 
 // Mock IntersectionObserver
 const mockObserve = jest.fn()
@@ -83,6 +96,14 @@ describe('GalleryImage', () => {
     jest.clearAllMocks()
     jest.useFakeTimers()
     setTimeoutSpy = jest.spyOn(window, 'setTimeout')
+    // Clear sessionStorage mock
+    Object.keys(mockSessionStorage).forEach(
+      (key) => delete mockSessionStorage[key]
+    )
+    mockGetItem.mockClear()
+    mockGetItem.mockImplementation(
+      (key: string) => mockSessionStorage[key] || null
+    )
   })
 
   afterEach(() => {
@@ -231,5 +252,68 @@ describe('GalleryImage', () => {
 
     // Component should still render correctly
     expect(galleryItem).toBeInTheDocument()
+  })
+
+  describe('skip animation functionality', () => {
+    it('skips animation when sessionStorage flag is set', () => {
+      // Set the skip flag before rendering
+      mockSessionStorage['pageTransition:skipNext'] = 'true'
+
+      render(<GalleryImage painting={mockPainting} image={mockImageData} />)
+
+      // Should have checked sessionStorage
+      expect(mockGetItem).toHaveBeenCalledWith('pageTransition:skipNext')
+
+      // When skipping animation, the IntersectionObserver effect should return early
+      // So no setTimeout should be called for staggered animation delay
+      // (setTimeoutSpy would be called by IntersectionObserver callback normally)
+      expect(setTimeoutSpy).not.toHaveBeenCalled()
+
+      // Content should still be rendered
+      expect(screen.getByRole('img')).toBeInTheDocument()
+    })
+
+    it('handles sessionStorage errors gracefully', () => {
+      // Make sessionStorage throw an error
+      mockGetItem.mockImplementationOnce(() => {
+        throw new Error('sessionStorage error')
+      })
+
+      // Should not throw and should render normally
+      render(<GalleryImage painting={mockPainting} image={mockImageData} />)
+
+      expect(screen.getByRole('img')).toBeInTheDocument()
+    })
+  })
+
+  describe('image loading', () => {
+    it('shows skeleton loader before image loads', () => {
+      render(<GalleryImage painting={mockPainting} image={mockImageData} />)
+
+      // Skeleton loader should be visible initially
+      const skeleton = screen.getByLabelText('Loading Test Painting')
+      expect(skeleton).toBeInTheDocument()
+    })
+
+    it('triggers handleImageLoad callback on image load', () => {
+      render(<GalleryImage painting={mockPainting} image={mockImageData} />)
+
+      // Find the GatsbyImage and trigger onLoad
+      const img = screen.getByRole('img')
+
+      // Simulate image load event
+      act(() => {
+        fireEvent.load(img)
+      })
+
+      // After load, the image should still be in the document
+      // and skeleton should be gone (isLoaded state changed)
+      expect(img).toBeInTheDocument()
+
+      // Verify skeleton is no longer present after load
+      expect(
+        screen.queryByLabelText('Loading Test Painting')
+      ).not.toBeInTheDocument()
+    })
   })
 })
