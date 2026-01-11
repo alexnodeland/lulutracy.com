@@ -4,5 +4,27 @@
   "size": "Size",
   "medium": "Medium",
   "on": "on",
-  "imageNotAvailable": "Image not available"
+  "imageNotAvailable": "Image not available",
+
+  "mediums": {
+    "acrylic": "acrylic",
+    "watercolor": "watercolor",
+    "oil": "oil",
+    "ink": "ink",
+    "mixed": "mixed media"
+  },
+
+  "substrates": {
+    "canvas": "canvas",
+    "paper": "paper",
+    "board": "board"
+  },
+
+  "units": {
+    "cm": "cm",
+    "in": "in",
+    "mm": "mm"
+  },
+
+  "dimensionFormat": "{{width}} × {{height}} {{unit}}"
 }

@@ -25,9 +25,17 @@ const mockPainting: Painting = {
   id: 'test-painting',
   title: 'Test Painting Title',
   description: 'This is a test painting description.',
-  dimensions: '45.5 x 35.5cm',
+  dimensions: {
+    width: 45.5,
+    height: 35.5,
+    unit: 'cm',
+  },
   substrate: 'canvas',
-  substrateSize: '45.5 x 35.5 cm',
+  substrateSize: {
+    width: 45.5,
+    height: 35.5,
+    unit: 'cm',
+  },
   medium: 'acrylic',
   year: '2023',
   image: 'test.jpeg',
@@ -164,7 +172,7 @@ describe('PaintingTemplate', () => {
 
   it('displays the painting dimensions and medium', () => {
     renderPaintingTemplate()
-    expect(screen.getByText(/45.5 x 35.5cm/)).toBeInTheDocument()
+    expect(screen.getByText(/45.5 × 35.5 cm/)).toBeInTheDocument()
     expect(screen.getByText(/Acrylic on canvas/)).toBeInTheDocument()
   })
 
@@ -390,5 +398,28 @@ describe('Portrait image handling', () => {
       />
     )
     expect(screen.getByRole('article')).toBeInTheDocument()
+  })
+})
+
+describe('Legacy string dimensions handling', () => {
+  it('handles legacy string format dimensions', () => {
+    const legacyPainting = {
+      ...mockPainting,
+      dimensions: '45.5 x 35.5 cm',
+      substrateSize: '45.5 x 35.5 cm',
+    }
+    const legacyContext = {
+      ...mockPageContext,
+      painting: legacyPainting,
+    }
+    render(
+      <PaintingTemplate
+        data={mockDataWithImage as any}
+        pageContext={legacyContext as any}
+        {...({} as any)}
+      />
+    )
+    // Legacy string format should be displayed as-is
+    expect(screen.getByText(/45.5 x 35.5 cm/)).toBeInTheDocument()
   })
 })

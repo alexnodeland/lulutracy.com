@@ -1,11 +1,20 @@
+// Dimension types for structured measurements
+export type DimensionUnit = 'cm' | 'in' | 'mm'
+
+export interface Dimensions {
+  width: number
+  height: number
+  unit: DimensionUnit
+}
+
 // Painting types
 export interface Painting {
   id: string
   title: string
   description: string
-  dimensions: string
+  dimensions: Dimensions
   substrate: string
-  substrateSize: string
+  substrateSize: Dimensions
   medium: string
   year: string
   image: string

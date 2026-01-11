@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'gatsby-plugin-react-i18next'
 import Layout from '../components/Layout'
 import GlassMagnifier from '../components/GlassMagnifier'
-import type { Painting, I18nPageContext } from '../types'
+import type { Painting, I18nPageContext, Dimensions } from '../types'
 import * as styles from './painting.module.css'
 
 interface PaintingPageContext {
@@ -77,6 +77,21 @@ const PaintingTemplate: React.FC<
   // Capitalize first letter helper
   const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
+  // Format dimensions with translated units
+  const formatDimensions = (dim: Dimensions | string) => {
+    if (typeof dim === 'string') {
+      // Legacy string format - return as-is
+      return dim
+    }
+    const unit = t(`units.${dim.unit.toLowerCase()}`)
+    return t('dimensionFormat', { width: dim.width, height: dim.height, unit })
+  }
+
+  // Get translated term (case-insensitive lookup)
+  const getTerm = (key: string, namespace: string) => {
+    return t(`${namespace}.${key.toLowerCase()}`)
+  }
+
   return (
     <Layout>
       <article className={styles.paintingDetail}>
@@ -108,10 +123,11 @@ const PaintingTemplate: React.FC<
           <span className={styles.category}>{t('category')}</span>
           <h1 className={styles.title}>{painting.title}</h1>
           <p className={styles.info}>
-            {t('artworkSize')}: {painting.dimensions} |{' '}
-            {capitalize(painting.substrate)} {t('size')}:{' '}
-            {painting.substrateSize} | {t('medium')}:{' '}
-            {capitalize(painting.medium)} {t('on')} {painting.substrate}
+            {t('artworkSize')}: {formatDimensions(painting.dimensions)} |{' '}
+            {capitalize(getTerm(painting.substrate, 'substrates'))} {t('size')}:{' '}
+            {formatDimensions(painting.substrateSize)} | {t('medium')}:{' '}
+            {capitalize(getTerm(painting.medium, 'mediums'))} {t('on')}{' '}
+            {getTerm(painting.substrate, 'substrates')}
           </p>
           <p className={styles.year}>{painting.year}</p>
         </div>
@@ -159,7 +175,10 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     image: ogImage,
     dateCreated: painting.year,
     artMedium: `${painting.medium.charAt(0).toUpperCase() + painting.medium.slice(1)} on ${painting.substrate}`,
-    width: painting.dimensions,
+    width:
+      typeof painting.dimensions === 'string'
+        ? painting.dimensions
+        : `${painting.dimensions.width} × ${painting.dimensions.height} ${painting.dimensions.unit}`,
     creator: {
       '@type': 'Person',
       name: site?.author || '',

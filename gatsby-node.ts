@@ -18,12 +18,18 @@ interface SiteConfig {
   author: string
 }
 
+interface Dimensions {
+  width: number
+  height: number
+  unit: string
+}
+
 interface RawPainting {
   title: string
   description: string
-  dimensions: string
+  dimensions: Dimensions | string
   substrate: string
-  substrateSize: string
+  substrateSize: Dimensions | string
   medium: string
   year: string
   alt: string
@@ -49,6 +55,40 @@ interface I18nContext {
   routed: boolean
 }
 
+/**
+ * Explicitly define GraphQL schema for paintings with structured dimensions
+ */
+export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] =
+  ({ actions }) => {
+    const { createTypes } = actions
+    const typeDefs = `
+      type PaintingsYamlPaintingsDimensions {
+        width: Float!
+        height: Float!
+        unit: String!
+      }
+
+      type PaintingsYamlPaintingsSubstrateSize {
+        width: Float!
+        height: Float!
+        unit: String!
+      }
+
+      type PaintingsYamlPaintings {
+        title: String!
+        description: String!
+        dimensions: PaintingsYamlPaintingsDimensions!
+        substrate: String!
+        substrateSize: PaintingsYamlPaintingsSubstrateSize!
+        medium: String!
+        year: String!
+        alt: String!
+        order: Int!
+      }
+    `
+    createTypes(typeDefs)
+  }
+
 export const createPages: GatsbyNode['createPages'] = async ({
   graphql,
   actions,
@@ -64,9 +104,17 @@ export const createPages: GatsbyNode['createPages'] = async ({
           paintings {
             title
             description
-            dimensions
+            dimensions {
+              width
+              height
+              unit
+            }
             substrate
-            substrateSize
+            substrateSize {
+              width
+              height
+              unit
+            }
             medium
             year
             alt
@@ -147,14 +195,24 @@ export const createPages: GatsbyNode['createPages'] = async ({
 }
 
 /**
+ * Format dimensions for display
+ */
+function formatDimensions(dim: Dimensions | string): string {
+  if (typeof dim === 'string') {
+    return dim
+  }
+  return `${dim.width} × ${dim.height} ${dim.unit}`
+}
+
+/**
  * Format painting metadata for EXIF UserComment field
  */
 function formatUserComment(painting: RawPainting): string {
   return [
     painting.description,
     `Medium: ${painting.medium} on ${painting.substrate}`,
-    `Size: ${painting.dimensions}`,
-    `Substrate: ${painting.substrateSize}`,
+    `Size: ${formatDimensions(painting.dimensions)}`,
+    `Substrate: ${formatDimensions(painting.substrateSize)}`,
     `Year: ${painting.year}`,
   ].join(' | ')
 }

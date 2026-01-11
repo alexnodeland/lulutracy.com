@@ -3,7 +3,7 @@ import { graphql, PageProps, HeadFC } from 'gatsby'
 import { IGatsbyImageData } from 'gatsby-plugin-image'
 import Layout from '../components/Layout'
 import GalleryImage from '../components/GalleryImage'
-import type { Painting } from '../types'
+import type { Painting, Dimensions } from '../types'
 import { generateSlug, generateImageFilename } from '../utils/slug'
 import * as styles from './index.module.css'
 
@@ -11,9 +11,9 @@ import * as styles from './index.module.css'
 interface RawPainting {
   title: string
   description: string
-  dimensions: string
+  dimensions: Dimensions
   substrate: string
-  substrateSize: string
+  substrateSize: Dimensions
   medium: string
   year: string
   alt: string
@@ -236,9 +236,17 @@ export const query = graphql`
         paintings {
           title
           description
-          dimensions
+          dimensions {
+            width
+            height
+            unit
+          }
           substrate
-          substrateSize
+          substrateSize {
+            width
+            height
+            unit
+          }
           medium
           year
           alt

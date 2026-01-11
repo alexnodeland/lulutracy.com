@@ -8,9 +8,17 @@ const mockPaintings: Painting[] = [
     id: 'painting-1',
     title: 'Test Painting 1',
     description: 'Description 1',
-    dimensions: '24 x 36',
+    dimensions: {
+      width: 24,
+      height: 36,
+      unit: 'cm',
+    },
     substrate: 'canvas',
-    substrateSize: '24 x 36',
+    substrateSize: {
+      width: 24,
+      height: 36,
+      unit: 'cm',
+    },
     medium: 'oil',
     year: '2023',
     image: 'test1.jpg',
@@ -21,9 +29,17 @@ const mockPaintings: Painting[] = [
     id: 'painting-2',
     title: 'Test Painting 2',
     description: 'Description 2',
-    dimensions: '30 x 40',
+    dimensions: {
+      width: 30,
+      height: 40,
+      unit: 'cm',
+    },
     substrate: 'paper',
-    substrateSize: '30 x 40',
+    substrateSize: {
+      width: 30,
+      height: 40,
+      unit: 'cm',
+    },
     medium: 'acrylic',
     year: '2024',
     image: 'test2.jpg',
@@ -283,5 +299,49 @@ describe('Head', () => {
     const { container } = render(<Head data={mockData} {...({} as any)} />)
     const hreflangLinks = container.querySelectorAll('link[rel="alternate"]')
     expect(hreflangLinks.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles missing site properties gracefully', () => {
+    const dataMissingSiteProps = {
+      ...mockData,
+      allSiteYaml: {
+        nodes: [
+          {
+            site: {},
+            parent: { name: 'en' },
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataMissingSiteProps as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:site_name"]')
+    ).toHaveAttribute('content', '')
+    expect(container.querySelector('meta[name="description"]')).toHaveAttribute(
+      'content',
+      ''
+    )
+  })
+
+  it('handles missing image node gracefully', () => {
+    const dataNoImageMatch = {
+      ...mockData,
+      allFile: {
+        nodes: [
+          {
+            name: 'nonexistent',
+            childImageSharp: null,
+          },
+        ],
+      },
+    }
+    const { container } = render(
+      <Head data={dataNoImageMatch as any} {...({} as any)} />
+    )
+    expect(
+      container.querySelector('meta[property="og:image"]')
+    ).toHaveAttribute('content', expect.stringContaining('/icon.png'))
   })
 })
