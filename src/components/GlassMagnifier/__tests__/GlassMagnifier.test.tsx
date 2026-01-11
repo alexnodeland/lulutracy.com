@@ -79,20 +79,23 @@ describe('GlassMagnifier', () => {
   it('shows touch hint on mobile', () => {
     mockMatchMedia(true) // Mobile
     render(<GlassMagnifier {...defaultProps} enableTouch={true} />)
-    expect(screen.getByText(/tap and hold to zoom/i)).toBeInTheDocument()
+    // Translation mock returns the key
+    expect(screen.getByText(/tapToZoom/i)).toBeInTheDocument()
   })
 
   it('shows hover hint on desktop', () => {
     mockMatchMedia(false) // Desktop
     render(<GlassMagnifier {...defaultProps} />)
-    expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
+    // Translation mock returns the key
+    expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
   })
 
   it('does not show touch hint when enableTouch is false on mobile', () => {
     mockMatchMedia(true) // Mobile
     render(<GlassMagnifier {...defaultProps} enableTouch={false} />)
     // Still shows hint since enableTouch only affects touch handling, not hint
-    expect(screen.getByText(/tap and hold to zoom/i)).toBeInTheDocument()
+    // Translation mock returns the key
+    expect(screen.getByText(/tapToZoom/i)).toBeInTheDocument()
   })
 
   it('initializes Drift when image loads', async () => {
@@ -316,10 +319,8 @@ describe('GlassMagnifier', () => {
       const container = screen.getByTestId('glass-magnifier')
 
       expect(container).toHaveAttribute('role', 'group')
-      expect(container).toHaveAttribute(
-        'aria-label',
-        'Zoomable image: Test painting. Hover to zoom.'
-      )
+      // Translation mock returns the key
+      expect(container).toHaveAttribute('aria-label', 'zoomableImage')
       expect(container).toHaveAttribute('tabIndex', '0')
     })
 
@@ -328,26 +329,24 @@ describe('GlassMagnifier', () => {
       render(<GlassMagnifier {...defaultProps} />)
       const container = screen.getByTestId('glass-magnifier')
 
-      expect(container).toHaveAttribute(
-        'aria-label',
-        'Zoomable image: Test painting. Tap and hold to zoom.'
-      )
+      // Translation mock returns the key (same key, different translation)
+      expect(container).toHaveAttribute('aria-label', 'zoomableImage')
     })
 
     it('responds to keyboard interaction', () => {
       render(<GlassMagnifier {...defaultProps} />)
       const container = screen.getByTestId('glass-magnifier')
 
-      // Initially shows hint
-      expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
+      // Initially shows hint (translation mock returns the key)
+      expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
 
       // Press Enter to toggle hint
       fireEvent.keyDown(container, { key: 'Enter' })
-      expect(screen.queryByText(/hover to zoom/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/hoverToZoom/i)).not.toBeInTheDocument()
 
       // Press Space to toggle hint back
       fireEvent.keyDown(container, { key: ' ' })
-      expect(screen.getByText(/hover to zoom/i)).toBeInTheDocument()
+      expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
     })
 
     it('has aria-hidden on zoom indicator', () => {
@@ -360,7 +359,8 @@ describe('GlassMagnifier', () => {
 
     it('has aria-live on hint for screen readers', () => {
       render(<GlassMagnifier {...defaultProps} />)
-      const hint = screen.getByText(/hover to zoom/i).parentElement
+      // Translation mock returns the key
+      const hint = screen.getByText(/hoverToZoom/i).parentElement
       expect(hint).toHaveAttribute('aria-live', 'polite')
     })
   })

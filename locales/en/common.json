@@ -13,5 +13,12 @@
   "theme": {
     "switchToDark": "Switch to dark mode",
     "switchToLight": "Switch to light mode"
+  },
+  "skipToContent": "Skip to main content",
+  "offline": "You are offline",
+  "backOnline": "Back online",
+  "gallery": {
+    "emptyTitle": "Gallery Coming Soon",
+    "emptyMessage": "New artwork is being prepared. Please check back soon to explore the collection."
   }
 }
