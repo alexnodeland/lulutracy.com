@@ -3,11 +3,13 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import PageTransition from '../PageTransition'
 import { LocationProvider } from '../LocationContext'
 
-// Mock gatsby navigate
+// Mock gatsby navigate and withPrefix
 const mockNavigate = jest.fn()
+const mockWithPrefix = jest.fn((path: string) => path)
 jest.mock('gatsby', () => ({
   ...jest.requireActual('gatsby'),
   navigate: (path: string) => mockNavigate(path),
+  withPrefix: (path: string) => mockWithPrefix(path),
 }))
 
 const renderWithLocation = (
@@ -23,6 +25,8 @@ describe('PageTransition', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     mockNavigate.mockClear()
+    mockWithPrefix.mockClear()
+    mockWithPrefix.mockImplementation((path: string) => path)
   })
 
   afterEach(() => {
@@ -237,15 +241,10 @@ describe('PageTransition', () => {
   })
 
   describe('with path prefix', () => {
-    const originalPathPrefix = (global as Record<string, unknown>)
-      .__PATH_PREFIX__
-
     beforeEach(() => {
-      ;(global as Record<string, unknown>).__PATH_PREFIX__ = '/lulutracy.com'
-    })
-
-    afterEach(() => {
-      ;(global as Record<string, unknown>).__PATH_PREFIX__ = originalPathPrefix
+      mockWithPrefix.mockImplementation(
+        (path: string) => `/lulutracy.com${path}`
+      )
     })
 
     it('strips path prefix from href before navigating', () => {

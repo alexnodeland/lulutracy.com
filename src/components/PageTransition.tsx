@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { navigate } from 'gatsby'
+import { navigate, withPrefix } from 'gatsby'
 import { useLocation } from './LocationContext'
 import * as styles from './PageTransition.module.css'
+
+// Get path prefix reliably using Gatsby's withPrefix
+// withPrefix('/') returns '/lulutracy.com/' in production, '/' in dev
+const getPathPrefix = (): string => {
+  const prefixedRoot = withPrefix('/')
+  // Remove trailing slash to get just the prefix
+  return prefixedRoot.length > 1 ? prefixedRoot.slice(0, -1) : ''
+}
 
 // Must match --transition-fast in global.css
 const TRANSITION_DURATION = 500
@@ -74,8 +82,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       // Strip path prefix for comparison and navigation
       // In production, href includes prefix (e.g., /lulutracy.com/about)
       // but navigate() expects path without prefix (e.g., /about)
-      const pathPrefix =
-        typeof __PATH_PREFIX__ !== 'undefined' ? __PATH_PREFIX__ : ''
+      const pathPrefix = getPathPrefix()
       const normalizedHref =
         pathPrefix && href.startsWith(pathPrefix)
           ? href.slice(pathPrefix.length) || '/'
