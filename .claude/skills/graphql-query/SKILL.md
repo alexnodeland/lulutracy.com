@@ -1,6 +1,7 @@
 ---
 name: graphql-query
 description: Write and debug Gatsby GraphQL queries for this portfolio site. Use this skill when fetching painting data, images, site configuration, or any content from the data layer. Covers page queries, static queries, and schema exploration.
+allowed-tools: Read, Write, Edit, Bash(make dev), Bash(make clean)
 ---
 
 # Gatsby GraphQL Queries

@@ -28,7 +28,7 @@ skills: lighthouse-fix
 - Every painting MUST have descriptive alt text
 - Alt text should describe the artwork meaningfully
 - Decorative images use `alt=""`
-- Check `content/paintings/index.yaml` for alt field quality
+- Check `content/paintings/paintings.yaml` for alt field quality
 
 ### Keyboard Navigation
 
@@ -70,7 +70,7 @@ src/components/Navigation.tsx  # Mobile nav
 src/components/GalleryImage.tsx # Image cards
 
 # Painting alt text
-content/paintings/index.yaml
+content/paintings/paintings.yaml
 
 # Global styles for contrast
 src/styles/global.css

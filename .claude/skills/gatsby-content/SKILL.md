@@ -1,6 +1,7 @@
 ---
 name: gatsby-content
 description: Manage content for the Lulu Tracy art portfolio. Use this skill when adding new paintings to the gallery, updating painting metadata, editing the about page, or modifying site configuration. Handles YAML and Markdown content files with i18n support.
+allowed-tools: Read, Write, Edit, Bash(ls:*), Bash(make build)
 ---
 
 # Gatsby Content Management

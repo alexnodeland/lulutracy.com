@@ -30,14 +30,14 @@ skills: graphql-query
 ```bash
 # GraphQL schema out of sync
 make clean && make dev
-# Check gatsby-node.js for correct field names
+# Check gatsby-node.ts for correct field names
 ```
 
 **"ENOENT: no such file or directory"**
 
 ```bash
 # Missing file reference
-# Check content/paintings/index.yaml image paths
+# Check content/paintings/paintings.yaml image paths
 # Verify files exist in content/paintings/images/
 ```
 
@@ -97,7 +97,7 @@ make dev
 
 1. Verify image in `content/paintings/images/`
 2. Check file extension (jpg, png, webp supported)
-3. Verify path in `index.yaml` matches actual filename
+3. Verify path in `paintings.yaml` matches actual filename
 4. Check for Sharp errors in build output
 
 **Slow image processing**
@@ -153,7 +153,7 @@ npm ci
 
 ```
 gatsby-config.js    # Plugin configuration
-gatsby-node.js      # Page generation logic
+gatsby-node.ts      # Page generation logic
 content/paintings/  # Source content
 src/pages/          # Page components
 src/templates/      # Dynamic templates

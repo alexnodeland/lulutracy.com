@@ -1,6 +1,7 @@
 ---
 name: test-writer
 description: Write Jest tests for React components in this Gatsby project. Use this skill when creating new tests or improving test coverage. Handles Gatsby-specific mocking and Testing Library patterns.
+allowed-tools: Read, Write, Edit, Bash(make test:*), Bash(npm test:*)
 ---
 
 # Jest Test Writer

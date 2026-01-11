@@ -1,6 +1,7 @@
 ---
 name: component-generator
 description: Generate React components following project conventions. Use this skill when creating new UI components for the portfolio. Creates TypeScript components with CSS Modules, proper typing, and test files.
+allowed-tools: Read, Write, Edit, Bash(make test), Bash(make lint)
 ---
 
 # React Component Generator

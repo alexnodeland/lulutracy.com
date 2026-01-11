@@ -1,6 +1,7 @@
 ---
 name: lighthouse-fix
 description: Diagnose and fix Lighthouse audit failures for performance, accessibility, SEO, and best practices. Use this skill when CI reports low Lighthouse scores or when optimizing the site's Core Web Vitals.
+allowed-tools: Read, Write, Edit, Bash(make build), Bash(make serve), Bash(npx lighthouse:*)
 ---
 
 # Lighthouse Performance Optimization

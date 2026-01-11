@@ -7,9 +7,11 @@
       "Write(src/**)",
       "Write(content/**)",
       "Write(.claude/**)",
+      "Write(locales/**)",
       "Edit(src/**)",
       "Edit(content/**)",
       "Edit(.claude/**)",
+      "Edit(locales/**)",
       "Bash(npm run:*)",
       "Bash(npm test:*)",
       "Bash(npm install)",
@@ -18,12 +20,9 @@
       "Bash(make:*)",
       "Bash(git:*)",
       "Bash(ls:*)",
-      "Bash(cat:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(wc:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [
       "Write(node_modules/**)",
@@ -38,7 +37,11 @@
       "Bash(npm publish)*",
       "Bash(git push --force origin main)*",
       "Bash(git push -f origin main)*"
-    ]
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "env": {
+    "NODE_ENV": "development"
   },
   "hooks": {
     "SessionStart": [
@@ -79,17 +82,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-write-format.sh",
-            "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
