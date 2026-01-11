@@ -6,6 +6,18 @@ import type { Painting } from '../types'
 import SkeletonLoader from './SkeletonLoader'
 import * as styles from './GalleryImage.module.css'
 
+// Check if we should skip animations (e.g., after language change)
+// This reads from the same key that PageTransition uses, but doesn't clear it
+// (PageTransition will clear it)
+const shouldSkipAnimation = (): boolean => {
+  if (typeof window === 'undefined') return false
+  try {
+    return sessionStorage.getItem('pageTransition:skipNext') === 'true'
+  } catch {
+    return false
+  }
+}
+
 interface GalleryImageProps {
   painting: Painting
   image: IGatsbyImageData | null
@@ -21,11 +33,16 @@ const GalleryImage: React.FC<GalleryImageProps> = ({
   const { t } = useTranslation('common')
   const imageData = image ? getImage(image) : null
   const [isLoaded, setIsLoaded] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+  // Skip animation if this is a language change (start visible immediately)
+  const [skipAnimation] = useState(shouldSkipAnimation)
+  const [isVisible, setIsVisible] = useState(skipAnimation)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Intersection Observer for staggered reveal animation
   useEffect(() => {
+    // Skip if already visible (language change scenario)
+    if (skipAnimation) return
+
     const element = containerRef.current
     if (!element) return
 
@@ -45,7 +62,7 @@ const GalleryImage: React.FC<GalleryImageProps> = ({
 
     observer.observe(element)
     return () => observer.disconnect()
-  }, [index])
+  }, [index, skipAnimation])
 
   const handleImageLoad = () => {
     setIsLoaded(true)
