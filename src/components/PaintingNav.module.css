@@ -35,7 +35,7 @@
 .pagination {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xxxxs);
 }
 
 .navButton {
@@ -45,19 +45,17 @@
   width: 36px;
   height: 36px;
   color: var(--color-text);
-  border: 1px solid var(--color-border);
+  border: none;
   background: transparent;
   text-decoration: none;
   transition:
     background-color var(--transition-fast),
-    border-color var(--transition-fast),
     color var(--transition-fast);
 }
 
 .navButton:hover:not(.disabled),
 .navButton:focus-visible:not(.disabled) {
   background-color: var(--color-black);
-  border-color: var(--color-black);
   color: var(--color-white);
 }
 
