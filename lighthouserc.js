@@ -8,8 +8,13 @@ module.exports = {
     collect: {
       // Use the built static files
       staticDistDir: './public',
-      // Pages to audit
-      url: ['http://localhost/index.html', 'http://localhost/about/index.html'],
+      // Pages to audit (homepage, about, and a sample painting detail page)
+      url: [
+        'http://localhost/index.html',
+        'http://localhost/about/index.html',
+        // Sample painting page - tests image magnification UX
+        'http://localhost/painting/symbiosis/index.html',
+      ],
       // Number of runs per URL (for consistency)
       numberOfRuns: 3,
     },

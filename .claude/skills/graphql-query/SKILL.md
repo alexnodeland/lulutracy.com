@@ -22,14 +22,14 @@ Use this to explore the schema and test queries.
 
 This site has these data sources configured in `gatsby-config.js`:
 
-| Source                          | Content             | GraphQL Type         |
-| ------------------------------- | ------------------- | -------------------- |
-| `content/paintings/paintings.yaml` | Painting metadata | `allPaintingsYaml`   |
-| `content/paintings/images/`     | Painting images     | `allFile` (filtered) |
-| `content/about/{lang}.md`       | About pages (i18n)  | `allMarkdownRemark`  |
-| `content/site/site.yaml`        | Site config         | `siteYaml`           |
-| `locales/{lang}/*.json`         | UI translations     | `allLocale`          |
-| `src/images/`                   | Static images       | `allFile`            |
+| Source                             | Content            | GraphQL Type         |
+| ---------------------------------- | ------------------ | -------------------- |
+| `content/paintings/paintings.yaml` | Painting metadata  | `allPaintingsYaml`   |
+| `content/paintings/images/`        | Painting images    | `allFile` (filtered) |
+| `content/about/{lang}.md`          | About pages (i18n) | `allMarkdownRemark`  |
+| `content/site/site.yaml`           | Site config        | `siteYaml`           |
+| `locales/{lang}/*.json`            | UI translations    | `allLocale`          |
+| `src/images/`                      | Static images      | `allFile`            |
 
 ## Common Queries
 

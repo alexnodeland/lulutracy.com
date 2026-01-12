@@ -21,6 +21,7 @@ Use Conventional Commits format: `type(scope): subject`
 Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, deps
 
 Rules:
+
 - Subject must be lowercase
 - No period at end
 - Max 72 characters in header

@@ -6,23 +6,25 @@ Claude Code’s configuration ecosystem has matured significantly through late 2
 
 Claude Code loads configuration through a strict precedence chain: enterprise policies at the top, followed by user settings, project configuration, and finally local overrides. Understanding this hierarchy is essential for teams deploying Claude at scale.
 
-|Memory type      |Location                                                   |Shared with            |Use case                               |
-|-----------------|-----------------------------------------------------------|-----------------------|---------------------------------------|
-|Enterprise policy|`/Library/Application Support/ClaudeCode/CLAUDE.md` (macOS)|All org users          |Security policies, compliance rules    |
-|User memory      |`~/.claude/CLAUDE.md`                                      |Just you (all projects)|Personal code style, editor preferences|
-|Project memory   |`./CLAUDE.md` or `./.claude/CLAUDE.md`                     |Team (via git)         |Architecture, build commands, standards|
-|Project local    |`./CLAUDE.local.md`                                        |Just you               |Personal sandbox URLs, local paths     |
+| Memory type       | Location                                                    | Shared with             | Use case                                |
+| ----------------- | ----------------------------------------------------------- | ----------------------- | --------------------------------------- |
+| Enterprise policy | `/Library/Application Support/ClaudeCode/CLAUDE.md` (macOS) | All org users           | Security policies, compliance rules     |
+| User memory       | `~/.claude/CLAUDE.md`                                       | Just you (all projects) | Personal code style, editor preferences |
+| Project memory    | `./CLAUDE.md` or `./.claude/CLAUDE.md`                      | Team (via git)          | Architecture, build commands, standards |
+| Project local     | `./CLAUDE.local.md`                                         | Just you                | Personal sandbox URLs, local paths      |
 
-Claude reads memories **recursively** from the current directory upward, automatically loading parent CLAUDE.md files in monorepos.   Child directory files load on-demand when Claude accesses those paths. This enables elegant monorepo patterns where `packages/api/CLAUDE.md` inherits from root while adding API-specific context.
+Claude reads memories **recursively** from the current directory upward, automatically loading parent CLAUDE.md files in monorepos. Child directory files load on-demand when Claude accesses those paths. This enables elegant monorepo patterns where `packages/api/CLAUDE.md` inherits from root while adding API-specific context.
 
 The import syntax using `@path/to/file` provides a more flexible alternative to CLAUDE.local.md:
 
 ```markdown
 # CLAUDE.md with imports
+
 See @README for project overview.
 Reference @docs/architecture.md for system design.
 
 # Personal preferences across git worktrees
+
 @~/.claude/my-project-instructions.md
 ```
 
@@ -30,26 +32,30 @@ Imports work better than CLAUDE.local.md when using git worktrees because the sy
 
 ## Keep CLAUDE.md lean—frontier models follow roughly 150 instructions reliably
 
-Research from HumanLayer reveals that frontier thinking LLMs follow **150-200 instructions** with reasonable consistency before degradation. Since Claude Code’s system prompt already consumes approximately 50 instruction slots, your CLAUDE.md budget is effectively **100-150 instructions**. 
+Research from HumanLayer reveals that frontier thinking LLMs follow **150-200 instructions** with reasonable consistency before degradation. Since Claude Code’s system prompt already consumes approximately 50 instruction slots, your CLAUDE.md budget is effectively **100-150 instructions**.
 
-**Optimal length**: Under 300 lines.  Production CLAUDE.md files from experienced practitioners average **60 lines**. Start by documenting only what Claude gets wrong, not theoretically useful information.  Claude’s system includes a reminder that context “may or may not be relevant”—overly generic instructions get deprioritized.
+**Optimal length**: Under 300 lines. Production CLAUDE.md files from experienced practitioners average **60 lines**. Start by documenting only what Claude gets wrong, not theoretically useful information. Claude’s system includes a reminder that context “may or may not be relevant”—overly generic instructions get deprioritized.
 
 A proven template structure:
 
 ```markdown
 # Bash commands
+
 - npm run build: Build the project
-- npm run typecheck: Run the typechecker  
+- npm run typecheck: Run the typechecker
 
 # Code style
+
 - Use ES modules (import/export) syntax, not CommonJS
 - Destructure imports when possible
 
 # Workflow
+
 - Run typecheck after code changes
 - Prefer single tests over full test suite
 
 # Common mistakes to avoid
+
 - Never modify .claude/ directory directly
 - Always run tests before committing
 ```
@@ -58,32 +64,37 @@ For complex projects, use progressive disclosure with **pointer files** rather t
 
 ```markdown
 # Project Documentation
+
 When working on database operations, read `agent_docs/database_schema.md`
 For complex FooBarError debugging, see `agent_docs/troubleshooting.md`
 ```
 
 Anti-patterns to avoid:
 
-- **@-mentioning entire doc files**: Bloats context by embedding full content. Instead, describe *when* to read the file 
-- **Negative-only constraints**: “Never use –foo-bar” leaves Claude stuck. Always provide alternatives 
-- **Using Claude as a linter**: Use deterministic tools and hooks instead 
+- **@-mentioning entire doc files**: Bloats context by embedding full content. Instead, describe _when_ to read the file
+- **Negative-only constraints**: “Never use –foo-bar” leaves Claude stuck. Always provide alternatives
+- **Using Claude as a linter**: Use deterministic tools and hooks instead
 
 ## Ten hook types provide deterministic control over Claude’s lifecycle
 
-Hooks execute shell commands at specific lifecycle points, guaranteeing consistent behavior where prompts would be unreliable.   Configure hooks in `.claude/settings.json` (team-shared) or `.claude/settings.local.json` (personal).
+Hooks execute shell commands at specific lifecycle points, guaranteeing consistent behavior where prompts would be unreliable. Configure hooks in `.claude/settings.json` (team-shared) or `.claude/settings.local.json` (personal).
 
-**PreToolUse** fires before any tool executes, enabling validation and blocking: 
+**PreToolUse** fires before any tool executes, enabling validation and blocking:
 
 ```json
 {
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash",
-      "hooks": [{
-        "type": "command",
-        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-bash.py"
-      }]
-    }]
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-bash.py"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -114,13 +125,17 @@ for pattern in dangerous_patterns:
 
 ```json
 {
-  "PostToolUse": [{
-    "matcher": "Write|Edit",
-    "hooks": [{
-      "type": "command",
-      "command": "jq -r '.tool_input.file_path' | xargs -I {} npx prettier --write {}"
-    }]
-  }]
+  "PostToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "jq -r '.tool_input.file_path' | xargs -I {} npx prettier --write {}"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -128,12 +143,16 @@ for pattern in dangerous_patterns:
 
 ```json
 {
-  "Stop": [{
-    "hooks": [{
-      "type": "command",
-      "command": "npm run lint && npm run typecheck || echo '{\"decision\": \"block\", \"reason\": \"Lint/typecheck failed\"}'"
-    }]
-  }]
+  "Stop": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "npm run lint && npm run typecheck || echo '{\"decision\": \"block\", \"reason\": \"Lint/typecheck failed\"}'"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -141,13 +160,17 @@ for pattern in dangerous_patterns:
 
 ```json
 {
-  "PermissionRequest": [{
-    "matcher": "Bash(npm test*)",
-    "hooks": [{
-      "type": "command",
-      "command": "echo '{\"hookSpecificOutput\": {\"decision\": {\"behavior\": \"allow\"}}}'"
-    }]
-  }]
+  "PermissionRequest": [
+    {
+      "matcher": "Bash(npm test*)",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '{\"hookSpecificOutput\": {\"decision\": {\"behavior\": \"allow\"}}}'"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -155,25 +178,29 @@ for pattern in dangerous_patterns:
 
 ```json
 {
-  "SessionStart": [{
-    "matcher": "startup",
-    "hooks": [{
-      "type": "command", 
-      "command": "git status --short && echo '---' && cat TODO.md 2>/dev/null || true"
-    }]
-  }]
+  "SessionStart": [
+    {
+      "matcher": "startup",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "git status --short && echo '---' && cat TODO.md 2>/dev/null || true"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 Other hook types include **SubagentStop** (for Task tool completion), **PreCompact** (before context compaction), **Notification** (for alerts), and **UserPromptSubmit** (for prompt validation).
 
-Security warning: Hooks execute with your user permissions and can access any files your account can access. Always review hook scripts before enabling them. 
+Security warning: Hooks execute with your user permissions and can access any files your account can access. Always review hook scripts before enabling them.
 
 ## GitHub Actions integration enables @claude mentions and automated workflows
 
-The `anthropics/claude-code-action@v1` action (GA release August 2025) provides intelligent mode detection—automatically selecting between interactive @claude responses and automated execution based on workflow context. 
+The `anthropics/claude-code-action@v1` action (GA release August 2025) provides intelligent mode detection—automatically selecting between interactive @claude responses and automated execution based on workflow context.
 
-Basic setup for @claude mentions in PRs and issues: 
+Basic setup for @claude mentions in PRs and issues:
 
 ```yaml
 name: Claude Code
@@ -205,8 +232,8 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - "src/api/**/*.ts"
-      - "src/routes/**/*.ts"
+      - 'src/api/**/*.ts'
+      - 'src/routes/**/*.ts'
 
 jobs:
   doc-sync:
@@ -240,7 +267,7 @@ Scheduled maintenance workflow for documentation refresh:
 name: Claude Scheduled Docs
 on:
   schedule:
-    - cron: '0 0 * * *'  # Daily at midnight UTC
+    - cron: '0 0 * * *' # Daily at midnight UTC
 
 jobs:
   doc-maintenance:
@@ -267,7 +294,7 @@ jobs:
             --max-turns 15
 ```
 
-For AWS Bedrock, use OIDC authentication: 
+For AWS Bedrock, use OIDC authentication:
 
 ```yaml
 - name: Configure AWS Credentials
@@ -278,7 +305,7 @@ For AWS Bedrock, use OIDC authentication:
 
 - uses: anthropics/claude-code-action@v1
   with:
-    use_bedrock: "true"
+    use_bedrock: 'true'
     claude_args: '--model us.anthropic.claude-sonnet-4-5-20250929-v1:0'
 ```
 
@@ -334,12 +361,12 @@ claude-bedrock:
   script:
     - claude -p "${AI_FLOW_INPUT}" --permission-mode acceptEdits
   variables:
-    AWS_REGION: "us-west-2"
+    AWS_REGION: 'us-west-2'
 ```
 
 ## Custom commands and skills extend Claude’s capabilities with reusable workflows
 
-Commands live in `.claude/commands/` (project-scoped) or `~/.claude/commands/` (user-scoped)  and are invoked with `/project:command-name` or `/user:command-name`.
+Commands live in `.claude/commands/` (project-scoped) or `~/.claude/commands/` (user-scoped) and are invoked with `/project:command-name` or `/user:command-name`.
 
 A git commit command with context injection:
 
@@ -353,19 +380,21 @@ description: Create a git commit with proper formatting
 # Git Commit Command
 
 ## Context
+
 - Current status: !`git status`
 - Current diff: !`git diff HEAD`
 - Recent commits: !`git log --oneline -10`
 
 ## Task
+
 Create a well-formatted git commit with message: $ARGUMENTS
 ```
 
-The `!` prefix executes bash commands inline, and `$ARGUMENTS` captures all command arguments. 
+The `!` prefix executes bash commands inline, and `$ARGUMENTS` captures all command arguments.
 
-**Skills** (SKILL.md files in `.claude/skills/`) are model-invoked—Claude automatically uses them based on context triggers in the description: 
+**Skills** (SKILL.md files in `.claude/skills/`) are model-invoked—Claude automatically uses them based on context triggers in the description:
 
-```markdown
+````markdown
 ---
 name: pdf-processing
 description: Extract text, fill forms, merge PDFs. Use when working with PDF files or document extraction.
@@ -375,15 +404,17 @@ allowed-tools: Read, Write, Bash
 # PDF Processing Skill
 
 ## Quick Start
+
 ```python
 import pdfplumber
 with pdfplumber.open("doc.pdf") as pdf:
     text = pdf.pages[0].extract_text()
 ```
+````
 
 For form filling, see <FORMS.md>.
 
-```
+````
 Skills bundle multiple files, scripts, and templates in a directory structure—unlike single-file slash commands. [![](claude-citation:/icon.png?validation=6745CAC8-17A8-4D97-A282-5396F95EF57D&citation=eyJlbmRJbmRleCI6MTI4OTgsIm1ldGFkYXRhIjp7Imljb25VcmwiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cL3MyXC9mYXZpY29ucz9zej02NCZkb21haW49YW50aHJvcGljLmNvbSIsInByZXZpZXdUaXRsZSI6IkVxdWlwcGluZyBhZ2VudHMgZm9yIHRoZSByZWFsIHdvcmxkIHdpdGggQWdlbnQgU2tpbGxzIiwic291cmNlIjoiQW50aHJvcGljIiwidHlwZSI6ImdlbmVyaWNfbWV0YWRhdGEifSwic291cmNlcyI6W3siaWNvblVybCI6Imh0dHBzOlwvXC93d3cuZ29vZ2xlLmNvbVwvczJcL2Zhdmljb25zP3N6PTY0JmRvbWFpbj1hbnRocm9waWMuY29tIiwic291cmNlIjoiQW50aHJvcGljIiwidGl0bGUiOiJFcXVpcHBpbmcgYWdlbnRzIGZvciB0aGUgcmVhbCB3b3JsZCB3aXRoIEFnZW50IFNraWxscyIsInVybCI6Imh0dHBzOlwvXC93d3cuYW50aHJvcGljLmNvbVwvZW5naW5lZXJpbmdcL2VxdWlwcGluZy1hZ2VudHMtZm9yLXRoZS1yZWFsLXdvcmxkLXdpdGgtYWdlbnQtc2tpbGxzIn1dLCJzdGFydEluZGV4IjoxMjc4NiwidGl0bGUiOiJBbnRocm9waWMiLCJ1cmwiOiJodHRwczpcL1wvd3d3LmFudGhyb3BpYy5jb21cL2VuZ2luZWVyaW5nXC9lcXVpcHBpbmctYWdlbnRzLWZvci10aGUtcmVhbC13b3JsZC13aXRoLWFnZW50LXNraWxscyIsInV1aWQiOiJmYjI5YjA1Ni01YThjLTQxMDItYjE4OC1jMzMwMzIxMDU2M2QifQ%3D%3D "Anthropic")](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) The description field is critical: Claude uses it to determine when to invoke the skill automatically.
 
 **Subagents** in `.claude/agents/` provide specialized capabilities: [![](claude-citation:/icon.png?validation=6745CAC8-17A8-4D97-A282-5396F95EF57D&citation=eyJlbmRJbmRleCI6MTMwNzEsIm1ldGFkYXRhIjp7Imljb25VcmwiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cL3MyXC9mYXZpY29ucz9zej02NCZkb21haW49YW50aHJvcGljLmNvbSIsInByZXZpZXdUaXRsZSI6IlN1YmFnZW50cyAtIEFudGhyb3BpYyIsInNvdXJjZSI6IkFudGhyb3BpYyIsInR5cGUiOiJnZW5lcmljX21ldGFkYXRhIn0sInNvdXJjZXMiOlt7Imljb25VcmwiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb21cL3MyXC9mYXZpY29ucz9zej02NCZkb21haW49YW50aHJvcGljLmNvbSIsInNvdXJjZSI6IkFudGhyb3BpYyIsInRpdGxlIjoiU3ViYWdlbnRzIC0gQW50aHJvcGljIiwidXJsIjoiaHR0cHM6XC9cL2RvY3MuYW50aHJvcGljLmNvbVwvZW5cL2RvY3NcL2NsYXVkZS1jb2RlXC9zdWItYWdlbnRzP2FtcD0mYW1wPSJ9XSwic3RhcnRJbmRleCI6MTMwMDMsInRpdGxlIjoiQW50aHJvcGljIiwidXJsIjoiaHR0cHM6XC9cL2RvY3MuYW50aHJvcGljLmNvbVwvZW5cL2RvY3NcL2NsYXVkZS1jb2RlXC9zdWItYWdlbnRzP2FtcD0mYW1wPSIsInV1aWQiOiIyNTNmZWYxNy04NTFhLTRkMTQtYWNiMi03N2VjZmJlNWE2YzQifQ%3D%3D "Anthropic")](https://docs.anthropic.com/en/docs/claude-code/sub-agents?amp=&amp=)
@@ -404,11 +435,11 @@ Review checklist:
 3. Performance considerations
 4. Security concerns
 5. Test coverage
-```
+````
 
 ## Git worktrees enable parallel Claude sessions without conflicts
 
-Running multiple Claude instances in the same directory causes commits to the same branch. Git worktrees provide isolated file state while sharing history: 
+Running multiple Claude instances in the same directory causes commits to the same branch. Git worktrees provide isolated file state while sharing history:
 
 ```bash
 # Create worktree with new branch
@@ -424,33 +455,39 @@ git worktree list
 git worktree remove ../project-feature-a
 ```
 
-Each worktree needs dependency installation (`npm install`, etc.), but this overhead is justified for complex parallel work. 
+Each worktree needs dependency installation (`npm install`, etc.), but this overhead is justified for complex parallel work.
 
-**GitButler integration** provides an alternative: virtual branches without worktree bootstrapping.   Configure hooks in `.claude/settings.json`: 
+**GitButler integration** provides an alternative: virtual branches without worktree bootstrapping. Configure hooks in `.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Edit|MultiEdit|Write",
-      "hooks": [{ "type": "command", "command": "but claude pre-tool" }]
-    }],
-    "PostToolUse": [{
-      "matcher": "Edit|MultiEdit|Write", 
-      "hooks": [{ "type": "command", "command": "but claude post-tool" }]
-    }],
-    "Stop": [{
-      "hooks": [{ "type": "command", "command": "but claude stop" }]
-    }]
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [{ "type": "command", "command": "but claude pre-tool" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [{ "type": "command", "command": "but claude post-tool" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "but claude stop" }]
+      }
+    ]
   }
 }
 ```
 
-GitButler automatically creates branches per Claude session, sorts changes by session ID, and commits when chat completes—enabling three parallel sessions that produce three mergeable branches without conflicts.  
+GitButler automatically creates branches per Claude session, sorts changes by session ID, and commits when chat completes—enabling three parallel sessions that produce three mergeable branches without conflicts.
 
 ## Settings hierarchy provides granular configuration control
 
-Settings files load in order of precedence: 
+Settings files load in order of precedence:
 
 1. **Managed** (`managed-settings.json`) — Enterprise policies, cannot be overridden
 1. **Command line** — Session-specific overrides
@@ -463,16 +500,8 @@ A comprehensive settings.json example:
 ```json
 {
   "permissions": {
-    "allow": [
-      "Bash(npm run lint)",
-      "Bash(npm run test:*)",
-      "Read(~/.zshrc)"
-    ],
-    "deny": [
-      "Bash(curl:*)",
-      "Read(./.env)",
-      "Read(./secrets/**)"
-    ],
+    "allow": ["Bash(npm run lint)", "Bash(npm run test:*)", "Read(~/.zshrc)"],
+    "deny": ["Bash(curl:*)", "Read(./.env)", "Read(./secrets/**)"],
     "defaultMode": "acceptEdits"
   },
   "env": {
@@ -484,30 +513,32 @@ A comprehensive settings.json example:
     "autoAllowBashIfSandboxed": true
   },
   "hooks": {
-    "PostToolUse": [{
-      "matcher": "Write(*.py)",
-      "hooks": [{ "type": "command", "command": "black $file" }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.py)",
+        "hooks": [{ "type": "command", "command": "black $file" }]
+      }
+    ]
   }
 }
 ```
 
-**Sandboxing** (launched November 2025) reduces permission prompts by **84%** through OS-level isolation using Linux bubblewrap and macOS Seatbelt.  Enable via `/sandbox` command or settings.
+**Sandboxing** (launched November 2025) reduces permission prompts by **84%** through OS-level isolation using Linux bubblewrap and macOS Seatbelt. Enable via `/sandbox` command or settings.
 
 ## Context management patterns prevent performance degradation
 
-Performance degrades significantly as context fills—community consensus suggests restarting sessions when context hits **80%**. Auto-compaction triggers at 75%, leaving 25% (approximately 50k tokens) free for reasoning. 
+Performance degrades significantly as context fills—community consensus suggests restarting sessions when context hits **80%**. Auto-compaction triggers at 75%, leaving 25% (approximately 50k tokens) free for reasoning.
 
 Key commands:
 
-- `/clear` — Reset context between tasks  (50-70% token savings)
+- `/clear` — Reset context between tasks (50-70% token savings)
 - `/compact` — Manual compaction (avoid if possible—opaque behavior)
 - `/context` — View what’s consuming your context window
 
 Token optimization strategies:
 
 - Use `@/src/specific/file.ts` instead of entire directories
-- Disable unused MCP servers mid-session with `@server-name disable` (MCP servers consume 8-30% of context) 
+- Disable unused MCP servers mid-session with `@server-name disable` (MCP servers consume 8-30% of context)
 - One-task sessions: keep conversations under 30K tokens for complex work
 
 A “Document & Clear” pattern for long tasks:
@@ -518,20 +549,20 @@ A “Document & Clear” pattern for long tasks:
 
 ## Community-validated anti-patterns to avoid
 
-**Pattern drift at scale**: GitHub issue #427 documents enterprise teams experiencing erosion of architectural standards—Claude using plain HTML instead of MUI components despite documentation.  Hooks provide deterministic enforcement where prompts fail.
+**Pattern drift at scale**: GitHub issue #427 documents enterprise teams experiencing erosion of architectural standards—Claude using plain HTML instead of MUI components despite documentation. Hooks provide deterministic enforcement where prompts fail.
 
 **Jumping straight to code**: Always follow Anthropic’s two-step pattern:
 
 1. Ask Claude to read relevant files, explicitly stating “do NOT write code yet”
 1. Ask Claude to make a plan using “think”, “think hard”, or “ultrathink”
-1. Confirm plan before proceeding 
+1. Confirm plan before proceeding
 
-**Custom subagents that gatekeep context**: Creating a PythonTests subagent hides all testing context from the main agent. Instead, use Claude’s built-in `Task(...)` feature for dynamic delegation.  
+**Custom subagents that gatekeep context**: Creating a PythonTests subagent hides all testing context from the main agent. Instead, use Claude’s built-in `Task(...)` feature for dynamic delegation.
 
-**Ignoring CLAUDE.md rule decay**: LLMs deprioritize early instructions as conversations grow. Use XML format for structured rules, add emphasis (“IMPORTANT”, “YOU MUST”) for critical instructions, and enforce deterministically via hooks. 
+**Ignoring CLAUDE.md rule decay**: LLMs deprioritize early instructions as conversations grow. Use XML format for structured rules, add emphasis (“IMPORTANT”, “YOU MUST”) for critical instructions, and enforce deterministically via hooks.
 
 ## Conclusion: configuration as competitive advantage
 
 The most productive Claude Code users treat configuration as infrastructure code—version-controlled, reviewed, and continuously improved based on agent behavior. Key principles: maintain lean CLAUDE.md files under 100 instructions, use hooks for deterministic quality enforcement, leverage parallel sessions via worktrees or GitButler, and manage context aggressively with `/clear` between tasks.
 
-Invest in planning modes before execution—a good plan compounds into hours saved.  Use verification loops (tests, type checking, linting) so Claude can iterate toward correctness.  And monitor what Claude gets wrong to continuously refine your configuration, creating a flywheel where improved context leads to better agent performance.
+Invest in planning modes before execution—a good plan compounds into hours saved. Use verification loops (tests, type checking, linting) so Claude can iterate toward correctness. And monitor what Claude gets wrong to continuously refine your configuration, creating a flywheel where improved context leads to better agent performance.

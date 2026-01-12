@@ -42,3 +42,7 @@ yarn-error.log*
 .eslintcache
 coverage/
 .lighthouseci/
+
+# Playwright
+playwright-report/
+test-results/

@@ -30,6 +30,7 @@ Note: The `id` and image filename are derived automatically from the title.
 ## Modifying About Page
 
 Edit the appropriate language file in `content/about/`:
+
 - `content/about/en.md` - English
 - `content/about/zh.md` - Chinese (Simplified)
 - `content/about/yue.md` - Cantonese
@@ -48,6 +49,7 @@ UI strings (navigation labels, button text, etc.) are in `locales/{lang}/common.
 **Supported Languages**: English (en), Chinese (zh), Cantonese (yue), Malay (ms)
 
 **Translation Files**:
+
 - `locales/{lang}/common.json` - Shared UI strings
 - `locales/{lang}/about.json` - About page strings
 - `locales/{lang}/painting.json` - Painting page strings

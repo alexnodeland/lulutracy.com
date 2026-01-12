@@ -22,11 +22,11 @@ Claude will guide you through adding the image and metadata.
 
 ## ✏️ Editing Content
 
-| What | Where | How |
-|------|-------|-----|
-| 🖼️ Paintings | `content/paintings/` | `/gatsby-content` skill |
-| 👤 About page | `content/about/` | Edit the language file (en.md, zh.md, etc.) |
-| 🌐 Translations | `locales/` | Edit JSON files per language |
+| What            | Where                | How                                         |
+| --------------- | -------------------- | ------------------------------------------- |
+| 🖼️ Paintings    | `content/paintings/` | `/gatsby-content` skill                     |
+| 👤 About page   | `content/about/`     | Edit the language file (en.md, zh.md, etc.) |
+| 🌐 Translations | `locales/`           | Edit JSON files per language                |
 
 Just describe what you want to change and Claude will help.
 
@@ -36,12 +36,12 @@ Just describe what you want to change and Claude will help.
 
 These skills are available to help with common tasks:
 
-| Command | What it does |
-|---------|--------------|
-| `/add-painting` | Add a new painting to the gallery |
-| `/validate` | Check that everything is working |
-| `/commit` | Create a commit with proper formatting |
-| `/gatsby-content` | Help with any content changes |
+| Command           | What it does                           |
+| ----------------- | -------------------------------------- |
+| `/add-painting`   | Add a new painting to the gallery      |
+| `/validate`       | Check that everything is working       |
+| `/commit`         | Create a commit with proper formatting |
+| `/gatsby-content` | Help with any content changes          |
 
 ---
 

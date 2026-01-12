@@ -26,13 +26,13 @@ Located in `.claude/agents/`:
 
 ## Hooks (Automated Actions)
 
-| Hook                   | Event                    | Action                                    |
-| ---------------------- | ------------------------ | ----------------------------------------- |
-| `session-start.sh`     | SessionStart             | Load git status, environment info, TODOs  |
-| `stop-validate.sh`     | Stop                     | Run typecheck, lint, format checks        |
-| `post-write-format.sh` | PostToolUse (Write/Edit) | Auto-format changed files                 |
-| `pre-bash-safety.sh`   | PreToolUse (Bash)        | Block dangerous commands                  |
-| `post-bash-build.sh`   | PostToolUse (Bash)       | Verify build after changes                |
+| Hook                   | Event                    | Action                                   |
+| ---------------------- | ------------------------ | ---------------------------------------- |
+| `session-start.sh`     | SessionStart             | Load git status, environment info, TODOs |
+| `stop-validate.sh`     | Stop                     | Run typecheck, lint, format checks       |
+| `post-write-format.sh` | PostToolUse (Write/Edit) | Auto-format changed files                |
+| `pre-bash-safety.sh`   | PreToolUse (Bash)        | Block dangerous commands                 |
+| `post-bash-build.sh`   | PostToolUse (Bash)       | Verify build after changes               |
 
 ## Memory Files
 

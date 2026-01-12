@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import GlassMagnifier from '../GlassMagnifier'
 
 // Mock drift-zoom before importing anything that uses it
@@ -198,6 +198,83 @@ describe('GlassMagnifier', () => {
     )
   })
 
+  it('onShow callback hides hint', async () => {
+    let capturedOnShow: (() => void) | undefined
+
+    MockedDrift.mockImplementation(
+      (
+        _el: HTMLElement,
+        options: { onShow?: () => void; onHide?: () => void }
+      ) => {
+        capturedOnShow = options.onShow
+        return createMockDrift()
+      }
+    )
+
+    render(<GlassMagnifier {...defaultProps} />)
+    const img = screen.getByRole('img', { name: /test painting/i })
+
+    // Hint should be visible initially
+    expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
+
+    fireEvent.load(img)
+
+    await waitFor(() => {
+      expect(MockedDrift).toHaveBeenCalled()
+    })
+
+    // Call the captured onShow callback wrapped in act
+    await act(async () => {
+      if (capturedOnShow) {
+        capturedOnShow()
+      }
+    })
+
+    // Hint should be hidden after onShow
+    await waitFor(() => {
+      expect(screen.queryByText(/hoverToZoom/i)).not.toBeInTheDocument()
+    })
+  })
+
+  it('onShow and onHide callbacks execute without errors', async () => {
+    let capturedOnShow: (() => void) | undefined
+    let capturedOnHide: (() => void) | undefined
+
+    MockedDrift.mockImplementation(
+      (
+        _el: HTMLElement,
+        options: { onShow?: () => void; onHide?: () => void }
+      ) => {
+        capturedOnShow = options.onShow
+        capturedOnHide = options.onHide
+        return createMockDrift()
+      }
+    )
+
+    render(<GlassMagnifier {...defaultProps} />)
+    const img = screen.getByRole('img', { name: /test painting/i })
+
+    fireEvent.load(img)
+
+    await waitFor(() => {
+      expect(MockedDrift).toHaveBeenCalled()
+    })
+
+    // Verify callbacks are defined and can be called without throwing
+    expect(capturedOnShow).toBeDefined()
+    expect(capturedOnHide).toBeDefined()
+
+    // Call onShow - should not throw
+    await act(async () => {
+      expect(() => capturedOnShow?.()).not.toThrow()
+    })
+
+    // Call onHide - should not throw
+    await act(async () => {
+      expect(() => capturedOnHide?.()).not.toThrow()
+    })
+  })
+
   it('handles Drift initialization error gracefully', async () => {
     const consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -291,6 +368,25 @@ describe('GlassMagnifier', () => {
     render(<GlassMagnifier {...defaultProps} />)
     // Drift should not be called until image loads
     expect(MockedDrift).not.toHaveBeenCalled()
+  })
+
+  it('calls onError callback when image fails to load', () => {
+    const onErrorMock = jest.fn()
+    render(<GlassMagnifier {...defaultProps} onError={onErrorMock} />)
+
+    const img = screen.getByRole('img', { name: /test painting/i })
+    fireEvent.error(img)
+
+    expect(onErrorMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not throw when onError is not provided and image fails', () => {
+    render(<GlassMagnifier {...defaultProps} />)
+
+    const img = screen.getByRole('img', { name: /test painting/i })
+
+    // Should not throw
+    expect(() => fireEvent.error(img)).not.toThrow()
   })
 
   it('does not reinitialize Drift if already initialized with same settings', async () => {
