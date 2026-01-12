@@ -166,25 +166,13 @@
   }
 }
 
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .container {
-    cursor: default;
-  }
+/* Mobile - plain image display without magnifier */
+.mobileContainer {
+  cursor: default;
+}
 
-  .zoomIndicator {
-    width: 28px;
-    height: 28px;
-  }
-
-  .zoomIndicator svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  :global(.drift-zoom-pane.drift-inline) {
-    background-color: rgba(255, 255, 255, 0.98);
-  }
+.mobileContainer:focus {
+  outline: none;
 }
 
 /* Reduce motion for accessibility */

@@ -50,7 +50,7 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Initialize Drift when image is loaded
+  // Initialize Drift when image is loaded (desktop only)
   const initDrift = useCallback(async () => {
     if (!imageRef.current || !containerRef.current) return
 
@@ -60,13 +60,16 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
       driftRef.current = null
     }
 
+    // Skip magnifier on mobile - touch interaction is poor UX
+    if (isMobile) return
+
     try {
       const Drift = (await import('drift-zoom')).default
 
       driftRef.current = new Drift(imageRef.current, {
         paneContainer: containerRef.current,
-        inlinePane: isMobile ? true : 500,
-        zoomFactor: isMobile ? zoomFactor * 0.75 : zoomFactor,
+        inlinePane: 500,
+        zoomFactor: zoomFactor,
         sourceAttribute: 'data-zoom',
         handleTouch: enableTouch,
         touchDelay: 100,
@@ -125,13 +128,10 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Intentional keyboard interaction for a11y
     <div
       ref={containerRef}
-      className={`${styles.container} ${className}`.trim()}
+      className={`${styles.container} ${isMobile ? styles.mobileContainer : ''} ${className}`.trim()}
       data-testid="glass-magnifier"
-      role="group"
-      aria-label={t('zoomableImage', {
-        alt,
-        hint: isMobile ? t('tapToZoom') : t('hoverToZoom'),
-      })}
+      role="img"
+      aria-label={alt}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Needed for keyboard focus
       tabIndex={0}
       onKeyDown={handleKeyDown}
@@ -145,30 +145,32 @@ const GlassMagnifier: React.FC<GlassMagnifierProps> = ({
         onLoad={handleImageLoad}
         onError={handleImageError}
       />
-      {/* Zoom icon indicator */}
-      <div className={styles.zoomIndicator} aria-hidden="true">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="M21 21l-4.35-4.35" />
-          <path d="M11 8v6M8 11h6" />
-        </svg>
-      </div>
-      {/* Touch hint for mobile / Hover hint for desktop on first view */}
-      {showHint && (
+      {/* Zoom icon indicator - desktop only */}
+      {!isMobile && (
+        <div className={styles.zoomIndicator} aria-hidden="true">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+            <path d="M11 8v6M8 11h6" />
+          </svg>
+        </div>
+      )}
+      {/* Hover hint for desktop on first view */}
+      {!isMobile && showHint && (
         <div
-          className={`${styles.touchHint} ${isMobile ? styles.mobile : styles.desktop}`}
+          className={`${styles.touchHint} ${styles.desktop}`}
           aria-live="polite"
         >
-          <span>{isMobile ? t('tapToZoom') : t('hoverToZoom')}</span>
+          <span>{t('hoverToZoom')}</span>
         </div>
       )}
     </div>
