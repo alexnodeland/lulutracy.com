@@ -10,6 +10,7 @@ Gatsby-based art portfolio with i18n (en, zh, yue, ms), dark mode, and image mag
 make dev          # Dev server at localhost:8000
 make build        # Production build
 make test         # Run tests
+make e2e          # Run e2e tests (Playwright)
 make lint         # Check linting
 make typecheck    # TypeScript checks
 make validate     # All checks (lint, typecheck, format, test)

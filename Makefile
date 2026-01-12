@@ -3,7 +3,7 @@
 
 .PHONY: help install dev build build-prod serve serve-prod clean test test-watch test-coverage \
         lint lint-fix format format-check typecheck validate ci ci-fast lighthouse \
-        prepare hooks-install
+        prepare hooks-install e2e e2e-ui e2e-headed e2e-install e2e-report
 
 # Default target
 .DEFAULT_GOAL := help
@@ -25,7 +25,7 @@ help: ## Show this help message
 	@echo "$(GREEN)Usage:$(RESET) make [target]"
 	@echo ""
 	@echo "$(YELLOW)Development:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(RESET) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(RESET) %s\n", $$1, $$2}'
 
 #------------------------------------------------------------------------------
 # Setup & Installation
@@ -97,6 +97,25 @@ test-watch: ## Run tests in watch mode
 
 test-coverage: ## Run tests with coverage report
 	npm run test:coverage
+
+#------------------------------------------------------------------------------
+# E2E Testing (Playwright)
+#------------------------------------------------------------------------------
+
+e2e-install: ## Install Playwright browsers
+	npx playwright install --with-deps
+
+e2e: ## Run e2e tests
+	npm run test:e2e
+
+e2e-ui: ## Run e2e tests with interactive UI
+	npm run test:e2e:ui
+
+e2e-headed: ## Run e2e tests in headed browser mode
+	npm run test:e2e:headed
+
+e2e-report: ## Show Playwright test report
+	npx playwright show-report
 
 #------------------------------------------------------------------------------
 # Validation & CI
