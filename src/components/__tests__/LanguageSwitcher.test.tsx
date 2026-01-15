@@ -5,7 +5,7 @@ import LanguageSwitcher from '../LanguageSwitcher'
 // Mock the useI18next hook
 const mockChangeLanguage = jest.fn()
 const mockLanguage = 'en'
-const mockLanguages = ['en', 'zh', 'yue', 'ms']
+const mockLanguages = ['en', 'zh', 'yue']
 
 jest.mock('gatsby-plugin-react-i18next', () => ({
   useI18next: () => ({
@@ -47,11 +47,10 @@ describe('LanguageSwitcher', () => {
     expect(dropdown).toBeInTheDocument()
 
     const options = screen.getAllByRole('option')
-    expect(options).toHaveLength(4)
+    expect(options).toHaveLength(3)
     expect(options[0]).toHaveTextContent('en')
     expect(options[1]).toHaveTextContent('中文')
     expect(options[2]).toHaveTextContent('粵語')
-    expect(options[3]).toHaveTextContent('bm')
   })
 
   it('calls changeLanguage when selecting a language', () => {

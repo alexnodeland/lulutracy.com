@@ -7,7 +7,7 @@ module.exports = {
     description: `Art portfolio of lulutracy - exploring nature through watercolors and acrylics`,
     author: `lulutracy`,
     siteUrl: `https://our-nature.github.io/lulutracy.com`,
-    supportedLanguages: ['en', 'zh', 'yue', 'ms'],
+    supportedLanguages: ['en', 'zh', 'yue'],
     defaultLanguage: 'en',
   },
   pathPrefix: process.env.PREFIX_PATHS === 'true' ? `/lulutracy.com` : ``,
@@ -90,7 +90,7 @@ module.exports = {
       resolve: `gatsby-plugin-react-i18next`,
       options: {
         localeJsonSourceName: `locale`,
-        languages: ['en', 'zh', 'yue', 'ms'],
+        languages: ['en', 'zh', 'yue'],
         defaultLanguage: 'en',
         generateDefaultLanguagePages: true,
         siteUrl: `https://our-nature.github.io/lulutracy.com`,

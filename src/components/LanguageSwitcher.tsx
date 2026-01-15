@@ -7,7 +7,6 @@ const LANGUAGE_NAMES: Record<string, string> = {
   en: 'en',
   zh: '中文',
   yue: '粵語',
-  ms: 'bm',
 }
 
 const LanguageSwitcher: React.FC = () => {
