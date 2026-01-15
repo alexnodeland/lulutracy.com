@@ -48,15 +48,6 @@
   border: none;
   background: transparent;
   text-decoration: none;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
-}
-
-.navButton:hover:not(.disabled),
-.navButton:focus-visible:not(.disabled) {
-  background-color: var(--color-black);
-  color: var(--color-white);
 }
 
 .navButton.disabled {
