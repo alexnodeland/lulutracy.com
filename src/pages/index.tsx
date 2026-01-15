@@ -175,7 +175,7 @@ const IndexPage: React.FC<PageProps<IndexPageData, IndexPageContext>> = ({
               painting={painting}
               image={imageData}
               index={index}
-              eager={index < 4} // Load first 4 images eagerly for better LCP
+              eager={index < 6} // Load first 6 images eagerly for better LCP
             />
           )
         })}
@@ -209,17 +209,25 @@ export const Head: HeadFC<IndexPageData, IndexPageContext> = ({
     : null
   const siteUrl = site?.url || ''
 
-  // Get first painting image for OG image (from base paintings)
+  // Get first painting image for OG image and LCP preload (from base paintings)
   const basePaintings = data.paintingsYaml?.paintings || []
   const sortedPaintings = [...basePaintings].sort((a, b) => a.order - b.order)
   const firstPainting = sortedPaintings[0]
   const imageNodes = data.allFile.nodes
   const imageName = firstPainting ? generateSlug(firstPainting.title) : ''
   const imageNode = imageNodes.find((node) => node.name === imageName)
-  const ogImage = imageNode?.childImageSharp?.gatsbyImageData?.images?.fallback
-    ?.src
-    ? `${siteUrl}${imageNode.childImageSharp.gatsbyImageData.images.fallback.src}`
+  const firstImageData = imageNode?.childImageSharp?.gatsbyImageData
+  const ogImage = firstImageData?.images?.fallback?.src
+    ? `${siteUrl}${firstImageData.images.fallback.src}`
     : `${siteUrl}/icon.png`
+
+  // Extract srcSet for LCP preload (use WebP source if available, fallback to main)
+  const webpSource = firstImageData?.images?.sources?.find(
+    (s: { type?: string }) => s.type === 'image/webp'
+  )
+  const preloadSrcSet =
+    webpSource?.srcSet || firstImageData?.images?.fallback?.srcSet || ''
+  const preloadType = webpSource ? 'image/webp' : undefined
 
   // Define supported languages for hreflang
   const languages = ['en', 'zh', 'yue', 'ms']
@@ -250,6 +258,18 @@ export const Head: HeadFC<IndexPageData, IndexPageContext> = ({
         rel="canonical"
         href={language === 'en' ? siteUrl : `${siteUrl}/${language}/`}
       />
+
+      {/* Preload first image for LCP optimization */}
+      {preloadSrcSet && (
+        <link
+          rel="preload"
+          as="image"
+          imageSrcSet={preloadSrcSet}
+          imageSizes="(min-width: 768px) 450px, 100vw"
+          type={preloadType}
+          fetchPriority="high"
+        />
+      )}
 
       {/* Hreflang alternate links */}
       {languages.map((lang) => (
@@ -341,10 +361,11 @@ export const query = graphql`
           gatsbyImageData(
             width: 450
             aspectRatio: 1
-            placeholder: DOMINANT_COLOR
+            placeholder: BLURRED
+            blurredOptions: { width: 20 }
             formats: [AUTO, WEBP, AVIF]
-            quality: 85
-            breakpoints: [200, 300, 400, 450]
+            quality: 75
+            breakpoints: [300, 450]
           )
         }
       }

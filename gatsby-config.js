@@ -24,7 +24,19 @@ module.exports = {
       },
     },
     `gatsby-plugin-image`,
-    `gatsby-plugin-sharp`,
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        defaults: {
+          formats: [`auto`, `webp`, `avif`],
+          placeholder: `blurred`,
+          quality: 75,
+        },
+        stripMetadata: false, // Preserve ICC color profiles for art
+        defaultQuality: 75,
+        failOn: `warning`, // Ensure image quality
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-transformer-yaml`,
     `gatsby-transformer-remark`,
