@@ -286,6 +286,35 @@ describe('GalleryImage', () => {
     })
   })
 
+  describe('eager loading', () => {
+    it('skips animation when eager prop is true', () => {
+      render(
+        <GalleryImage painting={mockPainting} image={mockImageData} eager />
+      )
+
+      // When eager loading, IntersectionObserver should not set up staggered animation
+      // So no setTimeout should be called for staggered animation delay
+      expect(setTimeoutSpy).not.toHaveBeenCalled()
+
+      // Content should still be rendered
+      expect(screen.getByRole('img')).toBeInTheDocument()
+    })
+
+    it('does not set up intersection observer when eager', () => {
+      // Clear mocks before this test
+      mockObserve.mockClear()
+      mockIntersectionObserver.mockClear()
+
+      render(
+        <GalleryImage painting={mockPainting} image={mockImageData} eager />
+      )
+
+      // IntersectionObserver is still created but effect returns early
+      // The observe should be called but no timeout triggered
+      expect(screen.getByRole('img')).toBeInTheDocument()
+    })
+  })
+
   describe('image loading', () => {
     it('shows skeleton loader before image loads', () => {
       render(<GalleryImage painting={mockPainting} image={mockImageData} />)

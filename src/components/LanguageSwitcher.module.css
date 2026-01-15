@@ -9,7 +9,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   padding: 0.25rem 0.5rem;
   color: inherit;
   font-family: inherit;
@@ -21,10 +21,13 @@
   opacity: 0.7;
 }
 
-.chevron {
-  font-size: 0.625rem;
+.caret {
   opacity: 0.6;
-  transition: transform var(--transition-fast);
+  transition: transform 200ms ease;
+}
+
+.caretOpen {
+  transform: rotate(180deg);
 }
 
 .dropdown {
@@ -50,7 +53,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   padding: 0.375rem 0.75rem;
   color: inherit;
   font-family: inherit;

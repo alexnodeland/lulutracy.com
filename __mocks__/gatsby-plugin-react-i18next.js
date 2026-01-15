@@ -63,7 +63,7 @@ const useTranslation = (ns) => ({
 
 const useI18next = () => ({
   language: 'en',
-  languages: ['en', 'zh', 'yue', 'ms'],
+  languages: ['en', 'zh', 'yue'],
   originalPath: '/',
   defaultLanguage: 'en',
   routed: false,
@@ -81,7 +81,7 @@ const Trans = ({ children }) => children
 
 const I18nextContext = React.createContext({
   language: 'en',
-  languages: ['en', 'zh', 'yue', 'ms'],
+  languages: ['en', 'zh', 'yue'],
   defaultLanguage: 'en',
   originalPath: '/',
   routed: false,

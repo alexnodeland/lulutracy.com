@@ -175,6 +175,7 @@ const IndexPage: React.FC<PageProps<IndexPageData, IndexPageContext>> = ({
               painting={painting}
               image={imageData}
               index={index}
+              eager={index < 4} // Load first 4 images eagerly for better LCP
             />
           )
         })}

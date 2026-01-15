@@ -8,7 +8,7 @@ import { generateSlug, generateImageFilename } from './src/utils/slug'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const piexif = require('piexifjs')
 
-const LANGUAGES = ['en', 'zh', 'yue', 'ms'] as const
+const LANGUAGES = ['en', 'zh', 'yue'] as const
 const DEFAULT_LANGUAGE = 'en'
 
 type Language = (typeof LANGUAGES)[number]

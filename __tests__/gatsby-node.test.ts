@@ -341,9 +341,6 @@ describe('gatsby-node utility functions', () => {
       expect(generatePagePath('yue', '/painting/test', DEFAULT_LANGUAGE)).toBe(
         '/yue/painting/test'
       )
-      expect(generatePagePath('ms', '/painting/test', DEFAULT_LANGUAGE)).toBe(
-        '/ms/painting/test'
-      )
     })
   })
 
@@ -482,7 +479,7 @@ describe('gatsby-node utility functions', () => {
   })
 
   describe('i18n context generation', () => {
-    const LANGUAGES = ['en', 'zh', 'yue', 'ms'] as const
+    const LANGUAGES = ['en', 'zh', 'yue'] as const
     const DEFAULT_LANGUAGE = 'en'
 
     interface I18nContext {

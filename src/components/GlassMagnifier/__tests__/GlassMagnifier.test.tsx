@@ -58,10 +58,12 @@ describe('GlassMagnifier', () => {
 
   it('renders the image with correct src and alt', () => {
     render(<GlassMagnifier {...defaultProps} />)
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')
     expect(img).toBeInTheDocument()
     expect(img).toHaveAttribute('src', '/test-image.jpg')
     expect(img).toHaveAttribute('data-zoom', '/test-image-zoom.jpg')
+    expect(img).toHaveAttribute('alt', 'Test painting')
   })
 
   it('applies custom className to container', () => {
@@ -70,17 +72,19 @@ describe('GlassMagnifier', () => {
     expect(container).toHaveClass('custom-class')
   })
 
-  it('renders zoom indicator icon', () => {
+  it('renders zoom indicator icon on desktop', () => {
+    mockMatchMedia(false) // Desktop
     render(<GlassMagnifier {...defaultProps} />)
     const svg = screen.getByTestId('glass-magnifier').querySelector('svg')
     expect(svg).toBeInTheDocument()
   })
 
-  it('shows touch hint on mobile', () => {
+  it('does not show hint on mobile (magnifier disabled)', () => {
     mockMatchMedia(true) // Mobile
     render(<GlassMagnifier {...defaultProps} enableTouch={true} />)
-    // Translation mock returns the key
-    expect(screen.getByText(/tapToZoom/i)).toBeInTheDocument()
+    // No hints on mobile since magnifier is disabled
+    expect(screen.queryByText(/tapToZoom/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/hoverToZoom/i)).not.toBeInTheDocument()
   })
 
   it('shows hover hint on desktop', () => {
@@ -90,18 +94,19 @@ describe('GlassMagnifier', () => {
     expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
   })
 
-  it('does not show touch hint when enableTouch is false on mobile', () => {
+  it('does not show zoom indicator on mobile', () => {
     mockMatchMedia(true) // Mobile
-    render(<GlassMagnifier {...defaultProps} enableTouch={false} />)
-    // Still shows hint since enableTouch only affects touch handling, not hint
-    // Translation mock returns the key
-    expect(screen.getByText(/tapToZoom/i)).toBeInTheDocument()
+    render(<GlassMagnifier {...defaultProps} />)
+    // No zoom indicator on mobile since magnifier is disabled
+    const svg = screen.getByTestId('glass-magnifier').querySelector('svg')
+    expect(svg).not.toBeInTheDocument()
   })
 
   it('initializes Drift when image loads', async () => {
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -112,7 +117,8 @@ describe('GlassMagnifier', () => {
   it('cleans up Drift instance on unmount', async () => {
     const { unmount } = render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -129,7 +135,8 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} zoomFactor={3} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -142,21 +149,19 @@ describe('GlassMagnifier', () => {
     })
   })
 
-  it('uses inline pane on mobile', async () => {
+  it('does not initialize Drift on mobile', async () => {
     mockMatchMedia(true) // Mobile
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
+    // Wait a tick to ensure any async initialization would have occurred
     await waitFor(() => {
-      expect(MockedDrift).toHaveBeenCalledWith(
-        expect.any(HTMLElement),
-        expect.objectContaining({
-          inlinePane: true,
-        })
-      )
+      // Drift should NOT be called on mobile
+      expect(MockedDrift).not.toHaveBeenCalled()
     })
   })
 
@@ -165,7 +170,8 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -181,7 +187,8 @@ describe('GlassMagnifier', () => {
   it('passes onShow and onHide callbacks to Drift', async () => {
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -212,7 +219,8 @@ describe('GlassMagnifier', () => {
     )
 
     render(<GlassMagnifier {...defaultProps} />)
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
 
     // Hint should be visible initially
     expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
@@ -252,7 +260,8 @@ describe('GlassMagnifier', () => {
     )
 
     render(<GlassMagnifier {...defaultProps} />)
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
 
     fireEvent.load(img)
 
@@ -285,7 +294,8 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -298,11 +308,12 @@ describe('GlassMagnifier', () => {
     consoleWarnSpy.mockRestore()
   })
 
-  it('reinitializes Drift when mobile state changes', async () => {
+  it('destroys Drift when switching to mobile', async () => {
     mockMatchMedia(false) // Start as desktop
     const { rerender } = render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -316,52 +327,54 @@ describe('GlassMagnifier', () => {
     // Force rerender to pick up new matchMedia
     rerender(<GlassMagnifier {...defaultProps} />)
 
-    // Wait for destroy and reinit
+    // Wait for destroy - Drift should be destroyed but NOT reinitialized on mobile
     await waitFor(() => {
       expect(mockDestroyFn).toHaveBeenCalled()
     })
+
+    // Still only one Drift call (the initial desktop one)
+    expect(MockedDrift).toHaveBeenCalledTimes(1)
   })
 
-  it('destroys existing Drift instance before creating new one', async () => {
-    mockMatchMedia(false) // Desktop
-    render(<GlassMagnifier {...defaultProps} />)
+  it('reinitializes Drift when switching from mobile to desktop', async () => {
+    mockMatchMedia(true) // Start as mobile
+    const { rerender } = render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
+    // Drift should NOT be initialized on mobile
+    await waitFor(() => {
+      expect(MockedDrift).not.toHaveBeenCalled()
+    })
+
+    // Simulate resize to desktop
+    mockMatchMedia(false)
+    fireEvent(window, new Event('resize'))
+
+    // Force rerender to pick up new matchMedia
+    rerender(<GlassMagnifier {...defaultProps} />)
+
+    // Now Drift should be initialized for desktop
     await waitFor(() => {
       expect(MockedDrift).toHaveBeenCalledTimes(1)
     })
-
-    // Simulate mobile state change to trigger reinit
-    mockMatchMedia(true)
-    fireEvent(window, new Event('resize'))
-
-    await waitFor(() => {
-      // Previous instance should be destroyed
-      expect(mockDestroyFn).toHaveBeenCalled()
-      // New instance should be created
-      expect(MockedDrift).toHaveBeenCalledTimes(2)
-    })
   })
 
-  it('applies reduced zoom factor on mobile', async () => {
+  it('still renders container and image on mobile (without magnifier features)', () => {
     mockMatchMedia(true) // Mobile
 
-    render(<GlassMagnifier {...defaultProps} zoomFactor={2} />)
+    render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
-    fireEvent.load(img)
+    // Container should still render
+    const container = screen.getByTestId('glass-magnifier')
+    expect(container).toBeInTheDocument()
 
-    await waitFor(() => {
-      expect(MockedDrift).toHaveBeenCalledWith(
-        expect.any(HTMLElement),
-        expect.objectContaining({
-          // Mobile zoom factor is 0.75 * zoomFactor
-          zoomFactor: 1.5,
-        })
-      )
-    })
+    // Image should still be present
+    const img = container.querySelector('img')
+    expect(img).toBeInTheDocument()
+    expect(img).toHaveAttribute('alt', 'Test painting')
   })
 
   it('does not initialize Drift before image loads', () => {
@@ -374,7 +387,8 @@ describe('GlassMagnifier', () => {
     const onErrorMock = jest.fn()
     render(<GlassMagnifier {...defaultProps} onError={onErrorMock} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.error(img)
 
     expect(onErrorMock).toHaveBeenCalledTimes(1)
@@ -383,7 +397,8 @@ describe('GlassMagnifier', () => {
   it('does not throw when onError is not provided and image fails', () => {
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
 
     // Should not throw
     expect(() => fireEvent.error(img)).not.toThrow()
@@ -394,7 +409,8 @@ describe('GlassMagnifier', () => {
 
     render(<GlassMagnifier {...defaultProps} />)
 
-    const img = screen.getByRole('img', { name: /test painting/i })
+    const container = screen.getByTestId('glass-magnifier')
+    const img = container.querySelector('img')!
     fireEvent.load(img)
 
     await waitFor(() => {
@@ -414,22 +430,22 @@ describe('GlassMagnifier', () => {
       render(<GlassMagnifier {...defaultProps} />)
       const container = screen.getByTestId('glass-magnifier')
 
-      expect(container).toHaveAttribute('role', 'group')
-      // Translation mock returns the key
-      expect(container).toHaveAttribute('aria-label', 'zoomableImage')
+      expect(container).toHaveAttribute('role', 'img')
+      expect(container).toHaveAttribute('aria-label', 'Test painting')
       expect(container).toHaveAttribute('tabIndex', '0')
     })
 
-    it('has mobile-specific ARIA label on mobile', () => {
+    it('has same ARIA label on mobile (just alt text)', () => {
       mockMatchMedia(true) // Mobile
       render(<GlassMagnifier {...defaultProps} />)
       const container = screen.getByTestId('glass-magnifier')
 
-      // Translation mock returns the key (same key, different translation)
-      expect(container).toHaveAttribute('aria-label', 'zoomableImage')
+      // Same aria-label on mobile and desktop - just the alt text
+      expect(container).toHaveAttribute('aria-label', 'Test painting')
     })
 
-    it('responds to keyboard interaction', () => {
+    it('responds to keyboard interaction on desktop', () => {
+      mockMatchMedia(false) // Desktop
       render(<GlassMagnifier {...defaultProps} />)
       const container = screen.getByTestId('glass-magnifier')
 
@@ -445,7 +461,8 @@ describe('GlassMagnifier', () => {
       expect(screen.getByText(/hoverToZoom/i)).toBeInTheDocument()
     })
 
-    it('has aria-hidden on zoom indicator', () => {
+    it('has aria-hidden on zoom indicator (desktop only)', () => {
+      mockMatchMedia(false) // Desktop
       render(<GlassMagnifier {...defaultProps} />)
       const indicator = screen
         .getByTestId('glass-magnifier')
@@ -453,7 +470,8 @@ describe('GlassMagnifier', () => {
       expect(indicator).toHaveAttribute('aria-hidden', 'true')
     })
 
-    it('has aria-live on hint for screen readers', () => {
+    it('has aria-live on hint for screen readers (desktop only)', () => {
+      mockMatchMedia(false) // Desktop
       render(<GlassMagnifier {...defaultProps} />)
       // Translation mock returns the key
       const hint = screen.getByText(/hoverToZoom/i).parentElement
