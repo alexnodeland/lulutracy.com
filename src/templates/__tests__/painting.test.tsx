@@ -70,7 +70,7 @@ const mockSiteYaml = {
   site: {
     name: 'lulutracy',
     author: 'Tracy Mah',
-    url: 'https://our-nature.github.io/lulutracy.com',
+    url: 'https://lulutracy.com',
   },
 }
 

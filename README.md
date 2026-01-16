@@ -5,7 +5,7 @@
 
 An art portfolio showcasing watercolor and acrylic paintings.
 
-**🌐 [Visit the Gallery](https://our-nature.github.io/lulutracy.com)**
+**🌐 [Visit the Gallery](https://lulutracy.com)**
 
 ---
 

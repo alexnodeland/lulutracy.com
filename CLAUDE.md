@@ -1,8 +1,8 @@
 # lulutracy Art Portfolio
 
-Gatsby-based art portfolio with i18n (en, zh, yue, ms), dark mode, and image magnification.
+Gatsby-based art portfolio with i18n (en, zh, yue), dark mode, and image magnification.
 
-**Live Site**: https://our-nature.github.io/lulutracy.com
+**Live Site**: https://lulutracy.com
 
 ## Commands
 

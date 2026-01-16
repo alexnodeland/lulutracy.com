@@ -53,7 +53,6 @@ Edit the appropriate language file in `content/about/`:
 - `content/about/en.md` - English
 - `content/about/zh.md` - Chinese (Simplified)
 - `content/about/yue.md` - Cantonese
-- `content/about/ms.md` - Malay
 
 Each file supports Markdown with YAML frontmatter for title, artistName, photo, and locale.
 
@@ -65,7 +64,7 @@ UI strings (navigation labels, button text, etc.) are in `locales/{lang}/common.
 
 ## Internationalization (i18n)
 
-**Supported Languages**: English (en), Chinese (zh), Cantonese (yue), Malay (ms)
+**Supported Languages**: English (en), Chinese (zh), Cantonese (yue)
 
 **Translation Files**:
 

@@ -49,7 +49,7 @@ This file records significant architecture and design decisions made for the lul
 **Decision**: Use gatsby-plugin-react-i18next for multi-language support.
 **Rationale**:
 
-- Supports English (en), Chinese (zh), Cantonese (yue), and Malay (ms)
+- Supports English (en), Chinese (zh), and Cantonese (yue)
 - Integrates well with Gatsby's static generation
 - JSON-based translation files are easy to maintain
 - Automatic language detection and routing

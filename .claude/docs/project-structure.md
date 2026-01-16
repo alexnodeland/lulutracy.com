@@ -16,19 +16,17 @@ content/
 ├── paintings/
 │   ├── paintings.yaml       # Painting metadata
 │   ├── images/              # Painting image files
-│   └── locales/{lang}/      # Painting translations (zh, yue, ms)
+│   └── locales/{lang}/      # Painting translations (zh, yue)
 ├── about/
 │   ├── en.md                # English about page
 │   ├── zh.md                # Chinese about page
-│   ├── yue.md               # Cantonese about page
-│   └── ms.md                # Malay about page
+│   └── yue.md               # Cantonese about page
 └── site/site.yaml           # Site configuration
 
 locales/                     # UI translation strings
 ├── en/                      # English translations
 ├── zh/                      # Chinese translations
-├── yue/                     # Cantonese translations
-└── ms/                      # Malay translations
+└── yue/                     # Cantonese translations
 
 Key config files:
 - gatsby-config.js   # Gatsby plugins and site metadata

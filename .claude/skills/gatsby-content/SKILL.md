@@ -88,7 +88,6 @@ About pages are internationalized. Edit the appropriate language file in `conten
 - `content/about/en.md` - English
 - `content/about/zh.md` - Chinese (Simplified)
 - `content/about/yue.md` - Cantonese
-- `content/about/ms.md` - Malay
 
 ```markdown
 ---
@@ -150,7 +149,6 @@ Edit `locales/{lang}/common.json` for navigation, buttons, and other UI text:
 | `en`  | English (default)    |
 | `zh`  | Chinese (Simplified) |
 | `yue` | Cantonese            |
-| `ms`  | Malay                |
 
 ## Common Issues
 

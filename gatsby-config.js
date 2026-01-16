@@ -6,7 +6,7 @@ module.exports = {
     title: `lulutracy`,
     description: `Art portfolio of lulutracy - exploring nature through watercolors and acrylics`,
     author: `lulutracy`,
-    siteUrl: `https://our-nature.github.io/lulutracy.com`,
+    siteUrl: `https://lulutracy.com`,
     supportedLanguages: ['en', 'zh', 'yue'],
     defaultLanguage: 'en',
   },
@@ -15,9 +15,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-sitemap`,
       options: {
-        resolveSiteUrl: () => `https://our-nature.github.io/lulutracy.com`,
+        resolveSiteUrl: () => `https://lulutracy.com`,
         serialize: ({ path }) => ({
-          url: `https://our-nature.github.io/lulutracy.com${path}`,
+          url: `https://lulutracy.com${path}`,
           changefreq: `weekly`,
           priority: path === `/` ? 1.0 : 0.7,
         }),
@@ -105,7 +105,7 @@ module.exports = {
         languages: ['en', 'zh', 'yue'],
         defaultLanguage: 'en',
         generateDefaultLanguagePages: true,
-        siteUrl: `https://our-nature.github.io/lulutracy.com`,
+        siteUrl: `https://lulutracy.com`,
         i18nextOptions: {
           interpolation: {
             escapeValue: false,

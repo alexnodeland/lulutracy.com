@@ -80,7 +80,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          PREFIX_PATHS: 'true'
           GATSBY_CPU_COUNT: 4
           NODE_OPTIONS: '--max-old-space-size=4096'
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: 'true'

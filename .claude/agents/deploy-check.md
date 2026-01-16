@@ -23,18 +23,13 @@ make ci
 # If CI passes, build is production-ready
 ```
 
-### 2. Path Prefix Check
+### 2. Custom Domain Check
 
-This site uses path prefix for GitHub Pages:
+This site uses a custom domain for GitHub Pages:
 
-- **Site URL**: https://our-nature.github.io/lulutracy.com
-- **Path Prefix**: `/lulutracy.com`
+- **Site URL**: https://lulutracy.com
 
-Verify in `gatsby-config.js`:
-
-```javascript
-pathPrefix: `/lulutracy.com`,
-```
+Verify `static/CNAME` contains `lulutracy.com` and that `gatsby-config.js` has the correct `siteUrl`.
 
 ### 3. Asset Paths
 
@@ -69,7 +64,7 @@ import { StaticImage } from 'gatsby-plugin-image'
 ```bash
 make build
 make serve
-# Visit http://localhost:9000/lulutracy.com/
+# Visit http://localhost:9000/
 ```
 
 ### Check Build Output
@@ -88,10 +83,10 @@ ls public/static/
 
 ### Test All Routes
 
-- [ ] Homepage: `/lulutracy.com/`
-- [ ] About: `/lulutracy.com/about`
-- [ ] Individual paintings: `/lulutracy.com/painting/{id}`
-- [ ] 404 page: `/lulutracy.com/nonexistent`
+- [ ] Homepage: `/`
+- [ ] About: `/about`
+- [ ] Individual paintings: `/painting/{id}`
+- [ ] 404 page: `/nonexistent`
 
 ## CI/CD Workflow
 
@@ -170,14 +165,14 @@ NODE_OPTIONS="--max-old-space-size=4096"
 
 After deployment completes:
 
-1. **Visit live site**: https://our-nature.github.io/lulutracy.com
+1. **Visit live site**: https://lulutracy.com
 2. **Check all navigation**: Click through all links
 3. **Verify images load**: Gallery and about page photos
 4. **Test on mobile**: Responsive layout works
 5. **Run Lighthouse**: Check production performance
 
 ```bash
-npx lighthouse https://our-nature.github.io/lulutracy.com --view
+npx lighthouse https://lulutracy.com --view
 ```
 
 ## Output Format

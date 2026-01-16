@@ -147,12 +147,11 @@ export const Head: HeadFC<AboutPageData, AboutPageContext> = ({
     : `${site.url}/icon.png`
 
   // Define supported languages for hreflang
-  const languages = ['en', 'zh', 'yue', 'ms']
+  const languages = ['en', 'zh', 'yue']
   const ogLocaleMap: Record<string, string> = {
     en: 'en_US',
     zh: 'zh_CN',
     yue: 'zh_HK',
-    ms: 'ms_MY',
   }
   const ogLocale = ogLocaleMap[language] || 'en_US'
 
