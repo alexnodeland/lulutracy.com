@@ -1,0 +1,9 @@
+# Default code owner for everything
+* @alexnodeland
+
+# Content and creative assets
+/content/ @alexnodeland @lulutracy
+/locales/ @alexnodeland @lulutracy
+/src/images/ @alexnodeland @lulutracy
+/src/styles/ @alexnodeland @lulutracy
+README.md @alexnodeland @lulutracy

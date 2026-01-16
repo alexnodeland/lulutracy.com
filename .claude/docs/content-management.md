@@ -25,6 +25,25 @@
 
 Note: The `id` and image filename are derived automatically from the title.
 
+### Source Image Guidelines
+
+For optimal quality and performance, source images should follow these specifications:
+
+| Property      | Recommendation                       |
+| ------------- | ------------------------------------ |
+| Format        | JPEG (sRGB color profile)            |
+| Dimensions    | 4000-6000px on longest edge          |
+| File size     | Up to 8MB acceptable                 |
+| Naming        | Auto-derived from title (kebab-case) |
+| Color profile | sRGB (Adobe RGB auto-converts)       |
+
+**Why these specs?**
+
+- Sharp/Gatsby handles large images efficiently with streaming processing
+- Images are automatically optimized to AVIF/WebP with multiple breakpoints
+- Gallery shows 450px thumbnails, detail page shows 1200px, magnifier uses 3000px
+- High-res sources ensure quality at all zoom levels
+
 3. (Optional) Add translations in `content/paintings/locales/{lang}/painting-locales.yaml`
 
 ## Modifying About Page

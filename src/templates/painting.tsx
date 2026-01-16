@@ -225,6 +225,10 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
     ? `${siteUrl}${imageData.images.fallback.src}`
     : `${siteUrl}/icon.png`
 
+  // Get zoom image URL for preloading (desktop magnifier)
+  const zoomImageData = data.zoomFile?.childImageSharp?.gatsbyImageData
+  const zoomImageUrl = zoomImageData?.images?.fallback?.src
+
   const siteName = site?.name || 'lulutracy'
 
   // Define supported languages for hreflang
@@ -268,6 +272,16 @@ export const Head: HeadFC<PaintingPageData, PaintingPageContext> = ({
 
       {/* Canonical URL */}
       <link rel="canonical" href={pageUrl} />
+
+      {/* Preload zoom image for magnifier (desktop only) */}
+      {zoomImageUrl && (
+        <link
+          rel="preload"
+          as="image"
+          href={zoomImageUrl}
+          media="(min-width: 769px)"
+        />
+      )}
 
       {/* Hreflang alternate links */}
       {languages.map((lang) => (
@@ -334,9 +348,11 @@ export const query = graphql`
       childImageSharp {
         gatsbyImageData(
           width: 1200
-          placeholder: DOMINANT_COLOR
+          placeholder: BLURRED
+          blurredOptions: { width: 30 }
           formats: [AUTO, WEBP, AVIF]
           quality: 85
+          breakpoints: [600, 800, 1000, 1200]
         )
       }
     }
@@ -346,10 +362,10 @@ export const query = graphql`
     ) {
       childImageSharp {
         gatsbyImageData(
-          width: 2400
+          width: 3000
           placeholder: NONE
           formats: [AUTO, WEBP]
-          quality: 95
+          quality: 90
         )
       }
     }

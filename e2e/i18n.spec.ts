@@ -35,19 +35,6 @@ test.describe('Internationalization', () => {
     await expect(page).toHaveURL(/\/yue/)
   })
 
-  test('switches to Malay', async ({ page }) => {
-    await page.goto('/')
-
-    // Click language switcher
-    await page.locator('[data-testid="language-switcher"]').click()
-
-    // Select Malay
-    await page.locator('[data-testid="lang-ms"]').click()
-
-    // URL should include /ms prefix
-    await expect(page).toHaveURL(/\/ms/)
-  })
-
   test('persists language across navigation', async ({ page }) => {
     await page.goto('/')
 
@@ -73,6 +60,6 @@ test.describe('Internationalization', () => {
     await page.locator('[data-testid="lang-en"]').click()
 
     // URL should not have language prefix
-    await expect(page).not.toHaveURL(/\/(zh|yue|ms)/)
+    await expect(page).not.toHaveURL(/\/(zh|yue)/)
   })
 })

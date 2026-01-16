@@ -23,18 +23,21 @@ interface GalleryImageProps {
   image: IGatsbyImageData | null
   /** Index for staggered animation delay */
   index?: number
+  /** Load image eagerly (for above-fold images to improve LCP) */
+  eager?: boolean
 }
 
 const GalleryImage: React.FC<GalleryImageProps> = ({
   painting,
   image,
   index = 0,
+  eager = false,
 }) => {
   const { t } = useTranslation('common')
   const imageData = image ? getImage(image) : null
   const [isLoaded, setIsLoaded] = useState(false)
-  // Skip animation if this is a language change (start visible immediately)
-  const [skipAnimation] = useState(shouldSkipAnimation)
+  // Skip animation if this is a language change or eager-loaded (start visible immediately)
+  const [skipAnimation] = useState(() => shouldSkipAnimation() || eager)
   const [isVisible, setIsVisible] = useState(skipAnimation)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -92,7 +95,7 @@ const GalleryImage: React.FC<GalleryImageProps> = ({
               image={imageData}
               alt={painting.alt}
               className={`${styles.image} ${isLoaded ? styles.imageLoaded : ''}`}
-              loading="lazy"
+              loading={eager ? 'eager' : 'lazy'}
               onLoad={handleImageLoad}
             />
           ) : (

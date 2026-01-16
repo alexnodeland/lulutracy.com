@@ -202,20 +202,23 @@ describe('PaintingTemplate', () => {
 
   it('renders the painting image with correct alt text', () => {
     renderPaintingTemplate()
-    expect(
-      screen.getByRole('img', { name: /test painting alt text/i })
-    ).toBeInTheDocument()
+    const magnifier = screen.getByTestId('glass-magnifier')
+    const img = magnifier.querySelector('img')
+    expect(img).toBeInTheDocument()
+    expect(img).toHaveAttribute('alt', 'Test painting alt text')
   })
 
   it('renders with zoom image when available', () => {
     renderPaintingTemplate()
-    const img = screen.getByRole('img', { name: /test painting alt text/i })
+    const magnifier = screen.getByTestId('glass-magnifier')
+    const img = magnifier.querySelector('img')
     expect(img).toHaveAttribute('data-zoom', '/test-zoom.jpg')
   })
 
   it('falls back to display image when zoom image is not available', () => {
     renderPaintingTemplate(mockDataWithImageButNoZoom as any)
-    const img = screen.getByRole('img', { name: /test painting alt text/i })
+    const magnifier = screen.getByTestId('glass-magnifier')
+    const img = magnifier.querySelector('img')
     expect(img).toHaveAttribute('src', '/test.jpg')
     expect(img).toHaveAttribute('data-zoom', '/test.jpg')
   })
@@ -225,27 +228,28 @@ describe('PaintingTemplate', () => {
       renderPaintingTemplate(mockDataWithEmptyImages as any)
       // When getSrc returns undefined, canUseMagnifier is false
       // but GatsbyImage is shown as fallback since imageData exists
-      const img = screen.getByRole('img', { name: /test painting alt text/i })
-      expect(img).toBeInTheDocument()
       // Should not have glass-magnifier (GatsbyImage is used instead)
       expect(screen.queryByTestId('glass-magnifier')).not.toBeInTheDocument()
+      // GatsbyImage mock renders a simple img tag
+      const img = screen.getByAltText(/test painting alt text/i)
+      expect(img).toBeInTheDocument()
     })
 
     it('falls back to GatsbyImage when magnifier image fails to load', () => {
       renderPaintingTemplate()
       // Initially renders with GlassMagnifier
-      expect(screen.getByTestId('glass-magnifier')).toBeInTheDocument()
+      const magnifier = screen.getByTestId('glass-magnifier')
+      expect(magnifier).toBeInTheDocument()
 
-      // Simulate image error
-      const img = screen.getByRole('img', { name: /test painting alt text/i })
+      // Simulate image error on the img inside magnifier
+      const img = magnifier.querySelector('img')!
       fireEvent.error(img)
 
       // After error, should fall back to GatsbyImage (no glass-magnifier)
       expect(screen.queryByTestId('glass-magnifier')).not.toBeInTheDocument()
       // GatsbyImage mock renders a simple img tag
-      expect(
-        screen.getByRole('img', { name: /test painting alt text/i })
-      ).toBeInTheDocument()
+      const fallbackImg = screen.getByAltText(/test painting alt text/i)
+      expect(fallbackImg).toBeInTheDocument()
     })
   })
 })

@@ -9,7 +9,7 @@ module.exports = {
     description: `Art portfolio of lulutracy - exploring nature through watercolors and acrylics`,
     author: `lulutracy`,
     siteUrl,
-    supportedLanguages: ['en', 'zh', 'yue', 'ms'],
+    supportedLanguages: ['en', 'zh', 'yue'],
     defaultLanguage: 'en',
   },
   plugins: [
@@ -25,7 +25,19 @@ module.exports = {
       },
     },
     `gatsby-plugin-image`,
-    `gatsby-plugin-sharp`,
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        defaults: {
+          formats: [`auto`, `webp`, `avif`],
+          placeholder: `blurred`,
+          quality: 75,
+        },
+        stripMetadata: false, // Preserve ICC color profiles for art
+        defaultQuality: 75,
+        failOn: `warning`, // Ensure image quality
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-transformer-yaml`,
     `gatsby-transformer-remark`,
@@ -91,7 +103,7 @@ module.exports = {
       resolve: `gatsby-plugin-react-i18next`,
       options: {
         localeJsonSourceName: `locale`,
-        languages: ['en', 'zh', 'yue', 'ms'],
+        languages: ['en', 'zh', 'yue'],
         defaultLanguage: 'en',
         generateDefaultLanguagePages: true,
         siteUrl,
