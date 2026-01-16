@@ -8,6 +8,7 @@
   z-index: var(--z-overlay);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
     opacity var(--transition-base),
     visibility var(--transition-base);
@@ -16,6 +17,7 @@
 .overlayOpen {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .nav {
