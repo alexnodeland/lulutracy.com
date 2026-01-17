@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  max-width: 1000px;
+  max-width: var(--max-width-content);
   margin: 0 auto;
   padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-md);
   height: 100%;

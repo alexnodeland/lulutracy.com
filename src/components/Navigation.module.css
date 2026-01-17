@@ -46,7 +46,7 @@
 }
 
 .navList {
-  max-width: var(--max-width-layout);
+  max-width: var(--max-width-content);
   margin: 0 auto;
   padding: var(--spacing-md) var(--spacing-lg);
 }

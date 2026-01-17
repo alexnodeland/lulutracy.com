@@ -45,8 +45,8 @@
   --spacing-3xl: 4rem;
 
   /* Layout */
-  --max-width-content: 1000px;
-  --max-width-gallery: 1000px;
+  --max-width-content: 1200px;
+  --max-width-gallery: 1200px;
   --header-height: 120px;
 
   /* Breakpoints (for reference - use in media queries as raw values) */

@@ -16,11 +16,11 @@
 }
 
 .portrait {
-  max-width: 600px;
+  max-width: 720px;
 }
 
 .landscape {
-  max-width: 800px;
+  max-width: 100%;
 }
 
 .placeholder {

@@ -11,11 +11,11 @@
 }
 
 .photo {
-  max-width: 300px;
+  max-width: 360px;
 }
 
 .placeholder {
-  max-width: 300px;
+  max-width: 360px;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
     grid-template-columns: 35% 1fr;
     gap: var(--spacing-2xl);
     align-items: start;
-    max-width: 1000px;
+    max-width: var(--max-width-content);
   }
 
   .photoContainer {
