@@ -33,7 +33,7 @@ jobs:
       # Cache node_modules directly - skip npm ci on cache hit
       - name: Cache node_modules
         id: cache-node-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -65,7 +65,7 @@ jobs:
 
       # Cache Gatsby build for incremental builds
       - name: Cache Gatsby
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .cache
