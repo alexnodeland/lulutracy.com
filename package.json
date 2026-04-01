@@ -50,7 +50,7 @@
     "i18next": "^25.7.4",
     "js-yaml": "^4.1.1",
     "piexifjs": "^1.0.6",
-    "react": "^18.2.0",
+    "react": "^19.2.3",
     "react-dom": "^18.2.0",
     "react-i18next": "^16.5.2"
   },
@@ -65,7 +65,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.0.6",
     "@types/piexifjs": "^1.0.0",
-    "@types/react": "^18.3.27",
+    "@types/react": "^19.2.8",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
